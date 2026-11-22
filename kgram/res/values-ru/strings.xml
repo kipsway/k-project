@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="AppName">kGram</string>
+    <string name="AppNameBeta">kGram</string>
+    <string name="kgram_author_tag">by kipsway</string>
+
+    <!-- Основные разделы настроек (на человеческом русском) -->
+    <string name="kgram_settings_title">Настройки kGram</string>
+    <string name="kgram_settings_summary">Мозаика, плеер RX Playa, приватность и медиа</string>
+
+    <!-- Оформление -->
+    <string name="kgram_theme_mozaik">Цвета «Мозаика»</string>
+    <string name="kgram_theme_mozaik_desc">Глубокий оникс #0A0A0C и лаванда #B8A7F0</string>
+
+    <!-- Аудиоплеер -->
+    <string name="kgram_player_title">Плеер RX Playa</string>
+    <string name="kgram_player_desc">Крупная обложка, мягкое виньетирование и капсульные кнопки</string>
+
+    <!-- Приватность (NimarkoGram) -->
+    <string name="kgram_privacy_ghost">Призрачный режим</string>
+    <string name="kgram_privacy_ghost_desc">Не отмечать сообщения прочитанными при открытии</string>
+    <string name="kgram_privacy_typing">Скрыть набор текста</string>
+    <string name="kgram_privacy_typing_desc">Собеседники не видят статус «печатает...»</string>
+    <string name="kgram_privacy_deleted">Сохранять удаленные сообщения</string>
+
+    <!-- Медиа и камера -->
+    <string name="kgram_hd_video_notes">HD-видеосообщения</string>
+    <string name="kgram_hd_video_notes_desc">Запись кружочков в повышенном битрейте без сжатия</string>
+</resources>

@@ -1,0 +1,56 @@
+{
+  "name": "kTok Patches Configuration",
+  "version": "1.0.0",
+  "target_package": "com.zhiliaoapp.musically",
+  "modded_package": "com.kipsway.ktok",
+  "author": "kipsway",
+  "palette": {
+    "background": "#0A0A0C",
+    "surface": "#0F0F12",
+    "accent_lavender": "#B8A7F0",
+    "active_border": "#7E6FC4"
+  },
+  "patches": [
+    {
+      "name": "ktok-package-rename",
+      "enabled": true,
+      "description": "Смена имени пакета на com.kipsway.ktok для параллельной установки с оригинальным TikTok",
+      "options": {
+        "newPackageName": "com.kipsway.ktok",
+        "newAppName": "kTok"
+      }
+    },
+    {
+      "name": "ktok-clean-download",
+      "enabled": true,
+      "description": "Скачивание видео без водяного знака и скачивание оригинальной аудиодорожки",
+      "options": {
+        "removeEndingWatermark": true,
+        "preferCleanPlayAddr": true,
+        "enableAudioDownload": true,
+        "downloadDirectory": "Movies/kTok"
+      }
+    },
+    {
+      "name": "ktok-region-spoof",
+      "enabled": true,
+      "description": "Обход региональных ограничений через подмену SIM ISO и параметров запроса",
+      "options": {
+        "defaultRegion": "US",
+        "overrideSimCountry": true,
+        "overrideNetworkCountry": true,
+        "prefsKey": "ktok_selected_region"
+      }
+    },
+    {
+      "name": "ktok-ad-blocker",
+      "enabled": true,
+      "description": "Вырезание рекламы и спонсированных карточек из ленты Рекомендаций",
+      "options": {
+        "removeFeedAds": true,
+        "removeCommercialBanners": true,
+        "removeAppPromotions": true
+      }
+    }
+  ]
+}

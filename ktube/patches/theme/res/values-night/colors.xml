@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    kTube Dark Mode Overrides (Default & Primary theme)
+-->
+<resources>
+    <color name="yt_base_background">#0A0A0C</color>
+    <color name="yt_spec_base_background">#0A0A0C</color>
+    <color name="yt_spec_general_background_a">#0A0A0C</color>
+    <color name="yt_spec_general_background_b">#0F0F12</color>
+    <color name="yt_spec_brand_surface">#0F0F12</color>
+    <color name="yt_spec_surface">#0F0F12</color>
+    <color name="yt_spec_raised_background">#1C1B21</color>
+    <color name="yt_spec_black_1">#0A0A0C</color>
+    <color name="yt_spec_black_2">#0F0F12</color>
+    <color name="yt_spec_black_3">#1C1B21</color>
+    <color name="yt_spec_black_pure">#0A0A0C</color>
+    <color name="yt_black1">#0A0A0C</color>
+    <color name="yt_black2">#0F0F12</color>
+    <color name="yt_black3">#1C1B21</color>
+    <color name="yt_black4">#2C2B32</color>
+
+    <color name="yt_brand_red">#B8A7F0</color>
+    <color name="yt_red">#B8A7F0</color>
+    <color name="yt_accent_color">#B8A7F0</color>
+    <color name="yt_spec_themed_red">#B8A7F0</color>
+    <color name="yt_spec_brand_button_background">#B8A7F0</color>
+    <color name="yt_spec_brand_link_text">#B8A7F0</color>
+    <color name="yt_spec_static_brand_red">#B8A7F0</color>
+
+    <color name="yt_spec_outline">#2C2B32</color>
+    <color name="yt_outline">#2C2B32</color>
+    <color name="yt_spec_text_primary">#ECEBF1</color>
+    <color name="yt_white1">#ECEBF1</color>
+    <color name="yt_spec_text_secondary">#8D8A99</color>
+    <color name="yt_spec_text_disabled">#6F6C7A</color>
+</resources>

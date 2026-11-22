@@ -1,0 +1,23 @@
+{
+  "patch_name": "ktube-player-capsule",
+  "description": "Внедряет кнопку-капсулу «Ускорение k-Tunnel» со светодиодом и пингом в оверлей управления плеером YouTube",
+  "target_layouts": [
+    "layout/youtube_controls_overlay.xml",
+    "layout/inline_player_control_view.xml"
+  ],
+  "injection_point": {
+    "parent_view": "controls_overlay_top_right_container",
+    "view_class": "com.kipsway.ktube.ui.player.KTunnelCapsuleButton",
+    "layout_width": "wrap_content",
+    "layout_height": "36dp",
+    "layout_gravity": "top|end",
+    "layout_marginEnd": "12dp",
+    "layout_marginTop": "12dp"
+  },
+  "settings_injection": {
+    "category": "com.google.android.apps.youtube.app.settings.SettingsActivity",
+    "title": "Ускорение k-Tunnel",
+    "summary": "Локальный обход замедления YouTube (DPI) для 4K",
+    "target_fragment": "com.kipsway.ktube.ui.settings.KTunnelSettingsFragment"
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "sponsorblock_enabled": true,
+  "api_url": "https://sponsor.ajay.app",
+  "min_duration": 0,
+  "segments": [
+    {
+      "category": "sponsor",
+      "behavior": "auto_skip",
+      "color": "#B8A7F0",
+      "title": "Спонсорская интеграция"
+    },
+    {
+      "category": "selfpromo",
+      "behavior": "auto_skip",
+      "color": "#7E6FC4",
+      "title": "Самореклама и мерч"
+    },
+    {
+      "category": "interaction",
+      "behavior": "auto_skip",
+      "color": "#8D8A99",
+      "title": "Напоминание о лайках и подписке"
+    },
+    {
+      "category": "intro",
+      "behavior": "auto_skip",
+      "color": "#36353E",
+      "title": "Интро и заставка"
+    },
+    {
+      "category": "outro",
+      "behavior": "auto_skip",
+      "color": "#36353E",
+      "title": "Финальные титры"
+    },
+    {
+      "category": "preview",
+      "behavior": "manual_skip",
+      "color": "#6F6C7A",
+      "title": "Превью следующих роликов"
+    },
+    {
+      "category": "music_offtopic",
+      "behavior": "manual_skip",
+      "color": "#1C1B21",
+      "title": "Немузыкальная пауза"
+    }
+  ],
+  "toast_notification": true,
+  "show_skip_button": false
+}

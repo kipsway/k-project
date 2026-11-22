@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ktube_about_title">О приложении kTube</string>
+    <string name="ktube_about_version">Версия 1.0.0 (by kipsway)</string>
+    <string name="ktube_about_description">Премиальный клиент YouTube с чистым ониксовым интерфейсом, без рекламы, со встроенным SponsorBlock и сетевым ядром k-Tunnel для обхода замедления (DPI) в 4K.</string>
+    <string name="ktube_about_author_title">Разработчик</string>
+    <string name="ktube_about_author">kipsway</string>
+    <string name="ktube_about_design_title">Дизайн-система</string>
+    <string name="ktube_about_design">Мозаика (Chatterino+ by Rish) + Material You 3</string>
+    <string name="ktube_about_ktunnel_title">Сетевое ядро</string>
+    <string name="ktube_about_ktunnel">k-Tunnel Embedded (Loopback selective routing)</string>
+</resources>

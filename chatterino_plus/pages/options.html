@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="color-scheme" content="dark">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Chatterino+</title>
+  <link rel="stylesheet" href="pages.css">
+  <script src="page.js" defer></script>
+</head>
+<body data-page="options" class="options">
+  <div class="set">
+    <header class="top set-top">
+      <img src="../icons/48.png" alt="" width="32" height="32">
+      <h1 data-t="pages.settingsTitle"></h1>
+      <span id="ver" class="ver"></span>
+    </header>
+    <div class="set-shell">
+      <div class="set-shell__in">
+        <nav class="set-nav">
+          <div class="set-search fld cpx-mz cpx-k1 cpx-t-field">
+            <span id="set-q-icon" class="set-search__icon" aria-hidden="true"></span>
+            <input id="set-q" type="search" autocomplete="off" spellcheck="false">
+          </div>
+          <div id="set-cats" class="set-cats" role="tablist"></div>
+          <div id="set-ver" class="set-nav__foot"></div>
+        </nav>
+        <main id="settings" class="set-main" tabindex="-1"></main>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

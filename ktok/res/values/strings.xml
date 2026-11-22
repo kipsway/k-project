@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">kTok</string>
+    <string name="ktok_author_tag">by kipsway</string>
+
+    <string name="ktok_settings_title">Настройки kTok</string>
+    <string name="ktok_settings_summary">Регион, загрузки и оформление</string>
+
+    <string name="ktok_download_video_clean">Скачать без знака</string>
+    <string name="ktok_download_audio">Скачать аудио</string>
+    <string name="ktok_downloading">Сохраняем…</string>
+    <string name="ktok_download_success">Сохранено в галерею</string>
+
+    <string name="ktok_region_title">Сменить регион</string>
+    <string name="ktok_region_select">Выберите страну ленты</string>
+    <string name="ktok_region_auto">Текущий регион</string>
+
+    <string name="ktok_remove_ads">Скрыть рекламу в ленте</string>
+</resources>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    k-Tunnel Player Capsule Button
+    Design: Material You 3 Capsule (999dp), Height 36dp, Liquid Glass
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ktube_capsule_container"
+    android:layout_width="wrap_content"
+    android:layout_height="36dp"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:background="@drawable/ktube_capsule_bg"
+    android:paddingStart="12dp"
+    android:paddingEnd="14dp"
+    android:layout_margin="10dp"
+    android:clickable="true"
+    android:focusable="true">
+
+    <!-- Status LED indicator -->
+    <ImageView
+        android:id="@+id/ktube_status_led"
+        android:layout_width="8dp"
+        android:layout_height="8dp"
+        android:src="@drawable/ktube_led_green"
+        android:contentDescription="Статус k-Tunnel" />
+
+    <!-- Label & Dynamic Ping -->
+    <TextView
+        android:id="@+id/ktube_capsule_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="Ускорение k-Tunnel • 28 мс"
+        android:textColor="@color/ktube_text_primary"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        android:fontFamily="sans-serif-medium"
+        android:includeFontPadding="false" />
+
+</LinearLayout>

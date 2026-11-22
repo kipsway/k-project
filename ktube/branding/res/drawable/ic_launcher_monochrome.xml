@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Themed Monochrome Icon for Material You (Android 13+) -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M40,32 L74,54 L40,76 Z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M68,30 h6 v6 h-6 z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M72,70 h5 v5 h-5 z" />
+</vector>

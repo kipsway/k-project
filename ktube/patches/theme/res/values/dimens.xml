@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Material You 3 Expressive Metrics (8pt grid) -->
+    <dimen name="ktube_corner_card">24dp</dimen>
+    <dimen name="ktube_corner_dialog">28dp</dimen>
+    <dimen name="ktube_corner_bottom_sheet">32dp</dimen>
+    <dimen name="ktube_corner_capsule">999dp</dimen>
+    <dimen name="ktube_corner_button">999dp</dimen>
+
+    <!-- Отступы 8pt -->
+    <dimen name="ktube_spacing_xs">4dp</dimen>
+    <dimen name="ktube_spacing_sm">8dp</dimen>
+    <dimen name="ktube_spacing_md">12dp</dimen>
+    <dimen name="ktube_spacing_lg">16dp</dimen>
+    <dimen name="ktube_spacing_xl">24dp</dimen>
+    <dimen name="ktube_spacing_xxl">32dp</dimen>
+
+    <!-- Иконки плеера и капсул -->
+    <dimen name="ktube_icon_button">20dp</dimen>
+    <dimen name="ktube_icon_nav">24dp</dimen>
+    <dimen name="ktube_capsule_height">36dp</dimen>
+    <dimen name="ktube_capsule_padding_horizontal">14dp</dimen>
+</resources>

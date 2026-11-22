@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    kTube Color Tokens
+    Formula: Deep Onyx + Material You 3 + Chatterino+ / Mosaic accents
+    Palette origin: chat.eblo.id (page.css) by Rish
+-->
+<resources>
+    <!-- Базовая палитра «Мозаика» -->
+    <color name="ktube_bg_onyx">#0A0A0C</color>
+    <color name="ktube_panel_surface">#0F0F12</color>
+    <color name="ktube_raised_card">#1C1B21</color>
+    <color name="ktube_card_dim">#36353E</color>
+    <color name="ktube_border_outline">#2C2B32</color>
+    <color name="ktube_border_well">#1F1E24</color>
+
+    <!-- Тексты (Ink) -->
+    <color name="ktube_text_primary">#ECEBF1</color>
+    <color name="ktube_text_muted">#8D8A99</color>
+    <color name="ktube_text_faint">#6F6C7A</color>
+
+    <!-- Лавандовый акцент -->
+    <color name="ktube_lavender_accent">#B8A7F0</color>
+    <color name="ktube_lavender_ink">#D9CFFD</color>
+    <color name="ktube_lavender_surface">#2A2442</color>
+    <color name="ktube_lavender_border">#7E6FC4</color>
+
+    <!-- Статусы -->
+    <color name="ktube_status_green">#3FB950</color>
+    <color name="ktube_status_red">#F24D5C</color>
+    <color name="ktube_status_bad_surface">#261A1D</color>
+
+    <!-- Стеклянный блик (Liquid Glass) -->
+    <color name="ktube_glass_rim">#1AFFFFFF</color>
+    <color name="ktube_glass_surface">#CC0F0F12</color>
+
+    <!-- Переопределение стандартных системных идентификаторов YouTube -->
+    <color name="yt_brand_red">#B8A7F0</color>
+    <color name="yt_red">#B8A7F0</color>
+    <color name="yt_accent_color">#B8A7F0</color>
+    <color name="yt_spec_brand_button_background">#B8A7F0</color>
+    <color name="yt_spec_brand_link_text">#B8A7F0</color>
+    <color name="yt_spec_static_brand_red">#B8A7F0</color>
+    <color name="yt_spec_static_brand_white">#ECEBF1</color>
+    <color name="yt_spec_themed_red">#B8A7F0</color>
+    <color name="yt_spec_assistive_brand_red">#B8A7F0</color>
+
+    <!-- Переопределение фона и панелей -->
+    <color name="yt_base_background">#0A0A0C</color>
+    <color name="yt_spec_base_background">#0A0A0C</color>
+    <color name="yt_spec_general_background_a">#0A0A0C</color>
+    <color name="yt_spec_general_background_b">#0F0F12</color>
+    <color name="yt_spec_black_1">#0A0A0C</color>
+    <color name="yt_spec_black_2">#0F0F12</color>
+    <color name="yt_spec_black_3">#1C1B21</color>
+    <color name="yt_spec_black_pure">#0A0A0C</color>
+    <color name="yt_black1">#0A0A0C</color>
+    <color name="yt_black2">#0F0F12</color>
+    <color name="yt_black3">#1C1B21</color>
+    <color name="yt_black4">#2C2B32</color>
+
+    <!-- Поверхности и очертания -->
+    <color name="yt_spec_brand_surface">#0F0F12</color>
+    <color name="yt_spec_surface">#0F0F12</color>
+    <color name="yt_spec_touch_response">#1FB8A7F0</color>
+    <color name="yt_spec_raised_background">#1C1B21</color>
+    <color name="yt_spec_outline">#2C2B32</color>
+    <color name="yt_outline">#2C2B32</color>
+    <color name="yt_spec_additive_background">#15FFFFFF</color>
+
+    <!-- Тексты -->
+    <color name="yt_spec_text_primary">#ECEBF1</color>
+    <color name="yt_white1">#ECEBF1</color>
+    <color name="yt_spec_text_secondary">#8D8A99</color>
+    <color name="yt_spec_text_disabled">#6F6C7A</color>
+    <color name="yt_spec_icon_active_other">#B8A7F0</color>
+    <color name="yt_spec_icon_inactive">#8D8A99</color>
+</resources>

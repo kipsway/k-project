@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    kTube Mosaic Foreground
+    Formula: Geometric Faceted Play Symbol with Chatterino+ / Mosaic accents
+    Colors: Lavender #B8A7F0, Lavender Deep #7E6FC4, Highlight #D9CFFD
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Facet 1: Main Play Body (Lavender Primary #B8A7F0) -->
+    <path
+        android:fillColor="#B8A7F0"
+        android:pathData="M40,32 L74,54 L54,54 Z" />
+
+    <!-- Facet 2: Bottom Wing (Deep Lavender #7E6FC4) -->
+    <path
+        android:fillColor="#7E6FC4"
+        android:pathData="M40,32 L54,54 L40,76 Z" />
+
+    <!-- Facet 3: Lower Tip (Accent Dark Surface #2A2442) -->
+    <path
+        android:fillColor="#2A2442"
+        android:pathData="M40,76 L54,54 L74,54 Z" />
+
+    <!-- Optical highlight rim on upper edge (#D9CFFD) -->
+    <path
+        android:strokeColor="#D9CFFD"
+        android:strokeWidth="1.5"
+        android:strokeLineCap="round"
+        android:pathData="M40,32 L74,54" />
+
+    <!-- Mosaic Accent Pixel 1 (Top Satellite) -->
+    <path
+        android:fillColor="#B8A7F0"
+        android:pathData="M68,30 h6 v6 h-6 z" />
+
+    <!-- Mosaic Accent Pixel 2 (Bottom Satellite) -->
+    <path
+        android:fillColor="#7E6FC4"
+        android:pathData="M72,70 h5 v5 h-5 z" />
+
+    <!-- Mosaic Accent Pixel 3 (Rear Satellite) -->
+    <path
+        android:fillColor="#D9CFFD"
+        android:pathData="M31,52 h4 v4 h-4 z" />
+
+</vector>

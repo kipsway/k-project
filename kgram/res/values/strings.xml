@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="AppName">kGram</string>
+    <string name="AppNameBeta">kGram</string>
+    <string name="kgram_author_tag">by kipsway</string>
+
+    <string name="kgram_settings_title">kGram Settings</string>
+    <string name="kgram_settings_summary">Mozaik theme, RX Playa, privacy and media</string>
+
+    <string name="kgram_theme_mozaik">Mozaik Palette</string>
+    <string name="kgram_theme_mozaik_desc">Deep onyx #0A0A0C and lavender #B8A7F0</string>
+
+    <string name="kgram_player_title">RX Playa Audio</string>
+    <string name="kgram_player_desc">Large artwork, soft vignetting and capsule controls</string>
+
+    <string name="kgram_privacy_ghost">Ghost Mode</string>
+    <string name="kgram_privacy_ghost_desc">Do not mark incoming messages as read</string>
+    <string name="kgram_privacy_typing">Hide Typing Status</string>
+    <string name="kgram_privacy_typing_desc">Contacts will not see typing indicators</string>
+    <string name="kgram_privacy_deleted">Keep Deleted Messages</string>
+
+    <string name="kgram_hd_video_notes">HD Video Notes</string>
+    <string name="kgram_hd_video_notes_desc">High bitrate round video messages</string>
+</resources>

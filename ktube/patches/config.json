@@ -1,0 +1,108 @@
+{
+  "target_package": "com.google.android.youtube",
+  "patched_package": "com.kipsway.ktube",
+  "app_name": "kTube",
+  "version_name": "1.0.0-ktube",
+  "developer": "kipsway",
+  "patches": [
+    {
+      "name": "gms-core-support",
+      "enabled": true,
+      "description": "Поддержка входа через MicroG/GmsCore для независимого пакета com.kipsway.ktube",
+      "options": {
+        "custom_package_name": "com.kipsway.ktube",
+        "custom_gms_package_name": "app.revanced.android.gms"
+      }
+    },
+    {
+      "name": "video-ads",
+      "enabled": true,
+      "description": "Полная блокировка прероллов, мидроллов и баннеров в видеоплеере"
+    },
+    {
+      "name": "hide-general-ads",
+      "enabled": true,
+      "description": "Скрытие рекламных постов, витрин товаров и промо-блоков в главной ленте"
+    },
+    {
+      "name": "hide-shorts-components",
+      "enabled": true,
+      "description": "Удаление спонсорских Shorts, коммерческих плашек и рекламы"
+    },
+    {
+      "name": "minimized-playback",
+      "enabled": true,
+      "description": "Фоновое воспроизведение при выключенном экране или сворачивании"
+    },
+    {
+      "name": "pip",
+      "enabled": true,
+      "description": "Режим Картинка-в-картинке (PiP) для всех роликов"
+    },
+    {
+      "name": "sponsorblock",
+      "enabled": true,
+      "description": "Автоматический пропуск интеграций, интро, саморекламы и финальных заставок",
+      "options": {
+        "auto_skip_sponsor": true,
+        "auto_skip_selfpromo": true,
+        "auto_skip_interaction": true,
+        "auto_skip_intro": true,
+        "auto_skip_outro": true,
+        "show_skip_button": false,
+        "show_toast_on_skip": true,
+        "accent_marker_color": "#B8A7F0"
+      }
+    },
+    {
+      "name": "return-youtube-dislike",
+      "enabled": true,
+      "description": "Отображение точного счетчика дизлайков через RYD API"
+    },
+    {
+      "name": "swipe-controls",
+      "enabled": true,
+      "description": "Плавная регулировка громкости (справа) и яркости (слева) свайпами по плееру"
+    },
+    {
+      "name": "theme",
+      "enabled": true,
+      "description": "Фирменная тема Оникс + Лаванда (Chatterino+ / Мозаика)",
+      "options": {
+        "dark_background_color": "#0A0A0C",
+        "dark_surface_color": "#0F0F12",
+        "accent_color": "#B8A7F0",
+        "use_pure_onyx": true
+      }
+    },
+    {
+      "name": "custom-branding",
+      "enabled": true,
+      "description": "Кастомный брендинг kTube by kipsway и мозаичная иконка",
+      "options": {
+        "app_name": "kTube",
+        "icon_path": "branding/icon.png"
+      }
+    },
+    {
+      "name": "spoof-client",
+      "enabled": true,
+      "description": "Подмена клиента плеера (iOS/Android VR) для гарантии отдачи потоков 4K/60fps"
+    },
+    {
+      "name": "remember-video-quality",
+      "enabled": true,
+      "description": "Принудительное запоминание выбранного разрешения (до 4K 2160p)"
+    },
+    {
+      "name": "seekbar-tapping",
+      "enabled": true,
+      "description": "Мгновенная перемотка в точку касания на прогресс-баре"
+    },
+    {
+      "name": "hide-layout-components",
+      "enabled": true,
+      "description": "Очистка интерфейса от лишних кнопок (Remix, Спасибо, Покупки)"
+    }
+  ]
+}

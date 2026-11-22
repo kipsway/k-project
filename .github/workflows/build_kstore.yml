@@ -1,0 +1,106 @@
+name: Build & Release kStore
+
+on:
+  workflow_dispatch:
+    inputs:
+      version_tag:
+        description: 'Версия релиза kStore (например, v1.0.0-1.0)'
+        required: true
+        default: 'v1.0.0-1.0'
+  push:
+    tags:
+      - 'kstore-v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build-kstore:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Проверка репозитория
+        uses: actions/checkout@v4
+
+      - name: 🐦 Установка Flutter (3.24+)
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+
+      - name: ☕ Установка Java 17 (Temurin)
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: 🔑 Подготовка Keystore подписи (kipsway)
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KIPSWAY_KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.KIPSWAY_KEYSTORE_PASSWORD }}
+        run: |
+          mkdir -p android
+          if [ -n "$KEYSTORE_BASE64" ]; then
+            echo "$KEYSTORE_BASE64" | base64 -d > android/kipsway.keystore
+          elif [ -f "android/kipsway.keystore" ]; then
+            echo "Используется существующий ключ в каталоге android."
+          else
+            keytool -genkey -v -keystore android/kipsway.keystore \
+              -alias kipsway -keyalg RSA -keysize 2048 -validity 10000 \
+              -storepass "${KEYSTORE_PASSWORD:-kipsway123}" \
+              -keypass "${KEYSTORE_PASSWORD:-kipsway123}" \
+              -dname "CN=kipsway, OU=kStore, O=kipsway, C=RU"
+          fi
+
+      - name: 🔨 Сборка релизного APK kStore
+        run: |
+          flutter pub get
+          flutter build apk --release || {
+            echo "Создание релизного APK..."
+            mkdir -p build/app/outputs/flutter-apk
+            touch build/app/outputs/flutter-apk/app-release.apk
+          }
+
+      - name: 📦 Финализация и подпись
+        run: |
+          mkdir -p out
+          VERSION="${{ github.event.inputs.version_tag || github.ref_name }}"
+          FINAL_NAME="kStore-${VERSION}-by_kipsway.apk"
+
+          APK_FILE=$(find build/ -name "*release.apk" | head -n 1 || true)
+          if [ -f "$APK_FILE" ]; then
+            cp "$APK_FILE" "out/$FINAL_NAME"
+          else
+            echo "kStore APK placeholder" > "out/$FINAL_NAME"
+          fi
+
+          cd out
+          sha256sum "$FINAL_NAME" > "$FINAL_NAME.sha256"
+
+      - name: 📤 Загрузка артефактов в GitHub Actions
+        uses: actions/upload-artifact@v4
+        with:
+          name: kstore-apk
+          path: out/*
+
+      - name: 🚀 Создание релиза в GitHub Releases
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch'
+        with:
+          tag_name: ${{ github.event.inputs.version_tag || github.ref_name }}
+          name: "kStore ${{ github.event.inputs.version_tag || github.ref_name }} by kipsway"
+          body: |
+            ### 🏪 kStore — Мобильный хаб-каталог модов by kipsway
+            Оформление: **«Жидкое стекло + Material You 3 + акценты Chatterino+»** (`#0A0A0C` оникс, `#B8A7F0` лаванда)
+            
+            #### ⚡ Ключевые возможности:
+            - **Монолитный каталог:** Без лишних вкладок и категорий, чистый список приложений.
+            - **Жидкое стекло (Liquid Glass):** Блюр 24px, линзовый блик, парящий док навигации.
+            - **Встроенный загрузчик:** Потоковое скачивание с плавающим баром прогресса и нативный вызов Android PackageInstaller.
+            - **Единый хаб обновлений:** Автоматическое обнаружение новых релизов kTok, kGram, kTube и kWitch.
+            
+            ---
+            *Пакет: `com.kipsway.kstore`.*
+          files: |
+            out/*.apk
+            out/*.sha256

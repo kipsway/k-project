@@ -1,0 +1,38 @@
+# Gradle & Android Build Outputs
+.gradle/
+**/build/
+!**/build/*.ps1
+!**/build/*.bat
+!**/build/*.json
+!**/build/*.md
+*.dex
+*.class
+captures/
+.externalNativeBuild
+.cxx
+local.properties
+
+# APK Outputs (exclude heavy test/build APKs except committed stubs/assets)
+*.apk
+!**/*-stub.apk
+
+# Flutter & Dart
+.dart_tool/
+.packages
+.pub-cache/
+.pub/
+
+# IDE Files
+.idea/
+*.iml
+*.iws
+*.ipr
+.vscode/
+
+# OS Specific
+Thumbs.db
+[Dd]esktop.ini
+.DS_Store
+
+# Logs
+*.log

@@ -1,0 +1,29 @@
+{
+  "name": "ktunnel-video-acceleration",
+  "description": "Встраивает локальный прокси-клиент k-Tunnel и перенаправляет Cronet/OkHttp видеопотоки в обход блокировок ТСПУ/DPI",
+  "version": "1.0.0",
+  "compatible_packages": [
+    {
+      "name": "com.google.android.youtube",
+      "versions": ["19.16.39", "19.20.34", "19.34.42", "19.43.41", "all"]
+    }
+  ],
+  "dependencies": ["gms-core-support"],
+  "hooks": [
+    {
+      "target_class": "org.chromium.net.impl.CronetEngineBuilderImpl",
+      "target_method": "build",
+      "injection": "invoke-static {v0}, Lcom/kipsway/ktube/tunnel/hooks/CronetProxyHook;->getExperimentalOptionsJson(Ljava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "target_class": "okhttp3.OkHttpClient$Builder",
+      "target_method": "build",
+      "injection": "invoke-static {p0}, Lcom/kipsway/ktube/tunnel/hooks/OkHttpProxyHook;->createSelectiveProxySelector(Ljava/net/ProxySelector;)Ljava/net/ProxySelector;"
+    },
+    {
+      "target_class": "com.google.android.apps.youtube.app.YouTubeApplication",
+      "target_method": "onCreate",
+      "injection": "invoke-static {p0}, Lcom/kipsway/ktube/tunnel/core/KTunnelEngine;->getInstance()Lcom/kipsway/ktube/tunnel/core/KTunnelEngine;->initialize(Landroid/content/Context;)V"
+    }
+  ]
+}

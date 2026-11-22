@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Палитра «Мозаика» by Rish (Chatterino+) -->
+    <color name="ktok_bg_onyx">#0A0A0C</color>
+    <color name="ktok_surface">#0F0F12</color>
+    <color name="ktok_lavender">#B8A7F0</color>
+    <color name="ktok_border_active">#7E6FC4</color>
+    <color name="ktok_text_primary">#F4F4F6</color>
+    <color name="ktok_text_secondary">#8E8E93</color>
+</resources>

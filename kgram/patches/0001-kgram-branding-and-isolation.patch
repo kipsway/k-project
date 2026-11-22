@@ -1,0 +1,64 @@
+From: kipsway <kipsway0@gmail.com>
+Subject: [PATCH] kGram: Brand rename, package isolation to org.kipsway.kgram, and k-Tunnel naming
+
+---
+ TMessagesProj_AppStandalone/build.gradle                 | 2 +-
+ TMessagesProj/src/main/res/xml/sync_contacts.xml        | 2 +-
+ TMessagesProj/src/main/res/values/strings.xml           | 8 ++++++--
+ TMessagesProj/src/main/res/values-ru/strings.xml        | 8 ++++++--
+ 4 files changed, 14 insertions(+), 6 deletions(-)
+
+diff --git a/TMessagesProj_AppStandalone/build.gradle b/TMessagesProj_AppStandalone/build.gradle
+index 5482bf1..901d89a 100644
+--- a/TMessagesProj_AppStandalone/build.gradle
++++ b/TMessagesProj_AppStandalone/build.gradle
+@@ -107,7 +107,7 @@ android {
+-    defaultConfig.applicationId = 'app.nimarkogram.messenger'
++    defaultConfig.applicationId = 'org.kipsway.kgram'
+ 
+     sourceSets.debug {
+         manifest.srcFile '../TMessagesProj/config/release/AndroidManifest_standalone.xml'
+diff --git a/TMessagesProj/src/main/res/xml/sync_contacts.xml b/TMessagesProj/src/main/res/xml/sync_contacts.xml
+index 11ab4e3..28e19c0 100644
+--- a/TMessagesProj/src/main/res/xml/sync_contacts.xml
++++ b/TMessagesProj/src/main/res/xml/sync_contacts.xml
+@@ -1,3 +1,3 @@
+ <sync-adapter xmlns:android="http://schemas.android.com/apk/res/android"
+     android:contentAuthority="com.android.contacts"
+-    android:accountType="org.telegram.messenger"/>
++    android:accountType="org.kipsway.kgram.account"/>
+diff --git a/TMessagesProj/src/main/res/values/strings.xml b/TMessagesProj/src/main/res/values/strings.xml
+index e167a12..912aa44 100644
+--- a/TMessagesProj/src/main/res/values/strings.xml
++++ b/TMessagesProj/src/main/res/values/strings.xml
+@@ -1,4 +1,4 @@
+-    <string name="AppName">NimarkoGram</string>
+-    <string name="AppNameBeta">NimarkoGram Beta</string>
++    <string name="AppName">kGram</string>
++    <string name="AppNameBeta">kGram Beta</string>
++    <string name="NimarkoGramSettings">kGram Settings</string>
++    <string name="NM_WSB_Title">k-Tunnel</string>
++    <string name="NM_WSB_Enable">Enable k-Tunnel</string>
++    <string name="kgram_author_branding">by kipsway</string>
++    <string name="kgram_theme_mosaic">Colors Mosaic</string>
++    <string name="kgram_player_rxplaya">Music Player</string>
++    <string name="kgram_ghost_mode">Ghost Mode</string>
++    <string name="kgram_ktunnel_accel">k-Tunnel Acceleration</string>
+diff --git a/TMessagesProj/src/main/res/values-ru/strings.xml b/TMessagesProj/src/main/res/values-ru/strings.xml
+index f258b34..134cc81 100644
+--- a/TMessagesProj/src/main/res/values-ru/strings.xml
++++ b/TMessagesProj/src/main/res/values-ru/strings.xml
+@@ -1,4 +1,4 @@
+-    <string name="AppName">NimarkoGram</string>
+-    <string name="AppNameBeta">NimarkoGram Beta</string>
++    <string name="AppName">kGram</string>
++    <string name="AppNameBeta">kGram Beta</string>
++    <string name="NimarkoGramSettings">Настройки kGram</string>
++    <string name="NM_WSB_Title">k-Tunnel</string>
++    <string name="NM_WSB_Enable">Ускорение k-Tunnel</string>
++    <string name="kgram_author_branding">by kipsway</string>
++    <string name="kgram_theme_mosaic">Цвета Мозаика</string>
++    <string name="kgram_player_rxplaya">Музыкальный плеер</string>
++    <string name="kgram_ghost_mode">Призрачный режим</string>
++    <string name="kgram_ktunnel_accel">Ускорение k-Tunnel</string>
+-- 

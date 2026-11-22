@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    kTube Settings Fragment Layout
+    Style: Onyx #0A0A0C, Liquid Glass 24dp cards, Lavender accents
+-->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/ktube_bg_onyx"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Title Header -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ускорение k-Tunnel"
+            android:textColor="@color/ktube_text_primary"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="4dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Локальный обход замедления YouTube (DPI) для 4K без внешнего VPN"
+            android:textColor="@color/ktube_text_muted"
+            android:textSize="14sp"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Master Switch Card (Liquid Glass 24dp) -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ktube_glass_card"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:padding="20dp"
+            android:layout_marginBottom="16dp">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Включить ускорение"
+                    android:textColor="@color/ktube_text_primary"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/ktube_settings_status_summary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Активно • Задержка 28 мс"
+                    android:textColor="@color/ktube_lavender_accent"
+                    android:textSize="13sp"
+                    android:layout_marginTop="2dp" />
+            </LinearLayout>
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/ktube_tunnel_master_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true" />
+        </LinearLayout>
+
+        <!-- Active Node & Latency Card -->
+        <LinearLayout
+            android:id="@+id/ktube_node_picker_card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ktube_glass_card"
+            android:orientation="vertical"
+            android:padding="20dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Текущий узел ускорения"
+                android:textColor="@color/ktube_text_muted"
+                android:textSize="13sp" />
+
+            <TextView
+                android:id="@+id/ktube_active_node_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="nl-fast-01 (Амстердам, Нидерланды)"
+                android:textColor="@color/ktube_text_primary"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_marginTop="4dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Нажмите для смены узла или теста пинга"
+                android:textColor="@color/ktube_text_faint"
+                android:textSize="12sp"
+                android:layout_marginTop="4dp" />
+        </LinearLayout>
+
+        <!-- Subscription Sync Button (Capsule 999dp) -->
+        <Button
+            android:id="@+id/ktube_btn_sync_subscription"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@drawable/ktube_capsule_bg"
+            android:text="Обновить узлы подписки"
+            android:textColor="@color/ktube_lavender_accent"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textAllCaps="false"
+            android:layout_marginBottom="24dp" />
+
+        <!-- Branding note -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="kTube by kipsway • Сетевое ядро k-Tunnel"
+            android:textColor="@color/ktube_text_faint"
+            android:textSize="12sp" />
+
+    </LinearLayout>
+</ScrollView>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    kTok Russian Localization (Clean Human Russian)
+    Author: kipsway
+-->
+<resources>
+    <!-- Основной брендинг -->
+    <string name="app_name">kTok</string>
+    <string name="ktok_app_title">kTok by kipsway</string>
+    <string name="ktok_version">Версия 34.0.0 (by kipsway)</string>
+    <string name="ktok_settings_title">Настройки kTok</string>
+    <string name="ktok_settings_subtitle">Мод TikTok от kipsway без ограничений</string>
+
+    <!-- Снятие водяных знаков и логотипов -->
+    <string name="ktok_watermark_title">Скачивание без водяного знака</string>
+    <string name="ktok_watermark_summary">Сохранение видео в максимальном исходном качестве без логотипа TikTok и автора</string>
+    <string name="ktok_remove_end_splash">Удаление заставки в конце видео</string>
+    <string name="ktok_save_audio">Сохранение аудиодорожки (.mp3)</string>
+
+    <!-- Обход региональных ограничений (Region Spoofing) -->
+    <string name="ktok_region_title">Смена региона (Обход блокировки)</string>
+    <string name="ktok_region_summary">Просмотр и публикация видео без извлечения SIM-карты</string>
+    <string name="ktok_region_select">Текущий регион ленты</string>
+    <string name="ktok_region_us">США (US)</string>
+    <string name="ktok_region_de">Германия (DE)</string>
+    <string name="ktok_region_nl">Нидерланды (NL)</string>
+    <string name="ktok_region_fi">Финляндия (FI)</string>
+    <string name="ktok_region_jp">Япония (JP)</string>
+
+    <!-- Блокировка рекламы -->
+    <string name="ktok_adblock_title">Пропуск рекламы</string>
+    <string name="ktok_adblock_summary">Полная очистка ленты рекомендаций от рекламных и промо-роликов</string>
+    <string name="ktok_hide_live_streams">Скрытие бесконечных прямых трансляций в ленте</string>
+
+    <!-- Оформление «Мозаика» -->
+    <string name="ktok_theme_title">Оформление «Оникс + Лаванда»</string>
+    <string name="ktok_theme_summary">Глубокий черный фон #0A0A0C и лавандовые акценты #B8A7F0</string>
+
+    <!-- Действия и уведомления -->
+    <string name="ktok_download_video">Скачать видео без водяного знака</string>
+    <string name="ktok_download_audio">Скачать звук</string>
+    <string name="ktok_download_success">Файл сохранен в галерею</string>
+    <string name="ktok_download_error">Не удалось скачать видео</string>
+</resources>

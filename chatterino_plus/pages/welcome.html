@@ -1,0 +1,27 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="color-scheme" content="dark">
+  <title>Chatterino+</title>
+  <link rel="stylesheet" href="pages.css">
+  <script src="page.js" defer></script>
+</head>
+<body data-page="welcome" class="welcome">
+  <main class="card sheet">
+    <header class="top">
+      <img src="../icons/128.png" alt="" width="56" height="56">
+      <h1 data-t="pages.welcomeTitle"></h1>
+    </header>
+    <p data-t="pages.welcomeText"></p>
+    <ul id="consent-items" class="sends"></ul>
+    <p id="never" class="never"></p>
+    <div class="actions">
+      <button id="agree" class="btn btn-accent" data-t="pages.consentAgree"></button>
+      <button id="later" class="btn btn-ghost" data-t="pages.consentLater"></button>
+      <button id="revoke" class="btn btn-ghost" data-t="pages.consentRevoke" hidden></button>
+    </div>
+    <p id="status" class="status-text" role="status" aria-live="polite"></p>
+  </main>
+</body>
+</html>

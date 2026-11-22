@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">kTok</string>
+    <string name="ktok_app_title">kTok by kipsway</string>
+    <string name="ktok_version">Version 34.0.0 (by kipsway)</string>
+</resources>

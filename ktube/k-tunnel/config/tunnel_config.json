@@ -1,0 +1,52 @@
+{
+  "engine": "k-tunnel-embedded",
+  "version": "1.2.0",
+  "local_proxy": {
+    "socks_host": "127.0.0.1",
+    "socks_port": 10808,
+    "http_host": "127.0.0.1",
+    "http_port": 10809
+  },
+  "subscription": {
+    "url": "https://s.wistfalls.cc/fPLkfFpVXdgS3Fkp",
+    "update_interval_hours": 24,
+    "auto_select_fastest": true
+  },
+  "routing": {
+    "strategy": "selective_video_acceleration",
+    "target_domains": [
+      "*.googlevideo.com",
+      "*.youtube.com/videoplayback",
+      "*.ytimg.com",
+      "rr*.googlevideo.com"
+    ],
+    "direct_domains": [
+      "*.googleapis.com",
+      "accounts.google.com"
+    ]
+  },
+  "fallback_nodes": [
+    {
+      "tag": "nl-fast-01",
+      "type": "vless",
+      "server": "185.196.220.14",
+      "port": 443,
+      "uuid": "7a5a8f4c-12d4-4e9b-b530-9b8e9f2a0011",
+      "security": "reality",
+      "reality": {
+        "public_key": "9xR8_V0wQ1xP9LzXk7A6W3_B2Z1M5N4T",
+        "short_id": "6a",
+        "server_name": "gateway.icloud.com"
+      }
+    },
+    {
+      "tag": "de-fast-02",
+      "type": "shadowsocks",
+      "server": "194.38.20.55",
+      "port": 8388,
+      "method": "2022-blake3-aes-128-gcm",
+      "password": "kipsway-ktube-secret-key-32b-base64=="
+    }
+  ],
+  "ping_interval_seconds": 15
+}

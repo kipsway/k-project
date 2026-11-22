@@ -1,0 +1,57 @@
+{
+  "original_package": "com.zhiliaoapp.musically",
+  "patched_package": "com.kipsway.ktok",
+  "app_name": "kTok",
+  "app_title": "kTok by kipsway",
+  "developer": "kipsway",
+  "version_name": "34.0.0-ktok",
+  "manifest_patches": [
+    {
+      "action": "replace_attribute",
+      "target_tag": "manifest",
+      "attribute": "package",
+      "value": "com.kipsway.ktok"
+    },
+    {
+      "action": "replace_attribute",
+      "target_tag": "application",
+      "attribute": "android:label",
+      "value": "@string/app_name"
+    },
+    {
+      "action": "replace_attribute",
+      "target_tag": "application",
+      "attribute": "android:icon",
+      "value": "@mipmap/ic_launcher"
+    },
+    {
+      "action": "replace_attribute",
+      "target_tag": "application",
+      "attribute": "android:roundIcon",
+      "value": "@mipmap/ic_launcher_round"
+    },
+    {
+      "action": "add_permission",
+      "permission": "android.permission.WRITE_EXTERNAL_STORAGE",
+      "maxSdkVersion": 28
+    },
+    {
+      "action": "add_permission",
+      "permission": "android.permission.READ_MEDIA_VIDEO"
+    },
+    {
+      "action": "add_permission",
+      "permission": "android.permission.READ_MEDIA_AUDIO"
+    }
+  ],
+  "authorities_replacement": [
+    {
+      "source": "com.zhiliaoapp.musically.fileprovider",
+      "target": "com.kipsway.ktok.fileprovider"
+    },
+    {
+      "source": "com.zhiliaoapp.musically.push",
+      "target": "com.kipsway.ktok.push"
+    }
+  ]
+}

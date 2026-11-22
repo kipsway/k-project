@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Основной брендинг -->
+    <string name="app_name">kTube</string>
+    <string name="ktube_app_title">kTube by kipsway</string>
+    <string name="ktube_settings_title">Настройки kTube</string>
+    <string name="ktube_version_info">Версия 1.0.0 (by kipsway)</string>
+
+    <!-- Блокировка рекламы -->
+    <string name="ktube_adblock_title">Пропуск рекламы</string>
+    <string name="ktube_adblock_summary">Полная блокировка рекламы в видео, ленте и Shorts</string>
+    <string name="ktube_adblock_video">Блокировка видеорекламы</string>
+    <string name="ktube_adblock_feed">Скрытие рекламы в ленте</string>
+    <string name="ktube_adblock_shorts">Скрытие спонсорских Shorts</string>
+
+    <!-- Фоновое воспроизведение и PiP -->
+    <string name="ktube_background_title">Фоновое воспроизведение</string>
+    <string name="ktube_background_summary">Воспроизведение при выключенном экране и Картинка-в-картинке (PiP)</string>
+    <string name="ktube_background_playback_enable">Воспроизведение в фоне</string>
+    <string name="ktube_pip_enable">Режим «Картинка в картинке»</string>
+
+    <!-- SponsorBlock -->
+    <string name="ktube_sb_title">SponsorBlock</string>
+    <string name="ktube_sb_summary">Автоматический пропуск интеграций и заставок</string>
+    <string name="ktube_sb_skip_sponsor">Пропуск спонсорских вставок</string>
+    <string name="ktube_sb_skip_selfpromo">Пропуск саморекламы канала</string>
+    <string name="ktube_sb_skip_intro">Пропуск вступительных заставок</string>
+    <string name="ktube_sb_skip_outro">Пропуск финальных титров</string>
+    <string name="ktube_sb_toast_skipped">Пропущена спонсорская часть</string>
+
+    <!-- Оформление -->
+    <string name="ktube_theme_title">Оформление «Оникс + Лаванда»</string>
+    <string name="ktube_theme_summary">Чистый ониксовый фон #0A0A0C и акценты Chatterino+</string>
+    <string name="ktube_theme_pure_black">Чистый ониксовый фон</string>
+
+    <!-- Качество и воспроизведение -->
+    <string name="ktube_quality_title">Качество видео</string>
+    <string name="ktube_quality_summary">Фиксация 1080p / 4K без сброса на 480p</string>
+    <string name="ktube_quality_default_wifi">Качество по Wi-Fi</string>
+    <string name="ktube_quality_default_mobile">Качество по мобильной сети</string>
+
+    <!-- Жесты и управление -->
+    <string name="ktube_gestures_title">Жесты в плеере</string>
+    <string name="ktube_gestures_summary">Регулировка яркости и громкости свайпами</string>
+    <string name="ktube_gestures_brightness">Яркость (левая часть)</string>
+    <string name="ktube_gestures_volume">Громкость (правая часть)</string>
+    <string name="ktube_dislike_title">Счетчик дизлайков</string>
+    <string name="ktube_dislike_summary">Показ реального количества дизлайков</string>
+
+    <!-- k-Tunnel (Подготовка строк для Шага 2 и 3) -->
+    <string name="ktube_tunnel_title">Ускорение k-Tunnel</string>
+    <string name="ktube_tunnel_summary">Локальный обход замедления YouTube (DPI) для 4K без внешнего VPN</string>
+    <string name="ktube_tunnel_status_connected">Подключено (%1$d мс)</string>
+    <string name="ktube_tunnel_status_connecting">Подключение…</string>
+    <string name="ktube_tunnel_status_disabled">Выключено</string>
+    <string name="ktube_tunnel_button_active">k-Tunnel: ВКЛ</string>
+    <string name="ktube_tunnel_button_inactive">k-Tunnel: ВЫКЛ</string>
+    <string name="ktube_tunnel_node_auto">Автоматический быстрый узел</string>
+</resources>
