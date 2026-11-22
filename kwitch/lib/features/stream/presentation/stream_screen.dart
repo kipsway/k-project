@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import '../../../core/theme/k_colors.dart';
 import '../../../core/theme/k_typography.dart';
 import '../../chat/presentation/widgets/chatterino_emotes_sheet.dart';
+import '../../ktunnel/domain/services/network_adaptive_controller.dart';
 import '../../ktunnel/presentation/controllers/ktunnel_controller.dart';
 import '../../ktunnel/presentation/widgets/ktunnel_node_picker_sheet.dart';
 import '../domain/models/stream_nerd_stats.dart';
@@ -38,6 +39,9 @@ class _StreamScreenState extends State<StreamScreen> with WidgetsBindingObserver
   // Сетевой контроллер k-Tunnel
   late final KTunnelController _tunnelController;
 
+  // Контроллер типа сети и трафика k-Tunnel
+  late final NetworkAdaptiveController _networkController;
+
   // Сервис картинки-в-картинке и фонового аудио
   late final PipBackgroundService _pipService;
 
@@ -72,6 +76,9 @@ class _StreamScreenState extends State<StreamScreen> with WidgetsBindingObserver
 
     _tunnelController = KTunnelController();
     _tunnelController.addListener(_onStateChanged);
+
+    _networkController = NetworkAdaptiveController();
+    _networkController.addListener(_onStateChanged);
 
     _pipService = PipBackgroundService();
     _pipService.addListener(_onStateChanged);
@@ -116,6 +123,8 @@ class _StreamScreenState extends State<StreamScreen> with WidgetsBindingObserver
     WidgetsBinding.instance.removeObserver(this);
     _tunnelController.removeListener(_onStateChanged);
     _tunnelController.dispose();
+    _networkController.removeListener(_onStateChanged);
+    _networkController.dispose();
     _pipService.removeListener(_onStateChanged);
     _pipService.dispose();
     _catchupService.removeListener(_onStateChanged);
@@ -300,6 +309,7 @@ class _StreamScreenState extends State<StreamScreen> with WidgetsBindingObserver
           playbackSpeed: _catchupService.playbackSpeed,
           isCatchingUp: _catchupService.isCatchingUp,
           bufferSeconds: _stabilityController.bufferSeconds,
+          networkController: _networkController,
           nerdStats: nerdStats,
           onPlayPause: _togglePlayPause,
           onToggleTunnel: _toggleTunnel,
@@ -343,6 +353,7 @@ class _StreamScreenState extends State<StreamScreen> with WidgetsBindingObserver
           playbackSpeed: _catchupService.playbackSpeed,
           isCatchingUp: _catchupService.isCatchingUp,
           bufferSeconds: _stabilityController.bufferSeconds,
+          networkController: _networkController,
           nerdStats: nerdStats,
           onPlayPause: _togglePlayPause,
           onToggleTunnel: _toggleTunnel,
@@ -390,6 +401,7 @@ class _StreamScreenState extends State<StreamScreen> with WidgetsBindingObserver
                 playbackSpeed: _catchupService.playbackSpeed,
                 isCatchingUp: _catchupService.isCatchingUp,
                 bufferSeconds: _stabilityController.bufferSeconds,
+                networkController: _networkController,
                 nerdStats: nerdStats,
                 onPlayPause: _togglePlayPause,
                 onToggleTunnel: _toggleTunnel,

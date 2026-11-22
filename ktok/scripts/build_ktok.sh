@@ -19,6 +19,7 @@ BUILD_DIR="$ROOT_DIR/build"
 OUT_DIR="$ROOT_DIR/out"
 PATCHES_DIR="$ROOT_DIR/patches"
 RES_DIR="$ROOT_DIR/res"
+SRC_DIR="$ROOT_DIR/src"
 
 mkdir -p "$TOOLS_DIR" "$BUILD_DIR" "$OUT_DIR"
 
@@ -77,6 +78,19 @@ echo -e "\033[1;36m[+] Шаг 2: Внедрение брендинга kTok, ц�
 cp -rf "$RES_DIR/"* "$DECOMPILE_DIR/res/"
 
 find "$DECOMPILE_DIR/res" -name "strings.xml" -exec sed -i -e 's|<string name="app_name">.*</string>|<string name="app_name">kTok</string>|g' {} +
+
+# Внедрение smali хуков
+SMALI_DEST="$DECOMPILE_DIR/smali_classes_ktok/com/kipsway/ktok"
+mkdir -p "$SMALI_DEST"
+cp -f "$PATCHES_DIR/smali/"*.smali "$SMALI_DEST/"
+
+# Модификация манифеста: смена пакета и регистрация KTokSettingsActivity
+MANIFEST_FILE="$DECOMPILE_DIR/AndroidManifest.xml"
+if [ -f "$MANIFEST_FILE" ]; then
+    sed -i -E 's|package="com\.zhiliaoapp\.musically[^"]*"|package="com.kipsway.ktok"|g' "$MANIFEST_FILE"
+    sed -i -E 's|com\.zhiliaoapp\.musically\.fileprovider|com.kipsway.ktok.fileprovider|g' "$MANIFEST_FILE"
+    sed -i -E 's|</application>|<activity android:name="com.kipsway.ktok.KTokSettingsActivity" android:exported="false" android:theme="@android:style/Theme.NoTitleBar" /></application>|g' "$MANIFEST_FILE"
+fi
 
 echo -e "\033[1;36m[+] Шаг 3: Пересборка ресурсов...\033[0m"
 RES_MOD_APK="$BUILD_DIR/tiktok_res_mod.apk"

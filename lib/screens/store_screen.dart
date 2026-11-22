@@ -220,6 +220,7 @@ class _StoreScreenState extends State<StoreScreen> {
     switch (_selectedTabIndex) {
       case 1:
         return DownloadsView(
+          key: const ValueKey('downloads_tab'),
           mods: _mods,
           activeDownloadModName: _activeDownloadModName,
           downloadProgress: _downloadProgress,
@@ -229,7 +230,7 @@ class _StoreScreenState extends State<StoreScreen> {
           },
         );
       case 2:
-        return const InfoView();
+        return const InfoView(key: ValueKey('info_tab'));
       case 0:
       default:
         return _buildCatalogList();
@@ -239,6 +240,7 @@ class _StoreScreenState extends State<StoreScreen> {
   /// Список модов каталога
   Widget _buildCatalogList() {
     return ListView.separated(
+      key: const ValueKey('catalog_tab'),
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 130),
       physics: const BouncingScrollPhysics(),
       itemCount: _mods.length,
