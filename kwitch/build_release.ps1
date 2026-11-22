@@ -95,6 +95,7 @@ $manifest = [PSCustomObject]@{
         "Speech DSP Vocal Booster & Radio Audio-Only",
         "Battery Eco Saver (30 FPS & GIF Pause)",
         "Dynamic Ambilight Ambient Glow Aura",
+        "Streamer Zen Mode (Distraction-Free)",
         "Chatterino+ Inline Chat Translator",
         "Liquid Glass + M3 Design System",
         "Signed with kipsway.keystore"

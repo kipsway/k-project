@@ -9,6 +9,7 @@ import '../../ktunnel/presentation/controllers/ktunnel_controller.dart';
 import '../../ktunnel/presentation/widgets/ktunnel_node_picker_sheet.dart';
 import '../domain/models/stream_nerd_stats.dart';
 import '../domain/models/twitch_channel_item.dart';
+import '../domain/models/vod_clip_item.dart';
 import '../domain/services/amoled_mode_controller.dart';
 import '../domain/services/audio_only_mode_controller.dart';
 import '../domain/services/battery_saver_controller.dart';
@@ -20,6 +21,8 @@ import '../domain/services/stream_audio_dsp_controller.dart';
 import '../domain/services/stream_bookmarks_service.dart';
 import '../domain/services/stream_catchup_service.dart';
 import '../domain/services/stream_replay_buffer_service.dart';
+import '../domain/services/stream_zen_mode_controller.dart';
+import '../domain/services/vod_clips_service.dart';
 import 'widgets/battery_saver_sheet.dart';
 import 'widgets/channel_search_drawer.dart';
 import 'widgets/chat_panel_container.dart';
@@ -29,6 +32,7 @@ import 'widgets/stream_ambient_glow_sheet.dart';
 import 'widgets/stream_audio_dsp_sheet.dart';
 import 'widgets/stream_bookmarks_sheet.dart';
 import 'widgets/video_player_container.dart';
+import 'widgets/vod_clips_browser_sheet.dart';
 
 class StreamScreen extends StatefulWidget {
   final String streamerName;
@@ -85,6 +89,12 @@ class _StreamScreenState extends State<StreamScreen> with WidgetsBindingObserver
 
   // Контроллер фоновой динамической эмбиент-подсветки Ambilight
   late final StreamAmbientGlowController _ambientGlowController;
+
+  // Контроллер Дзен-режима фокуса стримера
+  late final StreamZenModeController _zenModeController;
+
+  // Сервис браузера VOD-записей и клипов канала
+  late final VodClipsService _vodClipsService;
 
   // Состояния воспроизведения
   bool _isPlaying = true;
@@ -151,6 +161,12 @@ class _StreamScreenState extends State<StreamScreen> with WidgetsBindingObserver
     _ambientGlowController.updateCategory(_categoryName);
     _ambientGlowController.addListener(_onStateChanged);
 
+    _zenModeController = StreamZenModeController();
+    _zenModeController.addListener(_onStateChanged);
+
+    _vodClipsService = VodClipsService();
+    _vodClipsService.addListener(_onStateChanged);
+
     _updateNotification();
   }
 
@@ -204,6 +220,10 @@ class _StreamScreenState extends State<StreamScreen> with WidgetsBindingObserver
     _batteryController.dispose();
     _ambientGlowController.removeListener(_onStateChanged);
     _ambientGlowController.dispose();
+    _zenModeController.removeListener(_onStateChanged);
+    _zenModeController.dispose();
+    _vodClipsService.removeListener(_onStateChanged);
+    _vodClipsService.dispose();
     super.dispose();
   }
 
@@ -438,6 +458,16 @@ class _StreamScreenState extends State<StreamScreen> with WidgetsBindingObserver
     StreamAmbientGlowSheet.show(context, _ambientGlowController);
   }
 
+  void _toggleZenMode() {
+    HapticFeedback.mediumImpact();
+    _zenModeController.toggleZenMode();
+    if (_zenModeController.isZenMode) {
+      SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+    } else if (!_isFullscreen) {
+      SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+    }
+  }
+
   void _toggleFullscreen() {
     setState(() {
       _isFullscreen = !_isFullscreen;
@@ -570,6 +600,7 @@ class _StreamScreenState extends State<StreamScreen> with WidgetsBindingObserver
           audioDspController: _audioDspController,
           batteryController: _batteryController,
           ambientGlowController: _ambientGlowController,
+          zenModeController: _zenModeController,
           currentBookmarkCount: _bookmarksService.getBookmarksForStreamer(_streamerName).length,
           nerdStats: nerdStats,
           onPlayPause: _togglePlayPause,
@@ -588,6 +619,7 @@ class _StreamScreenState extends State<StreamScreen> with WidgetsBindingObserver
           onOpenBookmarks: _openBookmarks,
           onOpenBatterySaver: _openBatterySaver,
           onOpenAmbientGlow: _openAmbientGlow,
+          onToggleZenMode: _toggleZenMode,
           onStartInstantReplay: _startInstantReplay,
           onExitReplay: _exitReplayAndJumpToLive,
           onShareClip: _shareClip,
@@ -629,6 +661,7 @@ class _StreamScreenState extends State<StreamScreen> with WidgetsBindingObserver
           audioDspController: _audioDspController,
           batteryController: _batteryController,
           ambientGlowController: _ambientGlowController,
+          zenModeController: _zenModeController,
           currentBookmarkCount: _bookmarksService.getBookmarksForStreamer(_streamerName).length,
           nerdStats: nerdStats,
           onPlayPause: _togglePlayPause,
@@ -647,6 +680,7 @@ class _StreamScreenState extends State<StreamScreen> with WidgetsBindingObserver
           onOpenBookmarks: _openBookmarks,
           onOpenBatterySaver: _openBatterySaver,
           onOpenAmbientGlow: _openAmbientGlow,
+          onToggleZenMode: _toggleZenMode,
           onStartInstantReplay: _startInstantReplay,
           onExitReplay: _exitReplayAndJumpToLive,
           onShareClip: _shareClip,
@@ -656,83 +690,142 @@ class _StreamScreenState extends State<StreamScreen> with WidgetsBindingObserver
       );
     }
 
-    // Портретный сплит-режим
+    // Портретный сплит-режим (в Дзен-режиме плеер раскрывается на весь экран)
     return Scaffold(
       backgroundColor: currentBg,
       body: SafeArea(
         child: Column(
           children: [
-            // Регулируемая зона плеера
-            SizedBox(
-              height: _playerHeight,
-              width: double.infinity,
-              child: VideoPlayerContainer(
-                isPlaying: _isPlaying,
-                isTunnelEnabled: _tunnelController.isEnabled,
-                currentPingMs: _tunnelController.currentPing,
-                currentQuality: _currentQuality,
-                viewerCount: _viewerCount,
-                streamerName: _streamerName,
-                categoryName: _categoryName,
-                streamerAvatarUrl: _streamerAvatarUrl,
-                isLive: true,
-                isFullscreen: false,
-                isOverlayChatVisible: _isOverlayChatVisible,
-                isNerdStatsVisible: _isNerdStatsVisible,
-                isSleepTimerActive: _sleepTimerService.isActive,
-                isControlsLocked: _stabilityController.isControlsLocked,
-                isMuted: _stabilityController.isMuted,
-                latencySeconds: _catchupService.latencySeconds,
-                playbackSpeed: _catchupService.playbackSpeed,
-                isCatchingUp: _catchupService.isCatchingUp,
-                bufferSeconds: _stabilityController.bufferSeconds,
-                networkController: _networkController,
-                audioOnlyController: _audioOnlyController,
-                replayService: _replayService,
-                audioDspController: _audioDspController,
-                batteryController: _batteryController,
-          ambientGlowController: _ambientGlowController,
-                currentBookmarkCount: _bookmarksService.getBookmarksForStreamer(_streamerName).length,
-                nerdStats: nerdStats,
-                onPlayPause: _togglePlayPause,
-                onToggleTunnel: _toggleTunnel,
-                onOpenNodesPicker: _openNodesPicker,
-                onSelectQuality: _selectQuality,
-                onToggleFullscreen: _toggleFullscreen,
-                onToggleOverlayChat: _toggleOverlayChat,
-                onToggleNerdStats: _toggleNerdStats,
-                onOpenSleepTimer: _openSleepTimer,
-                onOpenChannelsDrawer: _openChannelsDrawer,
-                onToggleLockControls: _stabilityController.toggleControlsLock,
-                onToggleMute: () => _stabilityController.toggleMute(1.0),
-                onToggleAudioOnly: _toggleAudioOnly,
-                onOpenAudioDsp: _openAudioDsp,
-                onOpenBookmarks: _openBookmarks,
-          onOpenBatterySaver: _openBatterySaver,
-          onOpenAmbientGlow: _openAmbientGlow,
-                onStartInstantReplay: _startInstantReplay,
-                onExitReplay: _exitReplayAndJumpToLive,
-                onShareClip: _shareClip,
-                onCatchUpLive: _catchUpLive,
-                onEnterPip: _enterPipMode,
+            if (_zenModeController.isZenMode)
+              Expanded(
+                child: VideoPlayerContainer(
+                  isPlaying: _isPlaying,
+                  isTunnelEnabled: _tunnelController.isEnabled,
+                  currentPingMs: _tunnelController.currentPing,
+                  currentQuality: _currentQuality,
+                  viewerCount: _viewerCount,
+                  streamerName: _streamerName,
+                  categoryName: _categoryName,
+                  streamerAvatarUrl: _streamerAvatarUrl,
+                  isLive: true,
+                  isFullscreen: false,
+                  isOverlayChatVisible: false,
+                  isNerdStatsVisible: false,
+                  isSleepTimerActive: _sleepTimerService.isActive,
+                  isControlsLocked: _stabilityController.isControlsLocked,
+                  isMuted: _stabilityController.isMuted,
+                  latencySeconds: _catchupService.latencySeconds,
+                  playbackSpeed: _catchupService.playbackSpeed,
+                  isCatchingUp: _catchupService.isCatchingUp,
+                  bufferSeconds: _stabilityController.bufferSeconds,
+                  networkController: _networkController,
+                  audioOnlyController: _audioOnlyController,
+                  replayService: _replayService,
+                  audioDspController: _audioDspController,
+                  batteryController: _batteryController,
+                  ambientGlowController: _ambientGlowController,
+                  zenModeController: _zenModeController,
+                  currentBookmarkCount: _bookmarksService.getBookmarksForStreamer(_streamerName).length,
+                  nerdStats: nerdStats,
+                  onPlayPause: _togglePlayPause,
+                  onToggleTunnel: _toggleTunnel,
+                  onOpenNodesPicker: _openNodesPicker,
+                  onSelectQuality: _selectQuality,
+                  onToggleFullscreen: _toggleFullscreen,
+                  onToggleOverlayChat: _toggleOverlayChat,
+                  onToggleNerdStats: _toggleNerdStats,
+                  onOpenSleepTimer: _openSleepTimer,
+                  onOpenChannelsDrawer: _openChannelsDrawer,
+                  onToggleLockControls: _stabilityController.toggleControlsLock,
+                  onToggleMute: () => _stabilityController.toggleMute(1.0),
+                  onToggleAudioOnly: _toggleAudioOnly,
+                  onOpenAudioDsp: _openAudioDsp,
+                  onOpenBookmarks: _openBookmarks,
+                  onOpenBatterySaver: _openBatterySaver,
+                  onOpenAmbientGlow: _openAmbientGlow,
+                  onToggleZenMode: _toggleZenMode,
+                  onStartInstantReplay: _startInstantReplay,
+                  onExitReplay: _exitReplayAndJumpToLive,
+                  onShareClip: _shareClip,
+                  onCatchUpLive: _catchUpLive,
+                  onEnterPip: _enterPipMode,
+                ),
+              )
+            else ...[
+              // Регулируемая зона плеера
+              SizedBox(
+                height: _playerHeight,
+                width: double.infinity,
+                child: VideoPlayerContainer(
+                  isPlaying: _isPlaying,
+                  isTunnelEnabled: _tunnelController.isEnabled,
+                  currentPingMs: _tunnelController.currentPing,
+                  currentQuality: _currentQuality,
+                  viewerCount: _viewerCount,
+                  streamerName: _streamerName,
+                  categoryName: _categoryName,
+                  streamerAvatarUrl: _streamerAvatarUrl,
+                  isLive: true,
+                  isFullscreen: false,
+                  isOverlayChatVisible: _isOverlayChatVisible,
+                  isNerdStatsVisible: _isNerdStatsVisible,
+                  isSleepTimerActive: _sleepTimerService.isActive,
+                  isControlsLocked: _stabilityController.isControlsLocked,
+                  isMuted: _stabilityController.isMuted,
+                  latencySeconds: _catchupService.latencySeconds,
+                  playbackSpeed: _catchupService.playbackSpeed,
+                  isCatchingUp: _catchupService.isCatchingUp,
+                  bufferSeconds: _stabilityController.bufferSeconds,
+                  networkController: _networkController,
+                  audioOnlyController: _audioOnlyController,
+                  replayService: _replayService,
+                  audioDspController: _audioDspController,
+                  batteryController: _batteryController,
+                  ambientGlowController: _ambientGlowController,
+                  zenModeController: _zenModeController,
+                  currentBookmarkCount: _bookmarksService.getBookmarksForStreamer(_streamerName).length,
+                  nerdStats: nerdStats,
+                  onPlayPause: _togglePlayPause,
+                  onToggleTunnel: _toggleTunnel,
+                  onOpenNodesPicker: _openNodesPicker,
+                  onSelectQuality: _selectQuality,
+                  onToggleFullscreen: _toggleFullscreen,
+                  onToggleOverlayChat: _toggleOverlayChat,
+                  onToggleNerdStats: _toggleNerdStats,
+                  onOpenSleepTimer: _openSleepTimer,
+                  onOpenChannelsDrawer: _openChannelsDrawer,
+                  onToggleLockControls: _stabilityController.toggleControlsLock,
+                  onToggleMute: () => _stabilityController.toggleMute(1.0),
+                  onToggleAudioOnly: _toggleAudioOnly,
+                  onOpenAudioDsp: _openAudioDsp,
+                  onOpenBookmarks: _openBookmarks,
+                  onOpenBatterySaver: _openBatterySaver,
+                  onOpenAmbientGlow: _openAmbientGlow,
+                  onToggleZenMode: _toggleZenMode,
+                  onStartInstantReplay: _startInstantReplay,
+                  onExitReplay: _exitReplayAndJumpToLive,
+                  onShareClip: _shareClip,
+                  onCatchUpLive: _catchUpLive,
+                  onEnterPip: _enterPipMode,
+                ),
               ),
-            ),
 
-            // Сплиттер регулировки высоты
-            SplitDividerHandle(
-              onVerticalDragUpdate: _handleDividerDrag,
-            ),
-
-            // Контейнер чата Chatterino+
-            Expanded(
-              child: ChatPanelContainer(
-                channelName: _streamerName,
-                onOpenEmotes: _openEmotesSheet,
-                onSendMessage: (msg) {
-                  // Отправка в сокет чата
-                },
+              // Сплиттер регулировки высоты
+              SplitDividerHandle(
+                onVerticalDragUpdate: _handleDividerDrag,
               ),
-            ),
+
+              // Контейнер чата Chatterino+
+              Expanded(
+                child: ChatPanelContainer(
+                  channelName: _streamerName,
+                  onOpenEmotes: _openEmotesSheet,
+                  onSendMessage: (msg) {
+                    // Отправка в сокет чата
+                  },
+                ),
+              ),
+            ],
           ],
         ),
       ),

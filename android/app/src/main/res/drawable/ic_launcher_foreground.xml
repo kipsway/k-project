@@ -3,34 +3,49 @@
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
-    <!-- Нижний парящий слой -->
+    <!-- Тень ручки пакета -->
     <path
-        android:fillColor="#4D7E6FC4"
-        android:pathData="M32,70 L54,79 L76,70 L70,64 L54,72 L38,64 Z" />
+        android:strokeColor="#667E6FC4"
+        android:strokeWidth="4.5"
+        android:strokeLineCap="round"
+        android:pathData="M43,44 C43,30 65,30 65,44" />
 
-    <!-- Средний парящий слой -->
+    <!-- Ручка пакета -->
     <path
-        android:fillColor="#807E6FC4"
-        android:pathData="M34,58 L54,67 L74,58 L68,53 L54,60 L40,53 Z" />
+        android:strokeColor="#FFB8A7F0"
+        android:strokeWidth="4"
+        android:strokeLineCap="round"
+        android:pathData="M43,44 C43,30 65,30 65,44" />
 
-    <!-- Верхний главный ромб (лаванда) -->
+    <!-- Тень корпуса пакета -->
+    <path
+        android:fillColor="#667E6FC4"
+        android:pathData="M32,45 L76,45 A7,7 0 0 1 83,52 L83,81 A8,8 0 0 1 75,89 L33,89 A8,8 0 0 1 25,81 L25,52 A7,7 0 0 1 32,45 Z" />
+
+    <!-- Корпус пакета (лаванда) -->
     <path
         android:fillColor="#FFB8A7F0"
-        android:pathData="M54,26 L78,38 L54,50 L30,38 Z" />
+        android:pathData="M32,43 L76,43 A7,7 0 0 1 83,50 L83,79 A8,8 0 0 1 75,87 L33,87 A8,8 0 0 1 25,79 L25,50 A7,7 0 0 1 32,43 Z" />
 
-    <!-- Боковая грань ромба для объема -->
-    <path
-        android:fillColor="#FF7E6FC4"
-        android:pathData="M30,38 L54,50 L54,53 L30,41 Z" />
-    <path
-        android:fillColor="#FF9C89E8"
-        android:pathData="M78,38 L54,50 L54,53 L78,41 Z" />
-
-    <!-- Буква K в центре верхнего ромба -->
+    <!-- Четкая геометрическая буква K без пятен и размытия (Оникс #0A0A0C) -->
+    <!-- Вертикальная стойка K -->
     <path
         android:strokeColor="#FF0A0A0C"
-        android:strokeWidth="2.5"
+        android:strokeWidth="3.2"
         android:strokeLineCap="round"
-        android:strokeLineJoin="round"
-        android:pathData="M50,33 L50,43 M58,34 L51,38 L59,42" />
+        android:pathData="M46,54 L46,76" />
+
+    <!-- Верхняя ветвь K -->
+    <path
+        android:strokeColor="#FF0A0A0C"
+        android:strokeWidth="3.2"
+        android:strokeLineCap="round"
+        android:pathData="M60,56 L47,66" />
+
+    <!-- Нижняя ветвь K -->
+    <path
+        android:strokeColor="#FF0A0A0C"
+        android:strokeWidth="3.2"
+        android:strokeLineCap="round"
+        android:pathData="M52,63 L61,75" />
 </vector>

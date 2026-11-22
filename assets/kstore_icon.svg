@@ -7,7 +7,7 @@
       <stop offset="100%" stop-color="#08070A"/>
     </linearGradient>
 
-    <!-- Фирменный лавандовый градиент хаба -->
+    <!-- Фирменный лавандовый градиент пакета -->
     <linearGradient id="lavenderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#FFFFFF"/>
       <stop offset="35%" stop-color="#D4C9FA"/>
@@ -32,33 +32,24 @@
   <rect x="16" y="16" width="480" height="480" rx="132" fill="none" stroke="url(#rimGrad)" stroke-width="3"/>
   <rect x="18" y="18" width="476" height="476" rx="130" fill="none" stroke="#2C2B32" stroke-width="1.5" stroke-opacity="0.6"/>
 
-  <!-- Фоновое свечение в центре -->
-  <circle cx="256" cy="256" r="140" fill="#B8A7F0" opacity="0.08" filter="url(#glow)"/>
-
-  <!-- Фирменный символ kStore: Парящие слои приложений (App Stack) + Монограмма 'K' -->
+  <!-- Фирменный пакет kStore с четкой читаемой буквой 'k' -->
   <g>
-    <!-- Нижний парящий слой (Теневая стеклянная подложка) -->
-    <path d="M 120 330 L 256 385 L 392 330 L 360 300 L 256 342 L 152 300 Z" 
-          fill="#7E6FC4" opacity="0.35" filter="url(#glow)"/>
+    <!-- Неоновая тень пакета -->
+    <rect x="136" y="196" width="240" height="216" rx="38" fill="#7E6FC4" opacity="0.38" filter="url(#glow)"/>
+    <path d="M 204 196 C 204 136 308 136 308 196" fill="none" stroke="#7E6FC4" stroke-width="22" stroke-linecap="round" opacity="0.38" filter="url(#glow)"/>
 
-    <!-- Средний парящий слой приложений (Мягкая лаванда) -->
-    <path d="M 130 270 L 256 322 L 382 270 L 354 244 L 256 284 L 158 244 Z" 
-          fill="#7E6FC4" opacity="0.6"/>
+    <!-- Ручка пакета (дуга сверху) -->
+    <path d="M 204 196 C 204 136 308 136 308 196" fill="none" stroke="url(#lavenderGrad)" stroke-width="20" stroke-linecap="round"/>
 
-    <!-- Верхний главный ромб/слой приложений со стеклянным бликом -->
-    <g transform="translate(0, -20)">
-      <!-- Тень верхнего ромба -->
-      <polygon points="256,120 396,188 256,256 116,188" fill="#7E6FC4" opacity="0.4" filter="url(#glow)"/>
-      <!-- Основной верхний слой -->
-      <polygon points="256,120 396,188 256,256 116,188" fill="url(#lavenderGrad)"/>
+    <!-- Корпус пакета -->
+    <rect x="136" y="196" width="240" height="216" rx="38" fill="url(#lavenderGrad)"/>
 
-      <!-- Боковые грани верхнего слоя для 3D-объема -->
-      <polygon points="116,188 256,256 256,274 116,206" fill="#9C89E8"/>
-      <polygon points="396,188 256,256 256,274 396,206" fill="#7E6FC4"/>
-
-      <!-- Четкая геометрическая монограмма 'K' в центре верхнего слоя (Оникс #0A0A0C) -->
-      <path d="M 230 160 L 230 216 M 282 165 L 236 188 L 284 214" 
-            stroke="#0A0A0C" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
-    </g>
+    <!-- Чистая, идеально читаемая геометрическая буква 'k' (Оникс #0A0A0C) -->
+    <!-- Вертикальная стойка -->
+    <rect x="208" y="244" width="18" height="120" rx="9" fill="#0A0A0C"/>
+    <!-- Верхняя диагональная ветвь -->
+    <path d="M 292 254 L 222 312" stroke="#0A0A0C" stroke-width="18" stroke-linecap="round"/>
+    <!-- Нижняя диагональная ветвь -->
+    <path d="M 252 290 L 296 354" stroke="#0A0A0C" stroke-width="18" stroke-linecap="round"/>
   </g>
 </svg>

@@ -72,12 +72,6 @@ class _ModIconPainter extends CustomPainter {
       ).createShader(rect);
     canvas.drawRect(rect, bgPaint);
 
-    // Внутреннее лавандовое свечение в центре
-    final glowPaint = Paint()
-      ..color = KColors.lav.withOpacity(0.08)
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 10);
-    canvas.drawCircle(Offset(w / 2, h / 2), w * 0.35, glowPaint);
-
     // Отрисовка фирменного символа мода
     switch (modId) {
       case 'ktok':
@@ -138,30 +132,54 @@ class _ModIconPainter extends CustomPainter {
     canvas.drawPath(path, paint);
   }
 
-  /// Векторный самолетик Telegram (kGram)
+  /// Векторный самолетик Telegram (kGram) — идеальная каноничная геометрия с ровным сгибом
   void _drawTelegramPlane(Canvas canvas, Size size) {
     final w = size.width;
     final h = size.height;
 
-    final paint = Paint()
+    final nose = Offset(w * 0.8125, h * 0.25);
+    final leftTip = Offset(w * 0.203, h * 0.50);
+    final creaseVertex = Offset(w * 0.461, h * 0.672);
+    final rightTip = Offset(w * 0.695, h * 0.781);
+    final finBottom = Offset(w * 0.363, h * 0.770);
+    final finAttach = Offset(w * 0.344, h * 0.594);
+
+    // Правое нижнее крыло (средний лавандовый тон)
+    final rightWingPaint = Paint()
+      ..color = const Color(0xFF9C89E8)
+      ..style = PaintingStyle.fill;
+    final rightWingPath = Path()
+      ..moveTo(nose.dx, nose.dy)
+      ..lineTo(rightTip.dx, rightTip.dy)
+      ..lineTo(creaseVertex.dx, creaseVertex.dy)
+      ..close();
+    canvas.drawPath(rightWingPath, rightWingPaint);
+
+    // Нижний киль (строго примыкает к вершине центрального сгиба)
+    final finPaint = Paint()
+      ..color = KColors.accBorder
+      ..style = PaintingStyle.fill;
+    final finPath = Path()
+      ..moveTo(creaseVertex.dx, creaseVertex.dy)
+      ..lineTo(finBottom.dx, finBottom.dy)
+      ..lineTo(finAttach.dx, finAttach.dy)
+      ..close();
+    canvas.drawPath(finPath, finPaint);
+
+    // Главное верхнее крыло (яркая чистая лаванда)
+    final mainWingPaint = Paint()
       ..shader = const LinearGradient(
         begin: Alignment.topRight,
         end: Alignment.bottomLeft,
         colors: [Colors.white, KColors.lavInk, KColors.lav],
       ).createShader(Offset.zero & size)
       ..style = PaintingStyle.fill;
-
-    final path = Path()
-      ..moveTo(w * 0.22, h * 0.48)
-      ..lineTo(w * 0.78, h * 0.24)
-      ..lineTo(w * 0.64, h * 0.76)
-      ..lineTo(w * 0.48, h * 0.62)
-      ..lineTo(w * 0.40, h * 0.70)
-      ..lineTo(w * 0.42, h * 0.56)
-      ..lineTo(w * 0.68, h * 0.36)
+    final mainWingPath = Path()
+      ..moveTo(leftTip.dx, leftTip.dy)
+      ..lineTo(nose.dx, nose.dy)
+      ..lineTo(creaseVertex.dx, creaseVertex.dy)
       ..close();
-
-    canvas.drawPath(path, paint);
+    canvas.drawPath(mainWingPath, mainWingPaint);
   }
 
   /// Векторная кнопка воспроизведения YouTube (kTube)
@@ -238,44 +256,63 @@ class _ModIconPainter extends CustomPainter {
     canvas.drawRect(Rect.fromLTWH(w * 0.54, h * 0.38, w * 0.07, h * 0.14), eyePaint);
   }
 
-  /// Фирменный стек kStore
+  /// Фирменный пакет kStore с буквой k
   void _drawDefaultStore(Canvas canvas, Size size) {
     final w = size.width;
     final h = size.height;
 
-    final paint = Paint()
-      ..shader = const LinearGradient(
-        begin: Alignment.topCenter,
-        end: Alignment.bottomCenter,
-        colors: [Colors.white, KColors.lavInk, KColors.lav],
-      ).createShader(Offset.zero & size)
+    final lavenderShader = const LinearGradient(
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
+      colors: [Colors.white, KColors.lavInk, KColors.lav],
+    ).createShader(Offset.zero & size);
+
+    // Ручка пакета (дуга сверху)
+    final handlePaint = Paint()
+      ..shader = lavenderShader
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = w * 0.05
+      ..strokeCap = StrokeCap.round;
+
+    final handleRect = Rect.fromCenter(
+      center: Offset(w * 0.50, h * 0.38),
+      width: w * 0.26,
+      height: h * 0.26,
+    );
+    canvas.drawArc(handleRect, 3.14159, 3.14159, false, handlePaint);
+
+    // Корпус пакета
+    final bagPaint = Paint()
+      ..shader = lavenderShader
       ..style = PaintingStyle.fill;
 
-    // Ромб верхнего слоя
-    final diamondPath = Path()
-      ..moveTo(w * 0.50, h * 0.26)
-      ..lineTo(w * 0.78, h * 0.42)
-      ..lineTo(w * 0.50, h * 0.58)
-      ..lineTo(w * 0.22, h * 0.42)
-      ..close();
+    final bagRect = RRect.fromRectAndRadius(
+      Rect.fromCenter(
+        center: Offset(w * 0.50, h * 0.60),
+        width: w * 0.52,
+        height: h * 0.44,
+      ),
+      Radius.circular(w * 0.09),
+    );
+    canvas.drawRRect(bagRect, bagPaint);
 
-    canvas.drawPath(diamondPath, paint);
+    // Чистая, идеально читаемая буква K в центре пакета (Оникс #0A0A0C)
+    final kPaint = Paint()
+      ..color = const Color(0xFF0A0A0C)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = w * 0.035
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round;
 
-    // Нижняя парящая грань
-    final lowerPath = Path()
-      ..moveTo(w * 0.26, h * 0.56)
-      ..lineTo(w * 0.50, h * 0.70)
-      ..lineTo(w * 0.74, h * 0.56)
-      ..lineTo(w * 0.68, h * 0.62)
-      ..lineTo(w * 0.50, h * 0.74)
-      ..lineTo(w * 0.32, h * 0.62)
-      ..close();
+    final kPath = Path()
+      ..moveTo(w * 0.43, h * 0.48)
+      ..lineTo(w * 0.43, h * 0.72)
+      ..moveTo(w * 0.58, h * 0.49)
+      ..lineTo(w * 0.44, h * 0.60)
+      ..moveTo(w * 0.495, h * 0.56)
+      ..lineTo(w * 0.59, h * 0.71);
 
-    final lowerPaint = Paint()
-      ..color = KColors.accBorder
-      ..style = PaintingStyle.fill;
-
-    canvas.drawPath(lowerPath, lowerPaint);
+    canvas.drawPath(kPath, kPaint);
   }
 
   @override

@@ -8,6 +8,7 @@ import '../../domain/services/player_gesture_controller.dart';
 import '../../domain/services/stream_ambient_glow_controller.dart';
 import '../../domain/services/stream_audio_dsp_controller.dart';
 import '../../domain/services/stream_replay_buffer_service.dart';
+import '../../domain/services/stream_zen_mode_controller.dart';
 import 'ambient_glow_wrapper.dart';
 import 'audio_only_visualizer.dart';
 import 'glass_chat_overlay.dart';
@@ -15,6 +16,7 @@ import 'nerd_stats_overlay.dart';
 import 'player_controls_overlay.dart';
 import 'player_gesture_detector.dart';
 import 'stream_replay_banner.dart';
+import 'zen_mode_indicator_pill.dart';
 
 class VideoPlayerContainer extends StatefulWidget {
   final bool isPlaying;
@@ -42,6 +44,7 @@ class VideoPlayerContainer extends StatefulWidget {
   final StreamAudioDspController? audioDspController;
   final BatterySaverController? batteryController;
   final StreamAmbientGlowController? ambientGlowController;
+  final StreamZenModeController? zenModeController;
   final int currentBookmarkCount;
   final StreamNerdStats nerdStats;
   final VoidCallback onPlayPause;
@@ -59,6 +62,7 @@ class VideoPlayerContainer extends StatefulWidget {
   final VoidCallback? onOpenBookmarks;
   final VoidCallback? onOpenBatterySaver;
   final VoidCallback? onOpenAmbientGlow;
+  final VoidCallback? onOpenVodClips;
   final VoidCallback? onStartInstantReplay;
   final VoidCallback? onExitReplay;
   final VoidCallback? onShareClip;
@@ -94,6 +98,7 @@ class VideoPlayerContainer extends StatefulWidget {
     this.audioDspController,
     this.batteryController,
     this.ambientGlowController,
+    this.zenModeController,
     this.currentBookmarkCount = 0,
     this.nerdStats = const StreamNerdStats(),
     required this.onPlayPause,
@@ -111,6 +116,8 @@ class VideoPlayerContainer extends StatefulWidget {
     this.onOpenBookmarks,
     this.onOpenBatterySaver,
     this.onOpenAmbientGlow,
+    this.onToggleZenMode,
+    this.onOpenVodClips,
     this.onStartInstantReplay,
     this.onExitReplay,
     this.onShareClip,
@@ -268,6 +275,7 @@ class _VideoPlayerContainerState extends State<VideoPlayerContainer> {
                 audioDspController: widget.audioDspController,
                 batteryController: widget.batteryController,
                 ambientGlowController: widget.ambientGlowController,
+                zenModeController: widget.zenModeController,
                 onPlayPause: widget.onPlayPause,
                 onToggleTunnel: widget.onToggleTunnel,
                 onOpenNodesPicker: widget.onOpenNodesPicker,
@@ -284,11 +292,17 @@ class _VideoPlayerContainerState extends State<VideoPlayerContainer> {
                 onOpenBookmarks: widget.onOpenBookmarks,
                 onOpenBatterySaver: widget.onOpenBatterySaver,
                 onOpenAmbientGlow: widget.onOpenAmbientGlow,
+                onToggleZenMode: widget.onToggleZenMode,
+                onOpenVodClips: widget.onOpenVodClips,
                 onStartInstantReplay: widget.onStartInstantReplay,
                 onCatchUpLive: widget.onCatchUpLive,
                 onEnterPip: widget.onEnterPip,
               ),
             ),
+
+            // Всплывающий индикатор Дзен-режима
+            if (widget.zenModeController != null)
+              ZenModeIndicatorPill(zenController: widget.zenModeController!),
           ],
         ),
       ),

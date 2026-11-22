@@ -57,6 +57,7 @@ class PlayerControlsOverlay extends StatefulWidget {
   final VoidCallback? onOpenAudioDsp;
   final VoidCallback? onOpenBookmarks;
   final VoidCallback? onOpenBatterySaver;
+  final VoidCallback? onOpenVodClips;
   final VoidCallback? onStartInstantReplay;
   final VoidCallback onCatchUpLive;
   final VoidCallback? onEnterPip;
@@ -106,6 +107,7 @@ class PlayerControlsOverlay extends StatefulWidget {
     this.onOpenBookmarks,
     this.onOpenBatterySaver,
     this.onOpenAmbientGlow,
+    this.onOpenVodClips,
     this.onToggleZenMode,
     this.onStartInstantReplay,
     required this.onCatchUpLive,
@@ -391,6 +393,18 @@ class _PlayerControlsOverlayState extends State<PlayerControlsOverlay> {
                         constraints: const BoxConstraints(),
                       ),
 
+                      // Кнопка Записей и Клипов канала
+                      IconButton(
+                        onPressed: () {
+                          HapticFeedback.selectionClick();
+                          widget.onOpenVodClips?.call();
+                        },
+                        icon: const Icon(LucideIcons.film, color: KColors.muted, size: 18),
+                        tooltip: 'Записи и клипы (VOD)',
+                        padding: const EdgeInsets.symmetric(horizontal: 4),
+                        constraints: const BoxConstraints(),
+                      ),
+
                       // Кнопка Эмбиент-подсветки Ambilight
                       IconButton(
                         onPressed: () {
@@ -637,4 +651,25 @@ class _PlayerControlsOverlayState extends State<PlayerControlsOverlay> {
                                   widget.onToggleFullscreen();
                                 },
                                 icon: Icon(
-                
+                                  widget.isFullscreen ? LucideIcons.minimize2 : LucideIcons.maximize2,
+                                  color: KColors.ink,
+                                  size: 20,
+                                ),
+                                padding: const EdgeInsets.all(8),
+                                constraints: const BoxConstraints(),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
