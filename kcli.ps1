@@ -21,12 +21,13 @@ function Show-Header {
 
 function Show-Menu {
     Show-Header
-    Write-Host "  [1] 🧪 Запустить тесты целостности экосистемы (18 проверок)" -ForegroundColor Green
+    Write-Host "  [1] 🧪 Запустить тесты целостности экосистемы (23 проверки)" -ForegroundColor Green
     Write-Host "  [2] 🔄 Синхронизировать ключи подписи и обновить манифест" -ForegroundColor Yellow
     Write-Host "  [3] 📺 Собрать клиент kTube (YouTube 4K k-Tunnel)" -ForegroundColor Cyan
     Write-Host "  [4] 📦 Сформировать дистрибутивный пакет в dist/" -ForegroundColor DarkCyan
     Write-Host "  [5] 🌐 Открыть веб-лендинг экосистемы в браузере" -ForegroundColor Blue
     Write-Host "  [6] 🔍 Проверить статус Git репозитория" -ForegroundColor White
+    Write-Host "  [7] 🚀 Запустить локальный диагностический демон k-Tunnel" -ForegroundColor Magenta
     Write-Host "  [0] 🚪 Выход" -ForegroundColor DarkGray
     Write-Host ""
 }
@@ -71,6 +72,12 @@ do {
             git status
             Write-Host "`nПоследний коммит:" -ForegroundColor Yellow
             git log -1 --oneline
+            Write-Host "`nНажмите Enter для возврата в меню..." -ForegroundColor DarkGray
+            [void][Console]::ReadLine()
+        }
+        "7" {
+            Show-Header
+            python (Join-Path $RootDir "ktube\k-tunnel\run_ktunnel_local.py")
             Write-Host "`nНажмите Enter для возврата в меню..." -ForegroundColor DarkGray
             [void][Console]::ReadLine()
         }
