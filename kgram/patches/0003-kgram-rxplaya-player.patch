@@ -1,0 +1,19 @@
+From: kipsway <kipsway0@gmail.com>
+Subject: [PATCH] kGram: Minimalist RX Playa full-screen music player integration
+
+---
+ .../telegram/ui/Components/AudioPlayerAlert.java  | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/TMessagesProj/src/main/java/org/telegram/ui/Components/AudioPlayerAlert.java b/TMessagesProj/src/main/java/org/telegram/ui/Components/AudioPlayerAlert.java
+index 789abcd..ef01234 100644
+--- a/TMessagesProj/src/main/java/org/telegram/ui/Components/AudioPlayerAlert.java
++++ b/TMessagesProj/src/main/java/org/telegram/ui/Components/AudioPlayerAlert.java
+@@ -668,7 +668,12 @@ public class AudioPlayerAlert extends BottomSheet implements NotificationCenter.
+-        playerLayout.addView(coverContainer, LayoutHelper.createFrame(44, 44, Gravity.TOP | Gravity.RIGHT, 0, 20, 20, 0));
++        if (org.kipsway.kgram.player.RxPlayaHelper.isEnabled(context)) {
++            org.kipsway.kgram.player.RxPlayaHelper.attachPlayer(context, playerLayout);
++        } else {
++            playerLayout.addView(coverContainer, LayoutHelper.createFrame(44, 44, Gravity.TOP | Gravity.RIGHT, 0, 20, 20, 0));
++        }
+-- 

@@ -1,0 +1,20 @@
+﻿{
+    "appName":  "kWitch",
+    "version":  "1.0.0",
+    "buildNumber":  1,
+    "package":  "com.kipsway.kwitch",
+    "author":  "kipsway",
+    "features":  [
+                     "k-Tunnel 1440p Core (wistfalls.cc pool)",
+                     "Chatterino+ v2.4.0 (chat.eblo.id by Rish)",
+                     "7TV / BTTV / FFZ live emotes",
+                     "Liquid Glass + M3 Design System",
+                     "Signed with kipsway.keystore"
+                 ],
+    "apkFile":  "kWitch-v1.0.0-kipsway-release.apk",
+    "sha256":  "B3C4192261496862B372CD8F24CF5C96E0BBFBDFAA9603BED911A1DBB6663E7B",
+    "fileSizeBytes":  66990,
+    "signed":  true,
+    "signAlias":  "kipsway",
+    "builtAt":  "2026-11-22T20:19:25+03:00"
+}

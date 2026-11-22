@@ -1,0 +1,34 @@
+{
+  "id": "kwitch",
+  "name": "kWitch",
+  "author": "by kipsway",
+  "tagline": "Альтернативный Twitch-клиент с Chatterino+ и k-Tunnel",
+  "description": "Стриминг Twitch в максимальном качестве 1080p60 / 1440p без лагов благодаря встроенному ядру k-Tunnel и чат Chatterino+ от Rish (7TV, BTTV, FFZ, Name Paints).",
+  "version": "1.0.0",
+  "versionCode": 1,
+  "package": "com.kipsway.kwitch",
+  "rating": 4.95,
+  "size": "26.8 MB",
+  "iconUrl": "assets/icons/kwitch.png",
+  "apkUrl": "https://s.wistfalls.cc/releases/kWitch-v1.0.0-kipsway-release.apk",
+  "badges": [
+    "k-Tunnel 1440p",
+    "Chatterino+ 2.4.0",
+    "7TV / BTTV / FFZ",
+    "Без лагов"
+  ],
+  "features": [
+    "Встроенное сетевое ядро k-Tunnel для обхода дропов кадров и разблокировки 1440p",
+    "Движок чата Chatterino+ v2.4.0 by Rish (chat.eblo.id)",
+    "Поддержка живых сокетов ws.chat.eblo.id и ws.rish098.xyz",
+    "Name Paints градиенты никнеймов и кастомные бейджи",
+    "Дизайн-система «Жидкое стекло + Material You 3 + акценты Chatterino+»",
+    "Плавающий полупрозрачный чат-оверлей поверх видеотрансляции",
+    "Подписано релизным ключом kipsway.keystore"
+  ],
+  "compatibility": {
+    "minAndroid": 8.0,
+    "targetAndroid": 14.0,
+    "architectures": ["arm64-v8a", "armeabi-v7a", "x86_64"]
+  }
+}

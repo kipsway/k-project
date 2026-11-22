@@ -7,7 +7,10 @@ class ChatterinoScriptInjector {
   static String buildBridgeScript({
     required String channel,
     required bool darkTheme,
+    List<String> preloadedEmoteNames = const [],
   }) {
+    final preloadedJson = jsonEncode(preloadedEmoteNames);
+
     return '''
 (function() {
   if (window.__kWitchChatterinoInitialized) return;
@@ -21,6 +24,9 @@ class ChatterinoScriptInjector {
   document.documentElement.style.setProperty('--cpx-panel-f', '#0f0f12');
   document.documentElement.style.setProperty('--cpx-lav', '#b8a7f0');
   document.documentElement.style.setProperty('--cpx-acc-r', '#7e6fc4');
+
+  // Локальный LRU-кэш смайлов
+  window.__kWitchPreloadedEmotes = $preloadedJson;
 
   // Перехват кликов по смайлам и никам для нативного Flutter UI
   document.addEventListener('click', function(e) {
@@ -46,6 +52,15 @@ class ChatterinoScriptInjector {
       if (sendBtn) {
         sendBtn.click();
       }
+    }
+  };
+
+  // Вставка смайла в инпут
+  window.__kWitchInsertEmote = function(emoteName) {
+    const input = document.querySelector('[data-a-target="chat-input"], textarea');
+    if (input) {
+      input.value = (input.value ? input.value + ' ' : '') + emoteName + ' ';
+      input.dispatchEvent(new Event('input', { bubbles: true }));
     }
   };
 })();
@@ -139,7 +154,6 @@ class ChatterinoScriptInjector {
     <div id="messages"></div>
   </div>
   <script>
-    // Подключение к WebSocket зеркалам ws.chat.eblo.id / ws.rish098.xyz
     const CHANNEL = "$channel";
     console.log("[Chatterino+] Движок запущен для канала:", CHANNEL);
 

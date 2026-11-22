@@ -1,0 +1,17 @@
+﻿{
+    "AppName":  "kTube",
+    "PackageName":  "com.kipsway.ktube",
+    "Version":  "1.0.0",
+    "BuildDate":  "2026-11-22 19:44:52",
+    "Developer":  "kipsway",
+    "TunnelEngine":  "k-Tunnel Embedded (sing-box loopback)",
+    "ProxyPort":  10808,
+    "DesignSystem":  "Mosaic (Chatterino+ by Rish) + Material You 3",
+    "OnyxColor":  "#0A0A0C",
+    "LavenderAccent":  "#B8A7F0",
+    "SponsorBlock":  true,
+    "AdBlock":  true,
+    "BackgroundPlayback":  true,
+    "Signed":  true,
+    "Keystore":  "kipsway.keystore"
+}
