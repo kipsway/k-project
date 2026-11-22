@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../core/theme/k_colors.dart';
+import '../../../ktunnel/domain/services/network_adaptive_controller.dart';
 import '../../domain/models/stream_nerd_stats.dart';
 import '../../domain/services/player_gesture_controller.dart';
 import 'glass_chat_overlay.dart';
@@ -27,6 +28,7 @@ class VideoPlayerContainer extends StatefulWidget {
   final double playbackSpeed;
   final bool isCatchingUp;
   final double bufferSeconds;
+  final NetworkAdaptiveController? networkController;
   final StreamNerdStats nerdStats;
   final VoidCallback onPlayPause;
   final ValueChanged<bool> onToggleTunnel;
@@ -63,6 +65,7 @@ class VideoPlayerContainer extends StatefulWidget {
     this.playbackSpeed = 1.0,
     this.isCatchingUp = false,
     this.bufferSeconds = 4.2,
+    this.networkController,
     this.nerdStats = const StreamNerdStats(),
     required this.onPlayPause,
     required this.onToggleTunnel,
@@ -195,6 +198,7 @@ class _VideoPlayerContainerState extends State<VideoPlayerContainer> {
                 playbackSpeed: widget.playbackSpeed,
                 isCatchingUp: widget.isCatchingUp,
                 bufferSeconds: widget.bufferSeconds,
+                networkController: widget.networkController,
                 onPlayPause: widget.onPlayPause,
                 onToggleTunnel: widget.onToggleTunnel,
                 onOpenNodesPicker: widget.onOpenNodesPicker,

@@ -114,3 +114,10 @@
     invoke-virtual {p0, v0}, Landroid/content/Context;->startActivity(Landroid/content/Intent;)V
     return-void
 .end method
+
+# Вызов быстрого меню действий ролика по долгому тапу
+.method public static showActionMenu(Landroid/content/Context;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+    .registers 5
+    invoke-static {p0, p1, p2, p3, p4}, Lcom/kipsway/ktok/KTokActionDialog;->showMenu(Landroid/content/Context;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+    return-void
+.end method

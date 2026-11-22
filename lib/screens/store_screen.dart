@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'mod_detail_sheet.dart';
 import 'search_modal.dart';
+import 'downloads_view.dart';
 import 'info_view.dart';
 import '../models/mod_item.dart';
 import '../theme/colors.dart';
@@ -158,11 +159,26 @@ class _StoreScreenState extends State<StoreScreen> {
               children: [
                 // Шапка экрана (Header)
                 _buildHeader(),
-                // Список модов или экран Инфо
+                // Плавное переключение между экранами табов
                 Expanded(
-                  child: _selectedTabIndex == 2
-                      ? const InfoView()
-                      : _buildCatalogList(),
+                  child: AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 240),
+                    switchInCurve: Curves.easeOutCubic,
+                    switchOutCurve: Curves.easeInCubic,
+                    transitionBuilder: (child, animation) {
+                      return FadeTransition(
+                        opacity: animation,
+                        child: SlideTransition(
+                          position: Tween<Offset>(
+                            begin: const Offset(0.0, 0.02),
+                            end: Offset.zero,
+                          ).animate(animation),
+                          child: child,
+                        ),
+                      );
+                    },
+                    child: _buildCurrentTabContent(),
+                  ),
                 ),
               ],
             ),
@@ -198,6 +214,26 @@ class _StoreScreenState extends State<StoreScreen> {
         ],
       ),
     );
+  }
+
+  Widget _buildCurrentTabContent() {
+    switch (_selectedTabIndex) {
+      case 1:
+        return DownloadsView(
+          mods: _mods,
+          activeDownloadModName: _activeDownloadModName,
+          downloadProgress: _downloadProgress,
+          onCancelDownload: _cancelDownload,
+          onInstallMod: (mod) {
+            _startDownload(mod);
+          },
+        );
+      case 2:
+        return const InfoView();
+      case 0:
+      default:
+        return _buildCatalogList();
+    }
   }
 
   /// Список модов каталога

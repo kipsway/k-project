@@ -30,6 +30,7 @@ $BuildDir = Join-Path $RootDir "build"
 $OutDir   = Join-Path $RootDir "out"
 $PatchesDir = Join-Path $RootDir "patches"
 $ResDir   = Join-Path $RootDir "res"
+$SrcDir   = Join-Path $RootDir "src"
 
 Write-Host "==========================================================" -ForegroundColor Magenta
 Write-Host "  🎵 Сборка kTok (TikTok by kipsway) [Палитра Мозаика]     " -ForegroundColor Cyan
@@ -99,6 +100,22 @@ foreach ($file in $StringsFiles) {
     (Get-Content $file.FullName) -replace '<string name="app_name">.*?</string>', '<string name="app_name">kTok</string>' | Set-Content $file.FullName
 }
 
+# Внедрение smali хуков kTok
+$SmaliDir = Join-Path $DecompileDir "smali_classes_ktok\com\kipsway\ktok"
+if (-not (Test-Path $SmaliDir)) { New-Item -ItemType Directory -Path $SmaliDir -Force | Out-Null }
+Copy-Item -Path (Join-Path $PatchesDir "smali\*.smali") -Destination $SmaliDir -Force
+
+# Модификация манифеста под пакет com.kipsway.ktok
+$ManifestFile = Join-Path $DecompileDir "AndroidManifest.xml"
+if (Test-Path $ManifestFile) {
+    Write-Host "[+] Обновление манифеста: пакет com.kipsway.ktok и изоляция провайдеров..." -ForegroundColor Cyan
+    $mContent = Get-Content $ManifestFile -Raw
+    $mContent = $mContent -replace 'package="com\.zhiliaoapp\.musically.*?"', 'package="com.kipsway.ktok"'
+    $mContent = $mContent -replace 'com\.zhiliaoapp\.musically\.fileprovider', 'com.kipsway.ktok.fileprovider'
+    $mContent = $mContent -replace '</application>', '<activity android:name="com.kipsway.ktok.KTokSettingsActivity" android:exported="false" android:theme="@android:style/Theme.NoTitleBar" /></application>'
+    Set-Content -Path $ManifestFile -Value $mContent
+}
+
 Write-Host "[+] Шаг 3: Сборка модифицированного APK с новыми ресурсами..." -ForegroundColor Cyan
 $ResourceModApk = Join-Path $BuildDir "tiktok_res_mod.apk"
 & java -jar $ApktoolJar b $DecompileDir -o $ResourceModApk
@@ -107,7 +124,6 @@ $ResourceModApk = Join-Path $BuildDir "tiktok_res_mod.apk"
 Write-Host "[+] Шаг 4: Применение Smali/Dex патчей kTok..." -ForegroundColor Cyan
 $PatchedUnsignedApk = Join-Path $BuildDir "ktok_patched_unsigned.apk"
 
-# Список активных патчей строго по спецификации kTok
 $PatchesArgs = @(
     "-jar", $CliJar,
     "patch",

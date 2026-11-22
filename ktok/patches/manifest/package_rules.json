@@ -42,6 +42,13 @@
     {
       "action": "add_permission",
       "permission": "android.permission.READ_MEDIA_AUDIO"
+    },
+    {
+      "action": "add_activity",
+      "name": "com.kipsway.ktok.KTokSettingsActivity",
+      "exported": false,
+      "configChanges": "orientation|screenSize|keyboardHidden",
+      "theme": "@android:style/Theme.NoTitleBar"
     }
   ],
   "authorities_replacement": [

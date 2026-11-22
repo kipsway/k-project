@@ -5,6 +5,7 @@ import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../core/theme/k_colors.dart';
 import '../../../../core/theme/k_glass.dart';
 import '../../../../core/theme/k_typography.dart';
+import '../../../ktunnel/domain/services/network_adaptive_controller.dart';
 import 'ktunnel_toggle_chip.dart';
 import 'stream_catchup_badge.dart';
 import 'stream_quality_selector.dart';
@@ -29,6 +30,7 @@ class PlayerControlsOverlay extends StatefulWidget {
   final double playbackSpeed;
   final bool isCatchingUp;
   final double bufferSeconds;
+  final NetworkAdaptiveController? networkController;
   final VoidCallback onPlayPause;
   final ValueChanged<bool> onToggleTunnel;
   final VoidCallback? onOpenNodesPicker;
@@ -63,6 +65,7 @@ class PlayerControlsOverlay extends StatefulWidget {
     this.playbackSpeed = 1.0,
     this.isCatchingUp = false,
     this.bufferSeconds = 4.2,
+    this.networkController,
     required this.onPlayPause,
     required this.onToggleTunnel,
     this.onOpenNodesPicker,
@@ -417,6 +420,7 @@ class _PlayerControlsOverlayState extends State<PlayerControlsOverlay> {
                               StreamQualitySelector(
                                 currentQuality: widget.currentQuality,
                                 isTunnelEnabled: widget.isTunnelEnabled,
+                                networkController: widget.networkController,
                                 onQualitySelected: (q) {
                                   widget.onSelectQuality(q);
                                   _startHideTimer();

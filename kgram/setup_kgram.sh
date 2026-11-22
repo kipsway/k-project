@@ -33,13 +33,22 @@ if [ ! -f "$ICON_512" ]; then
     echo "[3/5] Generating kGram 'Мозаика' branding icons..."
     python3 "$SCRIPT_DIR/scripts/generate_icons.py" || python "$SCRIPT_DIR/scripts/generate_icons.py"
 else
-    echo "[3/5] Branding icons verified."
+    echo "[3/6] Branding icons verified."
 fi
 
-# 4. Ensure Release Keystore exists
+# 4. Ensure Mozaik Theme is compiled
+THEME_FILE="$SCRIPT_DIR/theme/mozaik.attheme"
+if [ ! -f "$THEME_FILE" ]; then
+    echo "[4/6] Compiling Mozaik theme (.attheme)..."
+    python3 "$SCRIPT_DIR/scripts/build_mozaik_theme.py" || python "$SCRIPT_DIR/scripts/build_mozaik_theme.py"
+else
+    echo "[4/6] Mozaik theme verified."
+fi
+
+# 5. Ensure Release Keystore exists
 KEYSTORE_PATH="$SCRIPT_DIR/signing/kipsway.keystore"
 if [ ! -f "$KEYSTORE_PATH" ]; then
-    echo "[4/5] Generating release keystore (kipsway.keystore)..."
+    echo "[5/6] Generating release keystore (kipsway.keystore)..."
     keytool -genkeypair -v -keystore "$KEYSTORE_PATH" \
         -alias kipsway \
         -keyalg RSA \
@@ -49,15 +58,19 @@ if [ ! -f "$KEYSTORE_PATH" ]; then
         -keypass kgram2026 \
         -dname "CN=kipsway, OU=kGram, O=kipsway, C=RU"
 else
-    echo "[4/5] Release keystore verified: $KEYSTORE_PATH"
+    echo "[5/6] Release keystore verified: $KEYSTORE_PATH"
 fi
 
-# 5. Apply Branding and Package Isolation
-echo "[5/5] Applying package isolation (org.kipsway.kgram) and strings..."
+# 6. Apply Branding, Theme & Package Isolation
+echo "[6/6] Applying package isolation (org.kipsway.kgram), strings and Mozaik hook..."
 python3 "$SCRIPT_DIR/scripts/apply_kgram_branding.py" "$REPO_PATH" || python "$SCRIPT_DIR/scripts/apply_kgram_branding.py" "$REPO_PATH"
 
 echo ""
-echo ">>> SUCCESS: kGram Шаг 1 завершен успешно! <<<"
+echo ">>> SUCCESS: kGram готов к сборке! <<<"
+echo "Пакет приложения: org.kipsway.kgram"
+echo "Дефолтная тема: Мозаика (#0A0A0C, #B8A7F0)"
+echo "Подпись: kipsway.keystore"
+echo "Базовые меню: Настройки kGram, Цвета Мозаика, k-Tunnel, Музыкальный плеер"
 echo "Пакет приложения: org.kipsway.kgram"
 echo "Подпись: kipsway.keystore"
 echo "Базовые меню: Настройки kGram, Цвета Мозаика, k-Tunnel, Музыкальный плеер"

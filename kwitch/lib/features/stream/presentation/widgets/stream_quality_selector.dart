@@ -4,6 +4,7 @@ import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../core/theme/k_colors.dart';
 import '../../../../core/theme/k_glass.dart';
 import '../../../../core/theme/k_typography.dart';
+import '../../../ktunnel/domain/services/network_adaptive_controller.dart';
 
 class QualityOption {
   final String id;
@@ -22,6 +23,7 @@ class QualityOption {
 class StreamQualitySelector extends StatelessWidget {
   final String currentQuality;
   final bool isTunnelEnabled;
+  final NetworkAdaptiveController? networkController;
   final ValueChanged<String> onQualitySelected;
 
   static const List<QualityOption> qualities = [
@@ -59,6 +61,7 @@ class StreamQualitySelector extends StatelessWidget {
     super.key,
     required this.currentQuality,
     required this.isTunnelEnabled,
+    this.networkController,
     required this.onQualitySelected,
   });
 
@@ -91,7 +94,8 @@ class StreamQualitySelector extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 16),
-              // Заголовок
+
+              // Заголовок и статус k-Tunnel
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -118,6 +122,7 @@ class StreamQualitySelector extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 12),
+
               // Список вариантов качества
               ...qualities.map((item) {
                 final isSelected = item.id == currentQuality;
@@ -191,6 +196,46 @@ class StreamQualitySelector extends StatelessWidget {
                   ),
                 );
               }),
+
+              // Информационный блок трафика k-Tunnel за сессию
+              if (networkController != null) ...[
+                const Divider(color: KColors.panelBorder, height: 20),
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: KColors.well,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: KColors.panelBorder, width: 0.8),
+                  ),
+                  child: Row(
+                    children: [
+                      const Icon(LucideIcons.arrowDownCircle, size: 18, color: KColors.lav),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Трафик сессии k-Tunnel: ${networkController!.formattedSessionTraffic}',
+                              style: KTypography.caption.copyWith(
+                                color: KColors.ink,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              'Скорость: ${networkController!.currentSpeedMbps} Мбит/с • Без сжатия битрейта',
+                              style: KTypography.monoStats.copyWith(
+                                fontSize: 9,
+                                color: KColors.faint,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ],
           ),
         );
