@@ -4,6 +4,7 @@ import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../core/theme/k_colors.dart';
 import '../../../../core/theme/k_glass.dart';
 import '../../../../core/theme/k_typography.dart';
+import '../../domain/services/emote_cache_manager.dart';
 
 class EmoteModel {
   final String name;
@@ -19,11 +20,13 @@ class EmoteModel {
 
 class ChatterinoEmotesSheet extends StatefulWidget {
   final String channel;
+  final EmoteCacheManager? cacheManager;
   final ValueChanged<String> onSelectEmote;
 
   const ChatterinoEmotesSheet({
     super.key,
     required this.channel,
+    this.cacheManager,
     required this.onSelectEmote,
   });
 
@@ -94,11 +97,32 @@ class _ChatterinoEmotesSheetState extends State<ChatterinoEmotesSheet> {
           ),
           const SizedBox(height: 14),
 
-          // Заголовок и провайдер
+          // Заголовок, статус провайдера и кэш
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Смайлы', style: KTypography.sectionHeader),
+              Row(
+                children: [
+                  Text('Смайлы', style: KTypography.sectionHeader),
+                  const SizedBox(width: 8),
+                  if (widget.cacheManager != null)
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: KColors.accBg,
+                        borderRadius: BorderRadius.circular(999),
+                        border: Border.all(color: KColors.accBorder, width: 0.8),
+                      ),
+                      child: Text(
+                        'Кэш: ${widget.cacheManager!.totalCachedEmotes} (0 мс)',
+                        style: KTypography.monoStats.copyWith(
+                          fontSize: 9,
+                          color: KColors.lavInk,
+                        ),
+                      ),
+                    ),
+                ],
+              ),
               Row(
                 children: [
                   Container(

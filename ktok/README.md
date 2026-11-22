@@ -1,61 +1,52 @@
 # 🎵 kTok — TikTok Mod by kipsway
 
-> **Архитектура:** ReVanced CLI + Smali/Dex патчи MargyT + Палитра «Мозаика»  
-> **Имя пакета:** `com.kipsway.ktok` (параллельная установка с оригиналом)  
+> **Архитектура:** ReVanced CLI + Собственный движок `patcher_engine.py` + Smali-хуки + Палитра «Мозаика»  
+> **Имя пакета:** `com.kipsway.ktok` (параллельная установка с оригинальным TikTok)  
 > **Фирменные цвета:** Оникс `#0A0A0C`, панели `#0F0F12`, лаванда `#B8A7F0`, активная рамка `#7E6FC4`
 
 ---
 
 ## ⚡ Функционал
-1. **Скачивание без водяного знака:** Прямой перехват `play_addr` вместо замусоренного `download_addr`.
-2. **Скачивание аудио:** Экспорт трека ролика в `.mp3`/`.aac` в системную папку `Music/kTok`.
-3. **Смена региона:** Подмена `TelephonyManager.getSimCountryIso()` без необходимости извлекать SIM-карту.
-4. **Вырезание рекламы:** Полная фильтрация спонсированных роликов в ленте `For You`.
-5. **Человеческие названия:** Простые пункты настроек («Настройки kTok», «Скачать без знака», «Сменить регион»).
+1. **Скачивание без водяного знака:** Прямой перехват `play_addr` вместо `download_addr`. Видео сохраняется в высоком качестве в `Movies/kTok` через MediaStore API (Android 10 - 15+).
+2. **Скачивание аудио:** Экспорт трека ролика в `.mp3` в системную папку `Music/kTok`.
+3. **Смена региона (Region Spoofing):** Спуфинг SIM/Network ISO (США, Германия, Нидерланды, Япония, Казахстан и др.) без извлечения SIM-карты.
+4. **Вырезание рекламы:** Полное удаление спонсированных роликов и рекламных карточек в ленте `For You`.
+5. **Человеческие названия меню:** «Настройки kTok», «Скачать без знака», «Сменить регион», «Скрыть рекламу в ленте».
+6. **Быстрое меню действий (`KTokActionDialog`):** Вызов по долгому тапу на видео для мгновенного скачивания или смены региона.
 
 ---
 
 ## 📁 Структура проекта
 ```text
 ktok/
+├── src/com/kipsway/ktok/
+│   ├── KTokDownloader.java       # MediaStore Scoped Storage загрузчик (Movies/kTok, Music/kTok)
+│   ├── KTokRegionDialog.java     # Сквиркл-диалог выбора страны («Сменить регион»)
+│   ├── KTokSettingsActivity.java # Полный экран «Настройки kTok» в палитре «Мозаика»
+│   └── KTokActionDialog.java     # Быстрое меню действий ролика по долгому тапу
 ├── patches/
-│   ├── patches.json            # Конфиг активных патчей ReVanced
+│   ├── patches.json              # Конфиг ReVanced CLI
+│   ├── manifest/
+│   │   └── package_rules.json    # Правила подмены пакета и изоляции провайдеров
 │   └── smali/
-│       └── KTokHook.smali      # Байткод-хуки региона, фильтра рекламы и чистых ссылок
+│       └── KTokHook.smali        # Точки перехвата байткода
 ├── res/
-│   ├── values/
-│   │   ├── colors.xml          # Цветовая палитра «Мозаика»
-│   │   └── strings.xml         # Локализация и русские названия пунктов
-│   ├── values-ru/
-│   │   └── strings.xml         # Русскоязычные строковые ресурсы
-│   ├── drawable/
-│   │   ├── ic_launcher_background.xml
-│   │   └── ic_launcher_foreground.xml
-│   └── mipmap-anydpi-v26/
-│       ├── ic_launcher.xml     # Адаптивная иконка в сквиркле
-│       └── ic_launcher_round.xml
+│   ├── values/colors.xml         # Цветовая палитра «Мозаика»
+│   ├── values-ru/strings.xml     # Локализация и русские названия
+│   └── drawable/ic_launcher_*    # Адаптивная иконка в сквиркле
 ├── scripts/
-│   ├── build_ktok.ps1          # Скрипт сборки под Windows (PowerShell)
-│   └── build_ktok.sh           # Скрипт сборки под Linux/WSL (Bash)
-├── assets/
-│   └── ktok_icon.svg           # Превью векторной иконки для kStore
+│   ├── patcher_engine.py         # Движок автоматического патчинга Smali и Manifest
+│   ├── build_ktok.ps1            # Скрипт сборки под Windows (PowerShell)
+│   └── build_ktok.sh             # Скрипт сборки под Linux/WSL (Bash)
 └── .github/workflows/
-    └── build_ktok.yml          # Облачный CI/CD пайплайн GitHub Actions
+    └── build_ktok.yml            # CI/CD сборка и публикация в GitHub Releases (для kStore)
 ```
 
 ---
 
-## 🛠 Локальная сборка
-### Windows (PowerShell):
+## 🛠 Сборка APK
 ```powershell
 cd ktok/scripts
 .\build_ktok.ps1 -InputApk "..\tiktok_stock.apk"
 ```
-
-### Linux / WSL:
-```bash
-cd ktok/scripts
-chmod +x build_ktok.sh
-./build_ktok.sh "../tiktok_stock.apk"
-```
-Готовый подписанный APK будет сохранен в `ktok/out/kTok-by_kipsway.apk`.
+Готовый подписанный APK сохраняется в `ktok/out/kTok-by_kipsway.apk`.

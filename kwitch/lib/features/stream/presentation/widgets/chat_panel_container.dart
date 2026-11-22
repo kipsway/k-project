@@ -4,6 +4,7 @@ import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../core/theme/k_colors.dart';
 import '../../../../core/theme/k_typography.dart';
 import '../../../chat/domain/models/chat_user_profile.dart';
+import '../../../chat/domain/services/emote_cache_manager.dart';
 import '../../../chat/presentation/controllers/chatterino_controller.dart';
 import '../../../chat/presentation/widgets/chatterino_emotes_sheet.dart';
 import '../../../chat/presentation/widgets/chatterino_webview.dart';
@@ -28,17 +29,20 @@ class ChatPanelContainer extends StatefulWidget {
 
 class _ChatPanelContainerState extends State<ChatPanelContainer> {
   late final ChatterinoController _chatterinoController;
+  late final EmoteCacheManager _cacheManager;
   bool _useWebViewEngine = true;
 
   @override
   void initState() {
     super.initState();
     _chatterinoController = ChatterinoController(channel: widget.channelName);
+    _cacheManager = EmoteCacheManager()..preloadDefaultEmotes();
   }
 
   @override
   void dispose() {
     _chatterinoController.dispose();
+    _cacheManager.dispose();
     super.dispose();
   }
 
@@ -50,6 +54,7 @@ class _ChatPanelContainerState extends State<ChatPanelContainer> {
       builder: (context) {
         return ChatterinoEmotesSheet(
           channel: widget.channelName,
+          cacheManager: _cacheManager,
           onSelectEmote: (emote) {
             _chatterinoController.insertEmote(emote);
           },
@@ -132,7 +137,7 @@ class _ChatPanelContainerState extends State<ChatPanelContainer> {
                   children: [
                     Text('Чат', style: KTypography.sectionHeader),
                     const SizedBox(width: 8),
-                    // Бейдж Chatterino+ со статусом зеркал
+                    // Бейдж Chatterino+ со статусом зеркал и кэша
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                       decoration: BoxDecoration(

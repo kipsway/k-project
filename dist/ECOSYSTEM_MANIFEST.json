@@ -1,0 +1,55 @@
+﻿{
+    "EcosystemName":  "k-Ecosystem",
+    "Author":  "kipsway",
+    "ReleaseDate":  "2026-11-22 20:01:51",
+    "DesignSystem":  "Liquid Glass + Material You 3 + Chatterino+ (Mosaic by Rish)",
+    "NetworkCore":  "k-Tunnel Embedded (Selective Loopback Proxy)",
+    "SigningCertificate":  {
+                               "ValidityDays":  10000,
+                               "Alias":  "kipsway",
+                               "Algorithm":  "RSA-2048 / SHA384withRSA",
+                               "Keystore":  "kipsway.keystore"
+                           },
+    "Applications":  [
+                         {
+                             "Id":  "kstore",
+                             "Name":  "kStore",
+                             "Role":  "Каталог и установщик (Жидкое стекло + M3 + палитра Chatterino+)",
+                             "Path":  "C:\\Users\\ДДД\\Desktop\\s\\kstore",
+                             "Package":  "com.kipsway.kstore",
+                             "Version":  "1.0.0"
+                         },
+                         {
+                             "Id":  "ktube",
+                             "Name":  "kTube",
+                             "Role":  "YouTube без рекламы со встроенным ядром k-Tunnel 4K и SponsorBlock",
+                             "Path":  "C:\\Users\\ДДД\\Desktop\\s\\ktube",
+                             "Package":  "com.kipsway.ktube",
+                             "Version":  "1.0.0"
+                         },
+                         {
+                             "Id":  "kwitch",
+                             "Name":  "kWitch",
+                             "Role":  "Twitch со встроенным чатом Chatterino+ (Rish) и туннелем 1440p",
+                             "Path":  "C:\\Users\\ДДД\\Desktop\\s\\kwitch",
+                             "Package":  "com.kipsway.kwitch",
+                             "Version":  "1.0.0"
+                         },
+                         {
+                             "Id":  "kgram",
+                             "Name":  "kGram",
+                             "Role":  "Форк Telegram на базе NimarkoGram с туннелем k-Tunnel и RX Playa",
+                             "Path":  "C:\\Users\\ДДД\\Desktop\\s\\kgram",
+                             "Package":  "com.kipsway.kgram",
+                             "Version":  "13.2.2"
+                         },
+                         {
+                             "Id":  "ktok",
+                             "Name":  "kTok",
+                             "Role":  "TikTok без водяных знаков, со сменой региона и вырезкой рекламы",
+                             "Path":  "C:\\Users\\ДДД\\Desktop\\s\\ktok",
+                             "Package":  "com.kipsway.ktok",
+                             "Version":  "34.0.0"
+                         }
+                     ]
+}

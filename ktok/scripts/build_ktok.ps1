@@ -116,6 +116,13 @@ if (Test-Path $ManifestFile) {
     Set-Content -Path $ManifestFile -Value $mContent
 }
 
+# Запуск автоматического движка патчинга байткода и манифеста
+$PatcherEngine = Join-Path $ScriptDir "patcher_engine.py"
+if (Test-Path $PatcherEngine) {
+    Write-Host "[+] Шаг 2.5: Запуск автоматического байткод-патчера kTok..." -ForegroundColor Cyan
+    & python $PatcherEngine $DecompileDir
+}
+
 Write-Host "[+] Шаг 3: Сборка модифицированного APK с новыми ресурсами..." -ForegroundColor Cyan
 $ResourceModApk = Join-Path $BuildDir "tiktok_res_mod.apk"
 & java -jar $ApktoolJar b $DecompileDir -o $ResourceModApk

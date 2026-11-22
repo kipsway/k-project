@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'mod_detail_sheet.dart';
 import 'search_modal.dart';
+import 'settings_sheet.dart';
 import 'downloads_view.dart';
 import 'info_view.dart';
 import '../models/mod_item.dart';
@@ -303,7 +304,7 @@ class _StoreScreenState extends State<StoreScreen> {
               _buildRoundButton(
                 icon: Icons.settings_rounded,
                 onTap: () {
-                  // Открытие настроек kStore
+                  SettingsSheet.show(context);
                 },
               ),
             ],

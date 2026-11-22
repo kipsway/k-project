@@ -92,6 +92,13 @@ if [ -f "$MANIFEST_FILE" ]; then
     sed -i -E 's|</application>|<activity android:name="com.kipsway.ktok.KTokSettingsActivity" android:exported="false" android:theme="@android:style/Theme.NoTitleBar" /></application>|g' "$MANIFEST_FILE"
 fi
 
+# Запуск автоматического движка патчинга байткода и манифеста
+PATCHER_ENGINE="$SCRIPT_DIR/patcher_engine.py"
+if [ -f "$PATCHER_ENGINE" ]; then
+    echo -e "\033[1;36m[+] Шаг 2.5: Запуск автоматического байткод-патчера kTok...\033[0m"
+    python3 "$PATCHER_ENGINE" "$DECOMPILE_DIR"
+fi
+
 echo -e "\033[1;36m[+] Шаг 3: Пересборка ресурсов...\033[0m"
 RES_MOD_APK="$BUILD_DIR/tiktok_res_mod.apk"
 java -jar "$APKTOOL_JAR" b "$DECOMPILE_DIR" -o "$RES_MOD_APK"
