@@ -39,6 +39,7 @@ class PlayerControlsOverlay extends StatefulWidget {
   final VoidCallback onToggleOverlayChat;
   final VoidCallback onToggleNerdStats;
   final VoidCallback onOpenSleepTimer;
+  final VoidCallback onOpenChannelsDrawer;
   final VoidCallback onToggleLockControls;
   final VoidCallback onToggleMute;
   final VoidCallback onCatchUpLive;
@@ -74,6 +75,7 @@ class PlayerControlsOverlay extends StatefulWidget {
     required this.onToggleOverlayChat,
     required this.onToggleNerdStats,
     required this.onOpenSleepTimer,
+    required this.onOpenChannelsDrawer,
     required this.onToggleLockControls,
     required this.onToggleMute,
     required this.onCatchUpLive,
@@ -177,7 +179,7 @@ class _PlayerControlsOverlayState extends State<PlayerControlsOverlay> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  // ВЕРХНИЙ БАР: инфо о стримере, звук, замок, таймер, PiP, онлайн
+                  // ВЕРХНИЙ БАР: инфо о стримере, звук, каналы, замок, таймер, PiP, онлайн
                   Row(
                     children: [
                       // Кнопка Назад
@@ -226,6 +228,18 @@ class _PlayerControlsOverlayState extends State<PlayerControlsOverlay> {
                         ),
                       ),
                       const SizedBox(width: 6),
+
+                      // Кнопка переключения каналов (Хаб стримов)
+                      IconButton(
+                        onPressed: () {
+                          HapticFeedback.selectionClick();
+                          widget.onOpenChannelsDrawer();
+                        },
+                        icon: const Icon(LucideIcons.tv, color: KColors.lav, size: 18),
+                        tooltip: 'Выбор стрима',
+                        padding: const EdgeInsets.symmetric(horizontal: 4),
+                        constraints: const BoxConstraints(),
+                      ),
 
                       // Кнопка Mute / Unmute
                       IconButton(

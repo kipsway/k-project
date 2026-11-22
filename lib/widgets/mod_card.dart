@@ -3,6 +3,7 @@ import '../models/mod_item.dart';
 import '../theme/colors.dart';
 import '../theme/text_styles.dart';
 import 'glass_container.dart';
+import 'mod_icon.dart';
 
 /// Карточка мода в каталоге kStore.
 /// Сочетает жидкое стекло, скругление сквиркла 24px, тактильную пружинную
@@ -163,38 +164,12 @@ class _ModCardState extends State<ModCard> with SingleTickerProviderStateMixin {
     );
   }
 
-  /// Квадратная скругленная иконка мода (56x56)
+  /// Векторная скругленная иконка мода (56x56)
   Widget _buildIcon() {
-    return Container(
-      width: 56,
-      height: 56,
-      decoration: BoxDecoration(
-        color: KColors.cellOff,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: KColors.panelBorder,
-          width: 1.0,
-        ),
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            KColors.accBg.withOpacity(0.6),
-            KColors.cellOff,
-          ],
-        ),
-      ),
-      child: Center(
-        child: Text(
-          widget.mod.name.isNotEmpty ? widget.mod.name[0] : 'k',
-          style: const TextStyle(
-            fontFamily: KTextStyles.fontFamily,
-            fontSize: 24,
-            fontWeight: FontWeight.w800,
-            color: KColors.lav,
-          ),
-        ),
-      ),
+    return ModIcon(
+      modId: widget.mod.id,
+      size: 56,
+      radius: 16,
     );
   }
 

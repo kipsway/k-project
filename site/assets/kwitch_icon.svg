@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <!-- Глубокий ониксовый градиент фона -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#141318"/>
+      <stop offset="50%" stop-color="#0E0D12"/>
+      <stop offset="100%" stop-color="#08070A"/>
+    </linearGradient>
+
+    <!-- Фирменный лавандовый градиент Twitch/Chatterino+ -->
+    <linearGradient id="twitchGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ECEBF1"/>
+      <stop offset="35%" stop-color="#D4C9FA"/>
+      <stop offset="100%" stop-color="#B8A7F0"/>
+    </linearGradient>
+
+    <!-- Стеклянный блик рамки -->
+    <linearGradient id="rimGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.22"/>
+      <stop offset="40%" stop-color="#B8A7F0" stop-opacity="0.10"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.0"/>
+    </linearGradient>
+
+    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="15" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+
+  <!-- Сквиркл-фон 512x512 -->
+  <rect x="16" y="16" width="480" height="480" rx="132" fill="url(#bgGrad)"/>
+  <rect x="16" y="16" width="480" height="480" rx="132" fill="none" stroke="url(#rimGrad)" stroke-width="3"/>
+  <rect x="18" y="18" width="476" height="476" rx="130" fill="none" stroke="#2C2B32" stroke-width="1.5" stroke-opacity="0.6"/>
+
+  <!-- Фоновое свечение в центре -->
+  <circle cx="256" cy="256" r="140" fill="#B8A7F0" opacity="0.08" filter="url(#glow)"/>
+
+  <!-- Легендарный баббл Twitch Glitch (100% каноничная геометрия) -->
+  <g transform="translate(6, 0)">
+    <!-- Теневое неоновое свечение контура -->
+    <path d="M 104 116 L 372 116 L 408 152 L 408 344 L 324 344 L 284 384 L 244 344 L 176 344 L 104 272 Z"
+          fill="#7E6FC4" opacity="0.38" filter="url(#glow)"/>
+
+    <!-- Основное тело баббла Twitch (Лаванда #B8A7F0) -->
+    <path d="M 104 116 L 372 116 L 408 152 L 408 344 L 324 344 L 284 384 L 244 344 L 176 344 L 104 272 Z"
+          fill="url(#twitchGrad)"/>
+
+    <!-- Внутренний глубокий вырез оникс #0A0A0C -->
+    <path d="M 136 148 L 376 148 L 376 312 L 308 312 L 276 344 L 244 312 L 176 312 L 136 272 Z"
+          fill="#0A0A0C"/>
+
+    <!-- Фирменные вертикальные глаза Twitch Glitch (Лавандовые) -->
+    <rect x="220" y="196" width="28" height="64" rx="10" fill="url(#twitchGrad)"/>
+    <rect x="288" y="196" width="28" height="64" rx="10" fill="url(#twitchGrad)"/>
+  </g>
+</svg>

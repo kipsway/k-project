@@ -42,6 +42,7 @@ class VideoPlayerContainer extends StatefulWidget {
   final VoidCallback onToggleMute;
   final VoidCallback onCatchUpLive;
   final VoidCallback? onEnterPip;
+  final VoidCallback? onOpenChannelsDrawer;
   final ValueChanged<String>? onSendOverlayMessage;
 
   const VideoPlayerContainer({
@@ -79,6 +80,7 @@ class VideoPlayerContainer extends StatefulWidget {
     required this.onToggleMute,
     required this.onCatchUpLive,
     this.onEnterPip,
+    this.onOpenChannelsDrawer,
     this.onSendOverlayMessage,
   });
 
@@ -207,6 +209,7 @@ class _VideoPlayerContainerState extends State<VideoPlayerContainer> {
                 onToggleOverlayChat: widget.onToggleOverlayChat,
                 onToggleNerdStats: widget.onToggleNerdStats,
                 onOpenSleepTimer: widget.onOpenSleepTimer,
+                onOpenChannelsDrawer: widget.onOpenChannelsDrawer ?? () {},
                 onToggleLockControls: widget.onToggleLockControls,
                 onToggleMute: widget.onToggleMute,
                 onCatchUpLive: widget.onCatchUpLive,

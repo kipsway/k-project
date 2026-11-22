@@ -4,6 +4,7 @@ import '../models/mod_item.dart';
 import '../theme/colors.dart';
 import '../theme/text_styles.dart';
 import '../widgets/glass_container.dart';
+import '../widgets/mod_icon.dart';
 
 /// Шторка детальной информации о моде (Liquid Glass Bottom Sheet).
 /// Открывается при нажатии на карточку мода в основном каталоге.
@@ -150,34 +151,11 @@ class ModDetailSheet extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Крупная иконка
-        Container(
-          width: 64,
-          height: 64,
-          decoration: BoxDecoration(
-            color: KColors.cellOff,
-            borderRadius: BorderRadius.circular(18),
-            border: Border.all(color: KColors.panelBorder, width: 1.0),
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                KColors.accBg,
-                KColors.cellOff,
-              ],
-            ),
-          ),
-          child: Center(
-            child: Text(
-              mod.name.isNotEmpty ? mod.name[0] : 'k',
-              style: const TextStyle(
-                fontFamily: KTextStyles.fontFamily,
-                fontSize: 28,
-                fontWeight: FontWeight.w800,
-                color: KColors.lav,
-              ),
-            ),
-          ),
+        // Крупная векторная иконка
+        ModIcon(
+          modId: mod.id,
+          size: 64,
+          radius: 18,
         ),
         const SizedBox(width: 16),
         // Инфо

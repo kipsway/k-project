@@ -1,29 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="AppName">kGram</string>
-    <string name="AppNameBeta">kGram</string>
+    <string name="AppNameBeta">kGram Beta</string>
     <string name="kgram_author_tag">by kipsway</string>
 
     <!-- Основные разделы настроек (на человеческом русском) -->
     <string name="kgram_settings_title">Настройки kGram</string>
-    <string name="kgram_settings_summary">Мозаика, плеер RX Playa, приватность и медиа</string>
+    <string name="kgram_settings_summary">Мозаика, плеер RX Playa, k-Tunnel и приватность</string>
 
     <!-- Оформление -->
-    <string name="kgram_theme_mozaik">Цвета «Мозаика»</string>
+    <string name="kgram_theme_mozaik">Цвета Мозаика</string>
     <string name="kgram_theme_mozaik_desc">Глубокий оникс #0A0A0C и лаванда #B8A7F0</string>
 
     <!-- Аудиоплеер -->
-    <string name="kgram_player_title">Плеер RX Playa</string>
-    <string name="kgram_player_desc">Крупная обложка, мягкое виньетирование и капсульные кнопки</string>
+    <string name="kgram_player_title">Музыкальный плеер</string>
+    <string name="kgram_player_desc">Крупная обложка 28dp, виньетирование и жестовое управление RX Playa</string>
+
+    <!-- Сеть и ускорение -->
+    <string name="kgram_ktunnel_accel">Ускорение k-Tunnel</string>
+    <string name="kgram_ktunnel_desc">Встроенный авто-туннель для стабильной связи без блокировок</string>
 
     <!-- Приватность (NimarkoGram) -->
     <string name="kgram_privacy_ghost">Призрачный режим</string>
     <string name="kgram_privacy_ghost_desc">Не отмечать сообщения прочитанными при открытии</string>
-    <string name="kgram_privacy_typing">Скрыть набор текста</string>
+    <string name="kgram_privacy_typing">Скрыть статус набора текста</string>
     <string name="kgram_privacy_typing_desc">Собеседники не видят статус «печатает...»</string>
     <string name="kgram_privacy_deleted">Сохранять удаленные сообщения</string>
+    <string name="kgram_privacy_deleted_desc">Отображать удаленные собеседником сообщения</string>
 
     <!-- Медиа и камера -->
     <string name="kgram_hd_video_notes">HD-видеосообщения</string>
-    <string name="kgram_hd_video_notes_desc">Запись кружочков в повышенном битрейте без сжатия</string>
+    <string name="kgram_hd_video_notes_desc">Запись кружочков в повышенном битрейте CameraX без сжатия</string>
 </resources>

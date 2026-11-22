@@ -1,24 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="AppName">kGram</string>
-    <string name="AppNameBeta">kGram</string>
+    <string name="AppNameBeta">kGram Beta</string>
     <string name="kgram_author_tag">by kipsway</string>
 
+    <!-- Main settings categories -->
     <string name="kgram_settings_title">kGram Settings</string>
-    <string name="kgram_settings_summary">Mozaik theme, RX Playa, privacy and media</string>
+    <string name="kgram_settings_summary">Mosaic theme, RX Playa player, k-Tunnel and privacy</string>
 
-    <string name="kgram_theme_mozaik">Mozaik Palette</string>
+    <!-- Appearance -->
+    <string name="kgram_theme_mozaik">Colors Mosaic</string>
     <string name="kgram_theme_mozaik_desc">Deep onyx #0A0A0C and lavender #B8A7F0</string>
 
-    <string name="kgram_player_title">RX Playa Audio</string>
-    <string name="kgram_player_desc">Large artwork, soft vignetting and capsule controls</string>
+    <!-- Audio player -->
+    <string name="kgram_player_title">Music Player</string>
+    <string name="kgram_player_desc">Large 28dp cover art, vignetting and RX Playa gestures</string>
 
+    <!-- Network -->
+    <string name="kgram_ktunnel_accel">k-Tunnel Acceleration</string>
+    <string name="kgram_ktunnel_desc">Built-in auto-tunnel for stable connectivity without DPI blocks</string>
+
+    <!-- Privacy (NimarkoGram core) -->
     <string name="kgram_privacy_ghost">Ghost Mode</string>
-    <string name="kgram_privacy_ghost_desc">Do not mark incoming messages as read</string>
+    <string name="kgram_privacy_ghost_desc">Do not mark incoming messages as read upon opening</string>
     <string name="kgram_privacy_typing">Hide Typing Status</string>
-    <string name="kgram_privacy_typing_desc">Contacts will not see typing indicators</string>
+    <string name="kgram_privacy_typing_desc">Contacts will not see the \"typing...\" status</string>
     <string name="kgram_privacy_deleted">Keep Deleted Messages</string>
+    <string name="kgram_privacy_deleted_desc">Display messages deleted by other party</string>
 
+    <!-- Media -->
     <string name="kgram_hd_video_notes">HD Video Notes</string>
-    <string name="kgram_hd_video_notes_desc">High bitrate round video messages</string>
+    <string name="kgram_hd_video_notes_desc">High-bitrate CameraX video messages without compression</string>
 </resources>

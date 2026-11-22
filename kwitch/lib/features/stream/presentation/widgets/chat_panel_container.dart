@@ -3,9 +3,11 @@ import 'package:flutter/services.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../core/theme/k_colors.dart';
 import '../../../../core/theme/k_typography.dart';
+import '../../../chat/domain/models/chat_display_settings.dart';
 import '../../../chat/domain/models/chat_user_profile.dart';
 import '../../../chat/domain/services/emote_cache_manager.dart';
 import '../../../chat/presentation/controllers/chatterino_controller.dart';
+import '../../../chat/presentation/widgets/chat_settings_sheet.dart';
 import '../../../chat/presentation/widgets/chatterino_emotes_sheet.dart';
 import '../../../chat/presentation/widgets/chatterino_webview.dart';
 import '../../../chat/presentation/widgets/user_card_sheet.dart';
@@ -30,6 +32,7 @@ class ChatPanelContainer extends StatefulWidget {
 class _ChatPanelContainerState extends State<ChatPanelContainer> {
   late final ChatterinoController _chatterinoController;
   late final EmoteCacheManager _cacheManager;
+  late final ChatDisplaySettings _displaySettings;
   bool _useWebViewEngine = true;
 
   @override
@@ -37,12 +40,33 @@ class _ChatPanelContainerState extends State<ChatPanelContainer> {
     super.initState();
     _chatterinoController = ChatterinoController(channel: widget.channelName);
     _cacheManager = EmoteCacheManager()..preloadDefaultEmotes();
+    _displaySettings = ChatDisplaySettings()..addListener(_onDisplaySettingsChanged);
+  }
+
+  void _onDisplaySettingsChanged() {
+    if (mounted) {
+      setState(() {});
+      // Динамическая инжекция CSS в WebView
+      _chatterinoController.webViewController?.runJavaScript('''
+        (function() {
+          let styleEl = document.getElementById('cpx-runtime-overrides');
+          if (!styleEl) {
+            styleEl = document.createElement('style');
+            styleEl.id = 'cpx-runtime-overrides';
+            document.head.appendChild(styleEl);
+          }
+          styleEl.textContent = `${_displaySettings.toCssOverrides()}`;
+        })();
+      ''');
+    }
   }
 
   @override
   void dispose() {
     _chatterinoController.dispose();
     _cacheManager.dispose();
+    _displaySettings.removeListener(_onDisplaySettingsChanged);
+    _displaySettings.dispose();
     super.dispose();
   }
 
@@ -61,6 +85,10 @@ class _ChatPanelContainerState extends State<ChatPanelContainer> {
         );
       },
     );
+  }
+
+  void _openChatSettings() {
+    ChatSettingsSheet.show(context, _displaySettings);
   }
 
   void _openUserCard(String username) {
@@ -170,6 +198,15 @@ class _ChatPanelContainerState extends State<ChatPanelContainer> {
                 ),
                 Row(
                   children: [
+                    // Кнопка настроек чата
+                    IconButton(
+                      onPressed: _openChatSettings,
+                      icon: const Icon(LucideIcons.sliders, size: 17, color: KColors.muted),
+                      tooltip: 'Настройки чата',
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(),
+                    ),
+                    const SizedBox(width: 12),
                     // Переключатель режима движка (WebView / Native)
                     IconButton(
                       onPressed: () {
@@ -185,7 +222,7 @@ class _ChatPanelContainerState extends State<ChatPanelContainer> {
                       padding: EdgeInsets.zero,
                       constraints: const BoxConstraints(),
                     ),
-                    const SizedBox(width: 14),
+                    const SizedBox(width: 12),
                     // Пауза чата
                     IconButton(
                       onPressed: () {
@@ -201,7 +238,7 @@ class _ChatPanelContainerState extends State<ChatPanelContainer> {
                       padding: EdgeInsets.zero,
                       constraints: const BoxConstraints(),
                     ),
-                    const SizedBox(width: 14),
+                    const SizedBox(width: 12),
                     // Кнопка Смайлы
                     GestureDetector(
                       onTap: () {

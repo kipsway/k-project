@@ -1,0 +1,20 @@
+From: kipsway <kipsway0@gmail.com>
+Subject: [PATCH] kGram: Native integration of KGramSettingsFragment into SettingsActivity
+
+---
+ .../src/main/java/org/telegram/ui/SettingsActivity.java  | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/TMessagesProj/src/main/java/org/telegram/ui/SettingsActivity.java b/TMessagesProj/src/main/java/org/telegram/ui/SettingsActivity.java
+index 1234567..89abcde 100644
+--- a/TMessagesProj/src/main/java/org/telegram/ui/SettingsActivity.java
++++ b/TMessagesProj/src/main/java/org/telegram/ui/SettingsActivity.java
+@@ -1132,7 +1132,7 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
+         switch (item.id) {
+             case 900:
+-                presentFragment(new app.nimarkogram.messenger.preferences.MainPreferencesActivity());
++                presentFragment(new org.kipsway.kgram.settings.KGramSettingsFragment());
+                 return;
+             case 1:
+                 presentSettingFragment(new UserInfoActivity());
+-- 

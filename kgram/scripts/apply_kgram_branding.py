@@ -185,6 +185,14 @@ def apply_branding(repo_root):
              r"if (org.kipsway.kgram.player.RxPlayaHelper.isEnabled(context)) {\n            org.kipsway.kgram.player.RxPlayaHelper.attachPlayer(context, playerLayout);\n        } else {\n            \1\n        }")
         ])
 
+    # Hook into SettingsActivity.java (Item 900 -> KGramSettingsFragment)
+    settings_activity_path = os.path.join(repo_root, "TMessagesProj", "src", "main", "java", "org", "telegram", "ui", "SettingsActivity.java")
+    if os.path.exists(settings_activity_path):
+        patch_file(settings_activity_path, [
+            (r"case 900:\s*presentFragment\(new app\.nimarkogram\.messenger\.preferences\.MainPreferencesActivity\(\)\);",
+             r"case 900:\n                presentFragment(new org.kipsway.kgram.settings.KGramSettingsFragment());")
+        ])
+
     # 8. Configure signing in private.properties
     signing_keystore = os.path.join(kgram_dir, "signing", "kipsway.keystore")
     private_props_path = os.path.join(repo_root, "private.properties")

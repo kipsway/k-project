@@ -42,10 +42,28 @@ Write-Host "==========================================================" -Foregro
 }
 
 # 2. Проверка Java
-try {
-    $javaVer = & java -version 2>&1
+$KnownJavaPaths = @(
+    (Join-Path $env:LOCALAPPDATA "Programs\PrismLauncher\java\java-runtime-delta\bin"),
+    (Join-Path $env:ProgramFiles "Java\jdk-21\bin"),
+    (Join-Path $env:ProgramFiles "Java\jdk-17\bin")
+)
+if (-not (Get-Command java -ErrorAction SilentlyContinue)) {
+    foreach ($p in $KnownJavaPaths) {
+        if (Test-Path (Join-Path $p "java.exe")) {
+            $env:Path = "$p;$env:Path"
+            break
+        }
+    }
+}
+
+$javaCmd = Get-Command java -ErrorAction SilentlyContinue
+if ($javaCmd) {
+    $prevEAP = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
+    $javaVer = & $javaCmd.Source -version 2>&1
+    $ErrorActionPreference = $prevEAP
     Write-Host "[✓] Java найдена: $($javaVer[0])" -ForegroundColor Green
-} catch {
+} else {
     Write-Error "[!] Java (JDK 17+) не найдена в PATH! Установите OpenJDK 17 или выше."
     exit 1
 }

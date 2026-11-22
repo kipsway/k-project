@@ -3,6 +3,7 @@ import '../models/mod_item.dart';
 import '../theme/colors.dart';
 import '../theme/text_styles.dart';
 import '../widgets/glass_container.dart';
+import '../widgets/mod_icon.dart';
 
 /// Экран «Загрузки» (2-й таб парящего дока kStore).
 /// Отображает активные процессы скачивания APK и список установленных модов.
@@ -197,26 +198,11 @@ class DownloadsView extends StatelessWidget {
       padding: const EdgeInsets.all(14.0),
       child: Row(
         children: [
-          // Мини-иконка
-          Container(
-            width: 44,
-            height: 44,
-            decoration: BoxDecoration(
-              color: KColors.cellOff,
-              borderRadius: BorderRadius.circular(14),
-              border: Border.all(color: KColors.panelBorder, width: 0.8),
-            ),
-            child: Center(
-              child: Text(
-                mod.name.isNotEmpty ? mod.name[0] : 'k',
-                style: const TextStyle(
-                  fontFamily: KTextStyles.fontFamily,
-                  fontSize: 20,
-                  fontWeight: FontWeight.w800,
-                  color: KColors.lav,
-                ),
-              ),
-            ),
+          // Векторная мини-иконка
+          ModIcon(
+            modId: mod.id,
+            size: 44,
+            radius: 14,
           ),
           const SizedBox(width: 12),
           // Инфо

@@ -100,19 +100,19 @@
     }
 
     .app-icon {
-      width: 80px;
-      height: 80px;
-      background: linear-gradient(135deg, var(--acc-bg) 0%, var(--cell-off) 100%);
-      border: 1px solid var(--panel-border);
-      border-radius: 24px;
+      width: 88px;
+      height: 88px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      font-size: 40px;
-      font-weight: 800;
-      color: var(--lav);
       margin-bottom: 16px;
-      box-shadow: 0 10px 24px rgba(42, 36, 66, 0.4);
+      filter: drop-shadow(0 12px 24px rgba(42, 36, 66, 0.45));
+    }
+
+    .app-icon img {
+      width: 100%;
+      height: 100%;
+      border-radius: 24px;
     }
 
     .hero-title {
@@ -206,18 +206,21 @@
     }
 
     .mod-badge-icon {
-      width: 44px;
-      height: 44px;
-      background: var(--acc-bg);
-      border: 1px solid var(--panel-border);
-      border-radius: 14px;
+      width: 48px;
+      height: 48px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: 800;
-      font-size: 18px;
-      color: var(--lav);
       flex-shrink: 0;
+      border-radius: 14px;
+      overflow: hidden;
+      filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.35));
+    }
+
+    .mod-badge-icon img {
+      width: 100%;
+      height: 100%;
+      border-radius: 14px;
     }
 
     .mod-info {
@@ -310,7 +313,7 @@
   <div class="container">
     <!-- Hero Секция -->
     <div class="glass-card hero">
-      <div class="app-icon">k</div>
+      <div class="app-icon"><img src="assets/kstore_icon.svg" alt="kStore"></div>
       <h1 class="hero-title">kStore</h1>
       <div class="hero-author">by kipsway</div>
       <p class="hero-desc">
@@ -333,7 +336,7 @@
       <div class="section-title">Каталог приложений</div>
       <div class="mod-grid">
         <div class="mod-item">
-          <div class="mod-badge-icon">k</div>
+          <div class="mod-badge-icon"><img src="assets/ktok_icon.svg" alt="kTok"></div>
           <div class="mod-info">
             <div class="mod-header-line">
               <span class="mod-name">kTok</span>
@@ -344,7 +347,7 @@
         </div>
 
         <div class="mod-item">
-          <div class="mod-badge-icon">k</div>
+          <div class="mod-badge-icon"><img src="assets/kgram_icon.svg" alt="kGram"></div>
           <div class="mod-info">
             <div class="mod-header-line">
               <span class="mod-name">kGram</span>
@@ -355,7 +358,7 @@
         </div>
 
         <div class="mod-item">
-          <div class="mod-badge-icon">k</div>
+          <div class="mod-badge-icon"><img src="assets/ktube_icon.svg" alt="kTube"></div>
           <div class="mod-info">
             <div class="mod-header-line">
               <span class="mod-name">kTube</span>
@@ -366,7 +369,7 @@
         </div>
 
         <div class="mod-item">
-          <div class="mod-badge-icon">k</div>
+          <div class="mod-badge-icon"><img src="assets/kwitch_icon.svg" alt="kWitch"></div>
           <div class="mod-info">
             <div class="mod-header-line">
               <span class="mod-name">kWitch</span>

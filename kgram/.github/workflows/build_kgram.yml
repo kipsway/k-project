@@ -1,0 +1,184 @@
+name: kGram CI/CD — Build & Publish to kStore
+
+on:
+  push:
+    tags:
+      - 'v*'
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      build_type:
+        description: 'Build Type (Release or Debug)'
+        required: true
+        default: 'standalone'
+        type: choice
+        options:
+          - standalone
+          - debug
+
+permissions:
+  contents: write
+
+jobs:
+  build-kgram:
+    name: Build kGram APK (by kipsway)
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+
+    steps:
+      - name: 📥 Checkout kGram Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          submodules: recursive
+
+      - name: 🐍 Set up Python 3.11 (Chaquopy NDK Runtime)
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: ☕ Set up JDK 21 (Temurin)
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: 'gradle'
+
+      - name: 🤖 Set up Android SDK & NDK
+        uses: android-actions/setup-android@v3
+
+      - name: 📦 Install Android Build Tools & NDK 26.3
+        run: |
+          yes | sdkmanager --licenses > /dev/null 2>&1 || true
+          sdkmanager --install \
+            "ndk;26.3.11579264" \
+            "cmake;3.22.1" \
+            "build-tools;36.0.0" \
+            "platforms;android-36"
+
+      - name: 🔑 Decode and Setup Release Keystore
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+        run: |
+          mkdir -p kgram/signing
+          if [ -n "$KEYSTORE_BASE64" ]; then
+            echo "$KEYSTORE_BASE64" | base64 -d > kgram/signing/kipsway.keystore
+            echo "Successfully restored kipsway.keystore from GitHub Secrets."
+          else
+            echo "Generating build keystore fallback..."
+            keytool -genkeypair -v -keystore kgram/signing/kipsway.keystore \
+              -alias kipsway \
+              -keyalg RSA \
+              -keysize 2048 \
+              -validity 10000 \
+              -storepass kgram2026 \
+              -keypass kgram2026 \
+              -dname "CN=kipsway, OU=kGram, O=kipsway, C=RU"
+          fi
+
+      - name: 🛠️ Run kGram Configuration Script
+        run: |
+          chmod +x kgram/setup_kgram.sh
+          ./kgram/setup_kgram.sh "$(pwd)"
+
+      - name: 🏗️ Compile kGram Release APK
+        run: |
+          chmod +x gradlew
+          ./gradlew :TMessagesProj_AppStandalone:assembleAfatStandalone \
+            --no-daemon \
+            --stacktrace \
+            -Dorg.gradle.jvmargs="-Xmx8192m -XX:MaxMetaspaceSize=2048m -XX:+HeapDumpOnOutOfMemoryError"
+
+      - name: 🏷️ Determine Version and Output Artifacts
+        id: vars
+        run: |
+          VERSION="${GITHUB_REF#refs/tags/}"
+          if [ "$VERSION" = "refs/heads/main" ] || [ -z "$VERSION" ]; then
+            VERSION="v10.9.1-$(git rev-parse --short HEAD)"
+          fi
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+          
+          # Find APK
+          APK_PATH=$(find TMessagesProj_AppStandalone/build/outputs/apk -name "*.apk" | head -n 1)
+          if [ -f "$APK_PATH" ]; then
+            TARGET_APK="kGram-${VERSION}-arm.apk"
+            cp "$APK_PATH" "$TARGET_APK"
+            sha256sum "$TARGET_APK" > "${TARGET_APK}.sha256"
+            echo "APK_FILE=$TARGET_APK" >> $GITHUB_OUTPUT
+            echo "SHA_FILE=${TARGET_APK}.sha256" >> $GITHUB_OUTPUT
+          else
+            echo "ERROR: Output APK not found!"
+            exit 1
+          fi
+
+      - name: 🏪 Generate kStore Update Manifest
+        run: |
+          VERSION="${{ steps.vars.outputs.VERSION }}"
+          SHA256=$(cat "${{ steps.vars.outputs.SHA_FILE }}" | awk '{print $1}')
+          
+          python3 - <<EOF
+          import json
+
+          manifest = {
+              "id": "org.kipsway.kgram",
+              "name": "kGram",
+              "author": "by kipsway",
+              "version": "$VERSION".lstrip("v"),
+              "versionCode": 75559,
+              "rating": 4.9,
+              "description": "Форк Telegram с темой Мозаика (#0A0A0C, #B8A7F0), плеером RX Playa и ускорением k-Tunnel.",
+              "iconUrl": "https://raw.githubusercontent.com/${{ github.repository }}/main/kgram/assets/kgram_icon_512.png",
+              "apkUrl": "https://github.com/${{ github.repository }}/releases/download/$VERSION/${{ steps.vars.outputs.APK_FILE }}",
+              "sha256": "$SHA256",
+              "features": [
+                  "Цвета Мозаика: глубокий оникс #0A0A0C и лаванда #B8A7F0",
+                  "Плеер RX Playa: полноэкранная обложка 28dp со сквирклом и свайпами",
+                  "Сетевое ядро k-Tunnel: стабильная связь без блокировок",
+                  "Призрачный режим: скрытие статуса прочтения и набора текста",
+                  "HD-видеокружочки CameraX без потери битрейта"
+              ],
+              "changelog": "Релиз kGram $VERSION: обновленная палитра Мозаика из Chatterino+, улучшенный аудиоплеер RX Playa и сетевое ускорение k-Tunnel."
+          }
+
+          with open("kstore_manifest.json", "w", encoding="utf-8") as f:
+              json.dump(manifest, f, indent=2, ensure_ascii=False)
+          print("kStore manifest generated successfully.")
+          EOF
+
+      - name: 📤 Upload Build Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.vars.outputs.APK_FILE }}
+          path: |
+            ${{ steps.vars.outputs.APK_FILE }}
+            ${{ steps.vars.outputs.SHA_FILE }}
+            kstore_manifest.json
+
+      - name: 🚀 Publish to GitHub Releases
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          name: "kGram ${{ steps.vars.outputs.VERSION }} (by kipsway)"
+          body: |
+            ## 💬 kGram ${{ steps.vars.outputs.VERSION }}
+            > Кастомный форк Telegram от **kipsway** на базе NimarkoGram (Telegram 13.2.2).
+            
+            ### ✨ Что нового:
+            - 🎨 **Тема «Мозаика» по умолчанию:** глубокий ониксовый черный `#0A0A0C` и лавандовый акцент `#B8A7F0` из Chatterino+.
+            - 🎵 **Аудиоплеер RX Playa:** крупная обложка со сквирклом 28dp, виньетированием и жестовым управлением.
+            - ⚡ **Сетевое ускорение k-Tunnel:** встроенный авто-туннель для мгновенной загрузки медиа без блокировок.
+            - 👁️ **Приватность:** призрачный режим (Ghost mode), скрытие «печатает...», сохранение удаленных сообщений.
+            - 📹 **HD-кружочки CameraX:** видеосообщения в оригинальном битрейте без пережатия.
+            
+            ### 🔐 Контрольная сумма SHA-256:
+            \`\`\`
+            ${{ steps.vars.outputs.APK_FILE }}: $(cat ${{ steps.vars.outputs.SHA_FILE }})
+            \`\`\`
+          files: |
+            ${{ steps.vars.outputs.APK_FILE }}
+            ${{ steps.vars.outputs.SHA_FILE }}
+            kstore_manifest.json
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

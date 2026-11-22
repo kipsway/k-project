@@ -112,7 +112,7 @@ class KTokPatcher:
         # 2. Хук вырезания рекламы (Aweme.isAd)
         if ".method public isAd()Z" in content:
             new_content = re.sub(
-                r'(\.method public isAd\(\)Z[\s\S]*?)(return [vp]\d+)',
+                r'(\.method public isAd\(\)Z[\s\S]*?)(?:const/[^\n]+\n\s*)?return ([vp]\d+)',
                 r'\1const/4 \2, 0x0\n    return \2',
                 content
             )
@@ -121,8 +121,8 @@ class KTokPatcher:
                 modified = True
                 self.stats["ad_hooks"] += 1
 
-        # 3. Хук скачивания чистого видео (подмена download_addr на play_addr)
-        if "download_addr" in content and "play_addr" in content:
+        # 3. Хук скачивания чистого видео (подмена getDownloadAddr на getPlayAddr)
+        if "getDownloadAddr" in content:
             new_content = re.sub(
                 r'invoke-virtual\s+\{([vp]\d+)\},\s+Lcom/ss/android/ugc/aweme/feed/model/Video;->getDownloadAddr\(\)Lcom/ss/android/ugc/aweme/base/model/UrlModel;',
                 r'invoke-virtual {\1}, Lcom/ss/android/ugc/aweme/feed/model/Video;->getPlayAddr()Lcom/ss/android/ugc/aweme/base/model/UrlModel;',
