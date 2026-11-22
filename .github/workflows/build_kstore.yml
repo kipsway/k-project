@@ -30,15 +30,17 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: 🐦 Setup Flutter Stable
+      - name: 🐦 Setup Flutter 3.24.5
         uses: subosito/flutter-action@v2
         with:
-          channel: 'stable'
+          flutter-version: '3.24.5'
           cache: true
 
       - name: 🛠 Generate Missing Android Scaffolding & Wrapper
         run: |
+          rm -f android/build.gradle.kts android/settings.gradle.kts android/app/build.gradle.kts
           flutter create --org com.kipsway --project-name kstore --platforms android .
+          rm -f android/build.gradle.kts android/settings.gradle.kts android/app/build.gradle.kts
           flutter pub get
 
       - name: 🔑 Prepare Keystore
@@ -53,7 +55,7 @@ jobs:
 
       - name: 🔨 Compile Genuine Android APK
         run: |
-          flutter build apk --release --verbose --android-skip-build-dependency-validation
+          flutter build apk --release --verbose
 
       - name: 📤 Upload Native APK Artifact
         uses: actions/upload-artifact@v4
