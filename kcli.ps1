@@ -24,10 +24,11 @@ function Show-Menu {
     Write-Host "  [1] 🧪 Запустить тесты целостности экосистемы (23 проверки)" -ForegroundColor Green
     Write-Host "  [2] 🔄 Синхронизировать ключи подписи и обновить манифест" -ForegroundColor Yellow
     Write-Host "  [3] 📺 Собрать клиент kTube (YouTube 4K k-Tunnel)" -ForegroundColor Cyan
-    Write-Host "  [4] 📦 Сформировать дистрибутивный пакет в dist/" -ForegroundColor DarkCyan
-    Write-Host "  [5] 🌐 Открыть веб-лендинг экосистемы в браузере" -ForegroundColor Blue
-    Write-Host "  [6] 🔍 Проверить статус Git репозитория" -ForegroundColor White
-    Write-Host "  [7] 🚀 Запустить локальный диагностический демон k-Tunnel" -ForegroundColor Magenta
+    Write-Host "  [4] 💬 Настроить и пропатчить kGram (Telegram Мозаика + RX Playa)" -ForegroundColor Magenta
+    Write-Host "  [5] 📦 Сформировать дистрибутивный пакет в dist/" -ForegroundColor DarkCyan
+    Write-Host "  [6] 🌐 Открыть веб-лендинг экосистемы в браузере" -ForegroundColor Blue
+    Write-Host "  [7] 🔍 Проверить статус Git репозитория" -ForegroundColor White
+    Write-Host "  [8] 🚀 Запустить локальный диагностический демон k-Tunnel" -ForegroundColor Magenta
     Write-Host "  [0] 🚪 Выход" -ForegroundColor DarkGray
     Write-Host ""
 }
