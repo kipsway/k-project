@@ -63,8 +63,8 @@ jobs:
             echo "Secrets не заданы. Генерация воспроизводимого релизного ключа сборщика..."
             keytool -genkey -v -keystore ktok/keystore/kipsway.keystore \
               -alias kipsway -keyalg RSA -keysize 2048 -validity 10000 \
-              -storepass "${KEYSTORE_PASSWORD:-kipsway123}" \
-              -keypass "${KEYSTORE_PASSWORD:-kipsway123}" \
+              -storepass "${KEYSTORE_PASSWORD:-kipsway2026}" \
+              -keypass "${KEYSTORE_PASSWORD:-kipsway2026}" \
               -dname "CN=kipsway, OU=kTok, O=kipsway, C=RU"
           fi
 
@@ -74,7 +74,7 @@ jobs:
         run: |
           cd ktok/scripts
           if [ -s "../tiktok_stock.apk" ]; then
-            ./build_ktok.sh "../tiktok_stock.apk" "../out/kTok-by_kipsway.apk" "../keystore/kipsway.keystore" "${KEYSTORE_PASSWORD:-kipsway123}" "kipsway"
+            ./build_ktok.sh "../tiktok_stock.apk" "../out/kTok-by_kipsway.apk" "../keystore/kipsway.keystore" "${KEYSTORE_PASSWORD:-kipsway2026}" "kipsway"
           else
             echo "Создание mock-релиза для проверки пайплайна..."
             mkdir -p ../out

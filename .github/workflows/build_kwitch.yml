@@ -47,8 +47,8 @@ jobs:
           else
             keytool -genkey -v -keystore kwitch/android/kipsway.keystore \
               -alias kipsway -keyalg RSA -keysize 2048 -validity 10000 \
-              -storepass "${KEYSTORE_PASSWORD:-kipsway123}" \
-              -keypass "${KEYSTORE_PASSWORD:-kipsway123}" \
+              -storepass "${KEYSTORE_PASSWORD:-kipsway2026}" \
+              -keypass "${KEYSTORE_PASSWORD:-kipsway2026}" \
               -dname "CN=kipsway, OU=kWitch, O=kipsway, C=RU"
           fi
 
