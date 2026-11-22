@@ -1,43 +1,64 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
   <defs>
+    <!-- Глубокий ониксовый градиент фона -->
     <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#0F0F12"/>
-      <stop offset="100%" stop-color="#0A0A0C"/>
+      <stop offset="0%" stop-color="#141318"/>
+      <stop offset="50%" stop-color="#0E0D12"/>
+      <stop offset="100%" stop-color="#08070A"/>
     </linearGradient>
 
+    <!-- Фирменный лавандовый градиент хаба -->
     <linearGradient id="lavenderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#D4C9FA"/>
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="35%" stop-color="#D4C9FA"/>
       <stop offset="100%" stop-color="#B8A7F0"/>
     </linearGradient>
 
-    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
-      <feGaussianBlur stdDeviation="12" result="blur" />
-      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    <!-- Стеклянный блик рамки -->
+    <linearGradient id="rimGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.22"/>
+      <stop offset="40%" stop-color="#B8A7F0" stop-opacity="0.10"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.0"/>
+    </linearGradient>
+
+    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="15" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
     </filter>
   </defs>
 
-  <!-- Сквиркл-фон 512x512 со скруглением 128px -->
-  <rect x="16" y="16" width="480" height="480" rx="128" fill="url(#bgGrad)" stroke="#7E6FC4" stroke-width="4" />
+  <!-- Сквиркл-фон 512x512 -->
+  <rect x="16" y="16" width="480" height="480" rx="132" fill="url(#bgGrad)"/>
+  <rect x="16" y="16" width="480" height="480" rx="132" fill="none" stroke="url(#rimGrad)" stroke-width="3"/>
+  <rect x="18" y="18" width="476" height="476" rx="130" fill="none" stroke="#2C2B32" stroke-width="1.5" stroke-opacity="0.6"/>
 
-  <!-- Внутренний оптический блик по верхнему краю (Liquid Glass) -->
-  <path d="M 144 20 L 368 20 Q 400 20 420 40 Q 300 65 144 20 Z" fill="#B8A7F0" opacity="0.12" />
+  <!-- Фоновое свечение в центре -->
+  <circle cx="256" cy="256" r="140" fill="#B8A7F0" opacity="0.08" filter="url(#glow)"/>
 
-  <!-- Теневой акцентный контур (#7E6FC4) -->
-  <g transform="translate(10, 10)" opacity="0.6" filter="url(#glow)">
-    <rect x="110" y="180" width="292" height="230" rx="40" fill="#7E6FC4" />
-    <path d="M 176 180 C 176 130 206 90 256 90 C 306 90 336 130 336 180" stroke="#7E6FC4" stroke-width="32" stroke-linecap="round" fill="none" />
-  </g>
-
-  <!-- Фирменная корзина-хаб kStore (Лаванда #B8A7F0) -->
+  <!-- Фирменный символ kStore: Парящие слои приложений (App Stack) + Монограмма 'K' -->
   <g>
-    <!-- Ручка сумки/хаба -->
-    <path d="M 176 180 C 176 130 206 90 256 90 C 306 90 336 130 336 180" stroke="url(#lavenderGrad)" stroke-width="30" stroke-linecap="round" fill="none" />
-    
-    <!-- Корпус хаба -->
-    <rect x="110" y="180" width="292" height="230" rx="40" fill="url(#lavenderGrad)" />
-    
-    <!-- Внутренний символ k-Ecosystem (Глубокий оникс #0A0A0C) -->
-    <!-- Монограмма 'k' -->
-    <path d="M 215 235 L 215 355 M 295 245 L 230 305 L 300 355" stroke="#0A0A0C" stroke-width="26" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+    <!-- Нижний парящий слой (Теневая стеклянная подложка) -->
+    <path d="M 120 330 L 256 385 L 392 330 L 360 300 L 256 342 L 152 300 Z" 
+          fill="#7E6FC4" opacity="0.35" filter="url(#glow)"/>
+
+    <!-- Средний парящий слой приложений (Мягкая лаванда) -->
+    <path d="M 130 270 L 256 322 L 382 270 L 354 244 L 256 284 L 158 244 Z" 
+          fill="#7E6FC4" opacity="0.6"/>
+
+    <!-- Верхний главный ромб/слой приложений со стеклянным бликом -->
+    <g transform="translate(0, -20)">
+      <!-- Тень верхнего ромба -->
+      <polygon points="256,120 396,188 256,256 116,188" fill="#7E6FC4" opacity="0.4" filter="url(#glow)"/>
+      <!-- Основной верхний слой -->
+      <polygon points="256,120 396,188 256,256 116,188" fill="url(#lavenderGrad)"/>
+
+      <!-- Боковые грани верхнего слоя для 3D-объема -->
+      <polygon points="116,188 256,256 256,274 116,206" fill="#9C89E8"/>
+      <polygon points="396,188 256,256 256,274 396,206" fill="#7E6FC4"/>
+
+      <!-- Четкая геометрическая монограмма 'K' в центре верхнего слоя (Оникс #0A0A0C) -->
+      <path d="M 230 160 L 230 216 M 282 165 L 236 188 L 284 214" 
+            stroke="#0A0A0C" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
   </g>
 </svg>

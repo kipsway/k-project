@@ -250,7 +250,15 @@ class _StoreScreenState extends State<StoreScreen> {
               _buildRoundButton(
                 icon: Icons.search_rounded,
                 onTap: () {
-                  // Открытие быстрого поиска
+                  SearchModal.show(
+                    context,
+                    allMods: _mods,
+                    onInstallMod: (mod) {
+                      if (!mod.isInstalled || mod.hasUpdate) {
+                        _startDownload(mod);
+                      }
+                    },
+                  );
                 },
               ),
               const SizedBox(width: 10),

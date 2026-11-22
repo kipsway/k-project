@@ -54,21 +54,31 @@ if (-not (Test-Path $Icon512)) {
     Write-Host "[3/5] Branding icons verified." -ForegroundColor Green
 }
 
-# 4. Ensure Release Keystore exists
-$KeystorePath = Join-Path $ScriptDir "signing\kipsway.keystore"
-if (-not (Test-Path $KeystorePath)) {
-    Write-Host "[4/5] Generating release keystore (kipsway.keystore)..." -ForegroundColor Cyan
-    keytool -genkeypair -v -keystore $KeystorePath -alias kipsway -keyalg RSA -keysize 2048 -validity 10000 -storepass kgram2026 -keypass kgram2026 -dname "CN=kipsway, OU=kGram, O=kipsway, C=RU"
+# 4. Ensure Mozaik Theme is compiled
+$ThemeFile = Join-Path $ScriptDir "theme\mozaik.attheme"
+if (-not (Test-Path $ThemeFile)) {
+    Write-Host "[4/6] Compiling Mozaik theme (.attheme)..." -ForegroundColor Cyan
+    python (Join-Path $ScriptDir "scripts\build_mozaik_theme.py")
 } else {
-    Write-Host "[4/5] Release keystore verified: $KeystorePath" -ForegroundColor Green
+    Write-Host "[4/6] Mozaik theme verified." -ForegroundColor Green
 }
 
-# 5. Apply Branding and Package Isolation
-Write-Host "[5/5] Applying package isolation (org.kipsway.kgram) and strings..." -ForegroundColor Cyan
+# 5. Ensure Release Keystore exists
+$KeystorePath = Join-Path $ScriptDir "signing\kipsway.keystore"
+if (-not (Test-Path $KeystorePath)) {
+    Write-Host "[5/6] Generating release keystore (kipsway.keystore)..." -ForegroundColor Cyan
+    keytool -genkeypair -v -keystore $KeystorePath -alias kipsway -keyalg RSA -keysize 2048 -validity 10000 -storepass kgram2026 -keypass kgram2026 -dname "CN=kipsway, OU=kGram, O=kipsway, C=RU"
+} else {
+    Write-Host "[5/6] Release keystore verified: $KeystorePath" -ForegroundColor Green
+}
+
+# 6. Apply Branding, Theme & Package Isolation
+Write-Host "[6/6] Applying package isolation (org.kipsway.kgram), strings and Mozaik hook..." -ForegroundColor Cyan
 python (Join-Path $ScriptDir "scripts\apply_kgram_branding.py") $RepoPath
 
-Write-Host "`n>>> SUCCESS: kGram Шаг 1 завершен успешно! <<<" -ForegroundColor Green
+Write-Host "`n>>> SUCCESS: kGram готов к сборке! <<<" -ForegroundColor Green
 Write-Host "Пакет приложения: org.kipsway.kgram" -ForegroundColor White
+Write-Host "Дефолтная тема: Мозаика (#0A0A0C, #B8A7F0)" -ForegroundColor White
 Write-Host "Подпись: kipsway.keystore" -ForegroundColor White
 Write-Host "Базовые меню: Настройки kGram, Цвета Мозаика, k-Tunnel, Музыкальный плеер" -ForegroundColor White
 Write-Host "==========================================================" -ForegroundColor Cyan
