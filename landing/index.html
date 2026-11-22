@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>k-Ecosystem — Мобильные клиенты от kipsway</title>
+  <meta name="description" content="Премиальные клиенты kTube, kWitch, kGram, kTok и каталог kStore без рекламы со встроенным ядром k-Tunnel для 4K без замедлений.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0A0A0C;
+      --panel: #0F0F12;
+      --raised: #1C1B21;
+      --border: #2C2B32;
+      --border-well: #1F1E24;
+      --ink: #ECEBF1;
+      --muted: #8D8A99;
+      --faint: #6F6C7A;
+      --lav: #B8A7F0;
+      --lav-ink: #D9CFFD;
+      --acc-bg: #2A2442;
+      --acc-border: #7E6FC4;
+      --green: #3FB950;
+      --glass-surface: rgba(15, 15, 18, 0.82);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--ink);
+      font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
+      line-height: 1.5;
+      overflow-x: hidden;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Ambient background glow */
+    .ambient-glow {
+      position: fixed;
+      top: -200px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 800px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(184, 167, 240, 0.08) 0%, rgba(10, 10, 12, 0) 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 0 24px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Navigation */
+    header {
+      padding: 24px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: var(--ink);
+    }
+
+    .brand-logo {
+      width: 38px;
+      height: 38px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      color: var(--lav);
+    }
+
+    .brand-title {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    .brand-badge {
+      font-size: 12px;
+      color: var(--lav);
+      font-weight: 600;
+      margin-left: 4px;
+    }
+
+    .nav-btn {
+      background: var(--raised);
+      border: 1px solid var(--border);
+      color: var(--ink);
+      padding: 10px 20px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+
+    .nav-btn:hover {
+      background: var(--border);
+      border-color: var(--acc-border);
+      color: var(--lav-ink);
+    }
+
+    /* Hero */
+    .hero {
+      text-align: center;
+      padding: 64px 0 48px;
+    }
+
+    .hero-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--acc-bg);
+      border: 1px solid var(--acc-border);
+      padding: 8px 18px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--lav-ink);
+      margin-bottom: 24px;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      background-color: var(--green);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--green);
+    }
+
+    .hero-title {
+      font-size: clamp(32px, 6vw, 56px);
+      font-weight: 800;
+      letter-spacing: -1.5px;
+      line-height: 1.15;
+      margin-bottom: 20px;
+    }
+
+    .hero-title span {
+      background: linear-gradient(135deg, var(--lav) 0%, #D9CFFD 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-subtitle {
+      font-size: clamp(15px, 2.5vw, 18px);
+      color: var(--muted);
+      max-width: 680px;
+      margin: 0 auto 36px;
+      line-height: 1.6;
+    }
+
+    .cta-row {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      background: var(--lav);
+      color: var(--bg);
+      padding: 16px 36px;
+      border-radius: 999px;
+      font-size: 15px;
+      font-weight: 800;
+      text-decoration: none;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(184, 167, 240, 0.25);
+    }
+
+    .btn-secondary {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      color: var(--ink);
+      padding: 16px 28px;
+      border-radius: 999px;
+      font-size: 15px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+
+    .btn-secondary:hover {
+      background: var(--raised);
+      border-color: var(--lav);
+    }
+
+    /* Interactive Simulator */
+    .simulator-card {
+      background: var(--glass-surface);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid var(--border);
+      border-top: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 28px;
+      padding: 24px;
+      max-width: 580px;
+      margin: 40px auto 72px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    }
+
+    .sim-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .sim-capsule {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--acc-bg);
+      border: 1.5px solid var(--acc-border);
+      padding: 8px 16px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--lav-ink);
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.2s ease;
+    }
+
+    .sim-capsule:active {
+      transform: scale(0.96);
+    }
+
+    .sim-desc {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    /* Apps Grid */
+    .section-title {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      margin-bottom: 24px;
+      text-align: center;
+    }
+
+    .apps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      margin-bottom: 80px;
+    }
+
+    .app-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-top: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 24px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .app-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--acc-border);
+    }
+
+    .app-card-top {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .app-icon {
+      width: 58px;
+      height: 58px;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      object-fit: cover;
+      background: var(--raised);
+    }
+
+    .app-info h3 {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+
+    .app-info .author {
+      font-size: 12px;
+      color: var(--lav);
+      font-weight: 600;
+    }
+
+    .app-desc {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+
+    .app-badges {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .badge {
+      background: var(--raised);
+      border: 0.5px solid var(--border-well);
+      color: var(--lav-ink);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 6px;
+    }
+
+    .card-btn {
+      background: var(--raised);
+      border: 1px solid var(--border);
+      color: var(--ink);
+      padding: 10px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 700;
+      text-align: center;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+
+    .card-btn:hover {
+      background: var(--lav);
+      color: var(--bg);
+      border-color: var(--lav);
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--border-well);
+      padding: 40px 0;
+      text-align: center;
+      color: var(--faint);
+      font-size: 13px;
+    }
+
+    footer a {
+      color: var(--lav);
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="ambient-glow"></div>
+
+  <div class="container">
+    <header>
+      <a href="#" class="brand">
+        <div class="brand-logo">k</div>
+        <div>
+          <span class="brand-title">k-Ecosystem</span>
+          <span class="brand-badge">by kipsway</span>
+        </div>
+      </a>
+      <a href="../kstore/build/output/kStore-release.apk" class="nav-btn">Скачать kStore</a>
+    </header>
+
+    <section class="hero">
+      <div class="hero-pill">
+        <span class="status-dot"></span>
+        <span>Сетевое ядро k-Tunnel активно • 28 мс</span>
+      </div>
+
+      <h1 class="hero-title">
+        Мобильные клиенты<br>
+        <span>без рекламы и замедлений</span>
+      </h1>
+
+      <p class="hero-subtitle">
+        YouTube 4K без буферизации, Twitch со смайлами Chatterino+, Telegram с плеером RX Playa и TikTok без водяных знаков в единой дизайн-системе «Мозаика».
+      </p>
+
+      <div class="cta-row">
+        <a href="#apps" class="btn-primary">
+          <span>Смотреть приложения</span>
+          <span>↓</span>
+        </a>
+        <a href="https://github.com" class="btn-secondary">Исходный код</a>
+      </div>
+
+      <!-- Live Capsule Preview -->
+      <div class="simulator-card">
+        <div class="sim-header">
+          <div style="font-weight: 700; font-size: 14px;">Симулятор кнопки в плеере:</div>
+          <div class="sim-capsule" id="capsuleToggle" onclick="toggleCapsule()">
+            <span class="status-dot" id="simDot"></span>
+            <span id="simText">Ускорение k-Tunnel • 28 мс</span>
+          </div>
+        </div>
+        <div class="sim-desc">
+          Нажмите на капсулу для переключения. Сетевое ядро перенаправляет тяжелые видеопотоки через локальный loopback 127.0.0.1 без необходимости включать системный VPN на телефоне.
+        </div>
+      </div>
+    </section>
+
+    <section id="apps">
+      <h2 class="section-title">Приложения экосистемы</h2>
+      <div class="apps-grid">
+
+        <!-- kStore -->
+        <div class="app-card">
+          <div>
+            <div class="app-card-top">
+              <img src="../kstore/assets/ktube_icon.png" alt="kStore" class="app-icon" style="background:#2A2442;">
+              <div class="app-info">
+                <h3>kStore</h3>
+                <div class="author">by kipsway</div>
+              </div>
+            </div>
+            <p class="app-desc">Минималистичный хаб-установщик модов на Flutter. Жидкое стекло с размытием 24px, линзовый блик и установка обновлений в 1 клик.</p>
+            <div class="app-badges">
+              <span class="badge">Liquid Glass</span>
+              <span class="badge">M3 24px</span>
+              <span class="badge">Auto-Install</span>
+            </div>
+          </div>
+          <a href="../kstore/" class="card-btn">Открыть в kStore</a>
+        </div>
+
+        <!-- kTube -->
+        <div class="app-card">
+          <div>
+            <div class="app-card-top">
+              <img src="../kstore/assets/ktube_icon.png" alt="kTube" class="app-icon">
+              <div class="app-info">
+                <h3>kTube</h3>
+                <div class="author">by kipsway</div>
+              </div>
+            </div>
+            <p class="app-desc">YouTube без рекламы, со встроенным SponsorBlock и сетевым ядром k-Tunnel для моментального открытия 1080p/4K без буферизации.</p>
+            <div class="app-badges">
+              <span class="badge">k-Tunnel 4K</span>
+              <span class="badge">SponsorBlock</span>
+              <span class="badge">Оникс #0A0A0C</span>
+            </div>
+          </div>
+          <a href="../ktube/build/output/build_manifest.json" class="card-btn">Подробнее о релизе</a>
+        </div>
+
+        <!-- kWitch -->
+        <div class="app-card">
+          <div>
+            <div class="app-card-top">
+              <img src="../kstore/assets/kwitch_icon.png" alt="kWitch" class="app-icon">
+              <div class="app-info">
+                <h3>kWitch</h3>
+                <div class="author">by kipsway</div>
+              </div>
+            </div>
+            <p class="app-desc">Клиент Twitch со встроенным движком чата Chatterino+ от Rish. Смайлы 7TV/BTTV/FFZ, Name Paints и стриминг в 1440p без лагов.</p>
+            <div class="app-badges">
+              <span class="badge">Chatterino+ Rish</span>
+              <span class="badge">7TV Animated</span>
+              <span class="badge">1440p k-Tunnel</span>
+            </div>
+          </div>
+          <a href="../kwitch/" class="card-btn">Открыть исходники</a>
+        </div>
+
+        <!-- kGram -->
+        <div class="app-card">
+          <div>
+            <div class="app-card-top">
+              <img src="../kstore/assets/kgram_icon.png" alt="kGram" class="app-icon">
+              <div class="app-info">
+                <h3>kGram</h3>
+                <div class="author">by kipsway</div>
+              </div>
+            </div>
+            <p class="app-desc">Модификация Telegram на базе NimarkoGram. Встроенный MTProto-туннель, медиаплеер RX Playa, HD-кружочки и тема «Мозаика».</p>
+            <div class="app-badges">
+              <span class="badge">NimarkoGram 13.2</span>
+              <span class="badge">RX Playa</span>
+              <span class="badge">HD Кружочки</span>
+            </div>
+          </div>
+          <a href="../kgram/" class="card-btn">Подробнее</a>
+        </div>
+
+        <!-- kTok -->
+        <div class="app-card">
+          <div>
+            <div class="app-card-top">
+              <img src="../kstore/assets/ktok_icon.png" alt="kTok" class="app-icon">
+              <div class="app-info">
+                <h3>kTok</h3>
+                <div class="author">by kipsway</div>
+              </div>
+            </div>
+            <p class="app-desc">Мод TikTok (MargyT/ReVanced). Прямое сохранение роликов без водяного знака, смена региона (US/DE/NL) и скачивание оригинального звука.</p>
+            <div class="app-badges">
+              <span class="badge">No Watermark</span>
+              <span class="badge">Region Spoof</span>
+              <span class="badge">Audio .MP3</span>
+            </div>
+          </div>
+          <a href="../ktok/" class="card-btn">Релизные патчи</a>
+        </div>
+
+      </div>
+    </section>
+
+    <footer>
+      <p>&copy; 2026 <strong>k-Ecosystem</strong> by <strong>kipsway</strong>. Дизайн-система «Мозаика» от Rish (<a href="https://chat.eblo.id" target="_blank">chat.eblo.id</a>). Сделано человеком.</p>
+    </footer>
+  </div>
+
+  <script>
+    let active = true;
+    function toggleCapsule() {
+      active = !active;
+      const dot = document.getElementById('simDot');
+      const text = document.getElementById('simText');
+      const capsule = document.getElementById('capsuleToggle');
+
+      if (active) {
+        dot.style.backgroundColor = 'var(--green)';
+        dot.style.boxShadow = '0 0 8px var(--green)';
+        text.innerText = 'Ускорение k-Tunnel • 28 мс';
+        capsule.style.background = 'var(--acc-bg)';
+        capsule.style.borderColor = 'var(--acc-border)';
+        capsule.style.color = 'var(--lav-ink)';
+      } else {
+        dot.style.backgroundColor = 'var(--faint)';
+        dot.style.boxShadow = 'none';
+        text.innerText = 'Ускорение k-Tunnel: ВЫКЛ';
+        capsule.style.background = 'var(--raised)';
+        capsule.style.borderColor = 'var(--border)';
+        capsule.style.color = 'var(--muted)';
+      }
+    }
+  </script>
+</body>
+</html>
