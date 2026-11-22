@@ -5,16 +5,24 @@ import '../../../../core/theme/k_colors.dart';
 import '../../../../core/theme/k_glass.dart';
 import '../../../../core/theme/k_typography.dart';
 import '../../domain/models/chat_display_settings.dart';
+import '../../domain/services/chatterino_highlight_service.dart';
+import 'chatterino_highlight_sheet.dart';
 
 class ChatSettingsSheet extends StatelessWidget {
   final ChatDisplaySettings settings;
+  final ChatterinoHighlightService? highlightService;
 
   const ChatSettingsSheet({
     super.key,
     required this.settings,
+    this.highlightService,
   });
 
-  static void show(BuildContext context, ChatDisplaySettings settings) {
+  static void show(
+    BuildContext context,
+    ChatDisplaySettings settings, {
+    ChatterinoHighlightService? highlightService,
+  }) {
     HapticFeedback.lightImpact();
     showModalBottomSheet(
       context: context,
@@ -22,7 +30,10 @@ class ChatSettingsSheet extends StatelessWidget {
       isScrollControlled: true,
       builder: (_) => AnimatedBuilder(
         animation: settings,
-        builder: (context, _) => ChatSettingsSheet(settings: settings),
+        builder: (context, _) => ChatSettingsSheet(
+          settings: settings,
+          highlightService: highlightService,
+        ),
       ),
     );
   }
@@ -210,6 +221,45 @@ class ChatSettingsSheet extends StatelessWidget {
                 isSelected: settings.activeMirror == 'https://ws.rish098.xyz',
               ),
             ],
+          ),
+          const SizedBox(height: 14),
+
+          // КНОПКА ПОДСВЕТКИ И УПОМИНАНИЙ (Highlights)
+          GestureDetector(
+            onTap: () {
+              Navigator.pop(context);
+              ChatterinoHighlightSheet.show(
+                context,
+                highlightService ?? ChatterinoHighlightService(),
+              );
+            },
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
+              decoration: BoxDecoration(
+                color: KColors.accBg,
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(color: KColors.accBorder, width: 0.8),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      const Icon(LucideIcons.bellRing, size: 18, color: KColors.lav),
+                      const SizedBox(width: 10),
+                      Text(
+                        'Подсветка слов и меншнов',
+                        style: KTypography.bodyText.copyWith(
+                          color: KColors.lavInk,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const Icon(LucideIcons.chevronRight, size: 16, color: KColors.lav),
+                ],
+              ),
+            ),
           ),
         ],
       ),

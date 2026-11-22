@@ -35,7 +35,8 @@ if (Test-Path $MasterKeystore) {
     $targetKeystoreDirs = @(
         (Join-Path $RootDir "kwitch\android"),
         (Join-Path $RootDir "ktok\scripts"),
-        (Join-Path $RootDir "kstore\android")
+        (Join-Path $RootDir "kstore\android"),
+        (Join-Path $RootDir "kgram\signing")
     )
 
     foreach ($dir in $targetKeystoreDirs) {
@@ -82,8 +83,8 @@ $apps = @(
     @{
         Id = "kgram"
         Name = "kGram"
-        Package = "com.kipsway.kgram"
-        Version = "13.2.2"
+        Package = "org.kipsway.kgram"
+        Version = "10.9.1"
         Role = "Форк Telegram на базе NimarkoGram с туннелем k-Tunnel и RX Playa"
         Path = (Join-Path $RootDir "kgram")
     },

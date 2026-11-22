@@ -58,17 +58,23 @@ do {
         }
         "4" {
             Show-Header
-            & powershell.exe -ExecutionPolicy Bypass -File (Join-Path $RootDir "tools\export_dist_bundle.ps1")
+            & powershell.exe -ExecutionPolicy Bypass -File (Join-Path $RootDir "kgram\setup_kgram.ps1")
             Write-Host "`nНажмите Enter для возврата в меню..." -ForegroundColor DarkGray
             [void][Console]::ReadLine()
         }
         "5" {
+            Show-Header
+            & powershell.exe -ExecutionPolicy Bypass -File (Join-Path $RootDir "tools\export_dist_bundle.ps1")
+            Write-Host "`nНажмите Enter для возврата в меню..." -ForegroundColor DarkGray
+            [void][Console]::ReadLine()
+        }
+        "6" {
             $landingPath = Join-Path $RootDir "landing\index.html"
             Write-Host "Открытие лендинга: $landingPath" -ForegroundColor Green
             Start-Process $landingPath
             Start-Sleep -Seconds 1
         }
-        "6" {
+        "7" {
             Show-Header
             git status
             Write-Host "`nПоследний коммит:" -ForegroundColor Yellow
@@ -76,7 +82,7 @@ do {
             Write-Host "`nНажмите Enter для возврата в меню..." -ForegroundColor DarkGray
             [void][Console]::ReadLine()
         }
-        "7" {
+        "8" {
             Show-Header
             python (Join-Path $RootDir "ktube\k-tunnel\run_ktunnel_local.py")
             Write-Host "`nНажмите Enter для возврата в меню..." -ForegroundColor DarkGray

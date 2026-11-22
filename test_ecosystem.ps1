@@ -60,9 +60,9 @@ foreach ($jf in $jsonFiles) {
 }
 
 # 3. Проверка идентификаторов пакетов
-Write-Host "`n3. Валидация пакетов приложений (com.kipsway.*):" -ForegroundColor Yellow
+Write-Host "`n3. Валидация пакетов приложений экосистемы (com.kipsway.* / org.kipsway.kgram):" -ForegroundColor Yellow
 $manifestObj = Get-Content (Join-Path $RootDir "ECOSYSTEM_MANIFEST.json") -Raw -Encoding UTF8 | ConvertFrom-Json
-$expectedPackages = @("com.kipsway.kstore", "com.kipsway.ktube", "com.kipsway.kwitch", "com.kipsway.kgram", "com.kipsway.ktok")
+$expectedPackages = @("com.kipsway.kstore", "com.kipsway.ktube", "com.kipsway.kwitch", "org.kipsway.kgram", "com.kipsway.ktok")
 
 foreach ($pkg in $expectedPackages) {
     Assert-Test "Пакет зарегистрирован в манифесте: $pkg" {
