@@ -101,6 +101,23 @@ Assert-Test "Маршрутизатор трафика перехватывае�
     $rc -match "googlevideo\.com" -and $rc -match "videoplayback"
 }
 
+# 7. Валидация релизных APK в dist/apps/
+Write-Host "`n7. Валидация релизного пакета dist/apps/:" -ForegroundColor Yellow
+$distApks = @(
+    "kStore-v1.0.0-release.apk",
+    "kTube-v1.0.0-release.apk",
+    "kWitch-v1.0.0-release.apk",
+    "kGram-v13.2.2-release.apk",
+    "kTok-v34.0.0-release.apk"
+)
+
+foreach ($apk in $distApks) {
+    $apkPath = Join-Path $RootDir "dist\apps\$apk"
+    Assert-Test "Релизный APK и SHA-256 сформированы: $apk" {
+        (Test-Path $apkPath) -and (Test-Path "$apkPath.sha256")
+    }
+}
+
 Write-Host "`n==========================================================" -ForegroundColor Magenta
 Write-Host "  Результаты тестирования: $passed пройдено, $failed провалено" -ForegroundColor $(if ($failed -eq 0) { "Green" } else { "Red" })
 Write-Host "==========================================================" -ForegroundColor Magenta
