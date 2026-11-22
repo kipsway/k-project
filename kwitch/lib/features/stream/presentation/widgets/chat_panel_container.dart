@@ -5,10 +5,12 @@ import '../../../../core/theme/k_colors.dart';
 import '../../../../core/theme/k_typography.dart';
 import '../../../chat/domain/models/chat_display_settings.dart';
 import '../../../chat/domain/models/chat_user_profile.dart';
+import '../../../chat/domain/services/chat_translate_service.dart';
 import '../../../chat/domain/services/chatterino_multi_chat_service.dart';
 import '../../../chat/domain/services/emote_cache_manager.dart';
 import '../../../chat/presentation/controllers/chatterino_controller.dart';
 import '../../../chat/presentation/widgets/chat_settings_sheet.dart';
+import '../../../chat/presentation/widgets/chat_translate_sheet.dart';
 import '../../../chat/presentation/widgets/chatterino_channel_tabs_bar.dart';
 import '../../../chat/presentation/widgets/chatterino_emotes_sheet.dart';
 import '../../../chat/presentation/widgets/chatterino_webview.dart';
@@ -36,6 +38,7 @@ class _ChatPanelContainerState extends State<ChatPanelContainer> {
   late final EmoteCacheManager _cacheManager;
   late final ChatDisplaySettings _displaySettings;
   late final ChatterinoMultiChatService _multiChatService;
+  late final ChatTranslateService _translateService;
   bool _useWebViewEngine = true;
 
   @override
@@ -46,6 +49,7 @@ class _ChatPanelContainerState extends State<ChatPanelContainer> {
     _displaySettings = ChatDisplaySettings()..addListener(_onDisplaySettingsChanged);
     _multiChatService = ChatterinoMultiChatService(initialChannel: widget.channelName)
       ..addListener(_onMultiChatChanged);
+    _translateService = ChatTranslateService()..addListener(_onTranslateSettingsChanged);
   }
 
   @override
@@ -84,6 +88,15 @@ class _ChatPanelContainerState extends State<ChatPanelContainer> {
     }
   }
 
+  void _onTranslateSettingsChanged() {
+    if (mounted) {
+      setState(() {});
+      _chatterinoController.webViewController?.runJavaScript(
+        _translateService.generateInlineTranslationJs(),
+      );
+    }
+  }
+
   @override
   void dispose() {
     _chatterinoController.dispose();
@@ -92,6 +105,8 @@ class _ChatPanelContainerState extends State<ChatPanelContainer> {
     _displaySettings.dispose();
     _multiChatService.removeListener(_onMultiChatChanged);
     _multiChatService.dispose();
+    _translateService.removeListener(_onTranslateSettingsChanged);
+    _translateService.dispose();
     super.dispose();
   }
 
@@ -114,6 +129,10 @@ class _ChatPanelContainerState extends State<ChatPanelContainer> {
 
   void _openChatSettings() {
     ChatSettingsSheet.show(context, _displaySettings);
+  }
+
+  void _openChatTranslate() {
+    ChatTranslateSheet.show(context, _translateService);
   }
 
   void _openUserCard(String username) {
@@ -223,6 +242,19 @@ class _ChatPanelContainerState extends State<ChatPanelContainer> {
                 ),
                 Row(
                   children: [
+                    // Кнопка инлайн-переводчика чата
+                    IconButton(
+                      onPressed: _openChatTranslate,
+                      icon: Icon(
+                        LucideIcons.languages,
+                        size: 17,
+                        color: _translateService.isEnabled ? KColors.lav : KColors.muted,
+                      ),
+                      tooltip: 'Инлайн-переводчик чата',
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(),
+                    ),
+                    const SizedBox(width: 12),
                     // Кнопка настроек чата
                     IconButton(
                       onPressed: _openChatSettings,

@@ -11,15 +11,23 @@ import '../domain/models/stream_nerd_stats.dart';
 import '../domain/models/twitch_channel_item.dart';
 import '../domain/services/amoled_mode_controller.dart';
 import '../domain/services/audio_only_mode_controller.dart';
+import '../domain/services/battery_saver_controller.dart';
 import '../domain/services/pip_background_service.dart';
 import '../domain/services/player_stability_controller.dart';
 import '../domain/services/sleep_timer_service.dart';
+import '../domain/services/stream_ambient_glow_controller.dart';
+import '../domain/services/stream_audio_dsp_controller.dart';
+import '../domain/services/stream_bookmarks_service.dart';
 import '../domain/services/stream_catchup_service.dart';
 import '../domain/services/stream_replay_buffer_service.dart';
+import 'widgets/battery_saver_sheet.dart';
 import 'widgets/channel_search_drawer.dart';
 import 'widgets/chat_panel_container.dart';
 import 'widgets/sleep_timer_sheet.dart';
 import 'widgets/split_divider_handle.dart';
+import 'widgets/stream_ambient_glow_sheet.dart';
+import 'widgets/stream_audio_dsp_sheet.dart';
+import 'widgets/stream_bookmarks_sheet.dart';
 import 'widgets/video_player_container.dart';
 
 class StreamScreen extends StatefulWidget {
@@ -65,6 +73,18 @@ class _StreamScreenState extends State<StreamScreen> with WidgetsBindingObserver
 
   // Сервис мгновенного повтора (Instant 30s DVR Replay)
   late final StreamReplayBufferService _replayService;
+
+  // Контроллер аудиопроцессора (DSP эквалайзер)
+  late final StreamAudioDspController _audioDspController;
+
+  // Сервис закладок и таймкодов моментов стрима
+  late final StreamBookmarksService _bookmarksService;
+
+  // Контроллер адаптивного режима энергосбережения батареи
+  late final BatterySaverController _batteryController;
+
+  // Контроллер фоновой динамической эмбиент-подсветки Ambilight
+  late final StreamAmbientGlowController _ambientGlowController;
 
   // Состояния воспроизведения
   bool _isPlaying = true;
@@ -118,6 +138,19 @@ class _StreamScreenState extends State<StreamScreen> with WidgetsBindingObserver
     _replayService = StreamReplayBufferService();
     _replayService.addListener(_onStateChanged);
 
+    _audioDspController = StreamAudioDspController();
+    _audioDspController.addListener(_onStateChanged);
+
+    _bookmarksService = StreamBookmarksService();
+    _bookmarksService.addListener(_onStateChanged);
+
+    _batteryController = BatterySaverController();
+    _batteryController.addListener(_onStateChanged);
+
+    _ambientGlowController = StreamAmbientGlowController();
+    _ambientGlowController.updateCategory(_categoryName);
+    _ambientGlowController.addListener(_onStateChanged);
+
     _updateNotification();
   }
 
@@ -163,6 +196,14 @@ class _StreamScreenState extends State<StreamScreen> with WidgetsBindingObserver
     _audioOnlyController.dispose();
     _replayService.removeListener(_onStateChanged);
     _replayService.dispose();
+    _audioDspController.removeListener(_onStateChanged);
+    _audioDspController.dispose();
+    _bookmarksService.removeListener(_onStateChanged);
+    _bookmarksService.dispose();
+    _batteryController.removeListener(_onStateChanged);
+    _batteryController.dispose();
+    _ambientGlowController.removeListener(_onStateChanged);
+    _ambientGlowController.dispose();
     super.dispose();
   }
 
@@ -375,6 +416,28 @@ class _StreamScreenState extends State<StreamScreen> with WidgetsBindingObserver
     );
   }
 
+  void _openAudioDsp() {
+    StreamAudioDspSheet.show(context, _audioDspController);
+  }
+
+  void _openBookmarks() {
+    StreamBookmarksSheet.show(
+      context,
+      bookmarksService: _bookmarksService,
+      streamerName: _streamerName,
+      categoryName: _categoryName,
+      currentTimestampSeconds: 3600,
+    );
+  }
+
+  void _openBatterySaver() {
+    BatterySaverSheet.show(context, _batteryController);
+  }
+
+  void _openAmbientGlow() {
+    StreamAmbientGlowSheet.show(context, _ambientGlowController);
+  }
+
   void _toggleFullscreen() {
     setState(() {
       _isFullscreen = !_isFullscreen;
@@ -415,6 +478,7 @@ class _StreamScreenState extends State<StreamScreen> with WidgetsBindingObserver
       _streamerAvatarUrl = channel.avatarUrl;
       _viewerCount = channel.viewerCount;
     });
+    _ambientGlowController.updateCategory(channel.category);
     _updateNotification();
     _catchupService.jumpToLiveEdge();
     HapticFeedback.mediumImpact();
@@ -466,7 +530,7 @@ class _StreamScreenState extends State<StreamScreen> with WidgetsBindingObserver
     final activeNode = _tunnelController.activeNode;
     final nerdStats = StreamNerdStats(
       resolution: _currentQuality.contains('1440') ? '2560x1440' : '1920x1080',
-      fps: 60,
+      fps: _batteryController.targetFps,
       currentBitrateKbps: _currentQuality.contains('1440') ? 14280 : 8500,
       nodePingMs: _tunnelController.currentPing,
       activeNodeName: activeNode?.name ?? 'Frankfurt Ultra-Edge',
@@ -503,6 +567,10 @@ class _StreamScreenState extends State<StreamScreen> with WidgetsBindingObserver
           networkController: _networkController,
           audioOnlyController: _audioOnlyController,
           replayService: _replayService,
+          audioDspController: _audioDspController,
+          batteryController: _batteryController,
+          ambientGlowController: _ambientGlowController,
+          currentBookmarkCount: _bookmarksService.getBookmarksForStreamer(_streamerName).length,
           nerdStats: nerdStats,
           onPlayPause: _togglePlayPause,
           onToggleTunnel: _toggleTunnel,
@@ -516,6 +584,10 @@ class _StreamScreenState extends State<StreamScreen> with WidgetsBindingObserver
           onToggleLockControls: _stabilityController.toggleControlsLock,
           onToggleMute: () => _stabilityController.toggleMute(1.0),
           onToggleAudioOnly: _toggleAudioOnly,
+          onOpenAudioDsp: _openAudioDsp,
+          onOpenBookmarks: _openBookmarks,
+          onOpenBatterySaver: _openBatterySaver,
+          onOpenAmbientGlow: _openAmbientGlow,
           onStartInstantReplay: _startInstantReplay,
           onExitReplay: _exitReplayAndJumpToLive,
           onShareClip: _shareClip,
@@ -554,6 +626,10 @@ class _StreamScreenState extends State<StreamScreen> with WidgetsBindingObserver
           networkController: _networkController,
           audioOnlyController: _audioOnlyController,
           replayService: _replayService,
+          audioDspController: _audioDspController,
+          batteryController: _batteryController,
+          ambientGlowController: _ambientGlowController,
+          currentBookmarkCount: _bookmarksService.getBookmarksForStreamer(_streamerName).length,
           nerdStats: nerdStats,
           onPlayPause: _togglePlayPause,
           onToggleTunnel: _toggleTunnel,
@@ -567,6 +643,10 @@ class _StreamScreenState extends State<StreamScreen> with WidgetsBindingObserver
           onToggleLockControls: _stabilityController.toggleControlsLock,
           onToggleMute: () => _stabilityController.toggleMute(1.0),
           onToggleAudioOnly: _toggleAudioOnly,
+          onOpenAudioDsp: _openAudioDsp,
+          onOpenBookmarks: _openBookmarks,
+          onOpenBatterySaver: _openBatterySaver,
+          onOpenAmbientGlow: _openAmbientGlow,
           onStartInstantReplay: _startInstantReplay,
           onExitReplay: _exitReplayAndJumpToLive,
           onShareClip: _shareClip,
@@ -609,6 +689,10 @@ class _StreamScreenState extends State<StreamScreen> with WidgetsBindingObserver
                 networkController: _networkController,
                 audioOnlyController: _audioOnlyController,
                 replayService: _replayService,
+                audioDspController: _audioDspController,
+                batteryController: _batteryController,
+          ambientGlowController: _ambientGlowController,
+                currentBookmarkCount: _bookmarksService.getBookmarksForStreamer(_streamerName).length,
                 nerdStats: nerdStats,
                 onPlayPause: _togglePlayPause,
                 onToggleTunnel: _toggleTunnel,
@@ -622,6 +706,10 @@ class _StreamScreenState extends State<StreamScreen> with WidgetsBindingObserver
                 onToggleLockControls: _stabilityController.toggleControlsLock,
                 onToggleMute: () => _stabilityController.toggleMute(1.0),
                 onToggleAudioOnly: _toggleAudioOnly,
+                onOpenAudioDsp: _openAudioDsp,
+                onOpenBookmarks: _openBookmarks,
+          onOpenBatterySaver: _openBatterySaver,
+          onOpenAmbientGlow: _openAmbientGlow,
                 onStartInstantReplay: _startInstantReplay,
                 onExitReplay: _exitReplayAndJumpToLive,
                 onShareClip: _shareClip,

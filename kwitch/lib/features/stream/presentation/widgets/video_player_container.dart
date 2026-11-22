@@ -3,8 +3,12 @@ import '../../../../core/theme/k_colors.dart';
 import '../../../ktunnel/domain/services/network_adaptive_controller.dart';
 import '../../domain/models/stream_nerd_stats.dart';
 import '../../domain/services/audio_only_mode_controller.dart';
+import '../../domain/services/battery_saver_controller.dart';
 import '../../domain/services/player_gesture_controller.dart';
+import '../../domain/services/stream_ambient_glow_controller.dart';
+import '../../domain/services/stream_audio_dsp_controller.dart';
 import '../../domain/services/stream_replay_buffer_service.dart';
+import 'ambient_glow_wrapper.dart';
 import 'audio_only_visualizer.dart';
 import 'glass_chat_overlay.dart';
 import 'nerd_stats_overlay.dart';
@@ -35,6 +39,10 @@ class VideoPlayerContainer extends StatefulWidget {
   final NetworkAdaptiveController? networkController;
   final AudioOnlyModeController? audioOnlyController;
   final StreamReplayBufferService? replayService;
+  final StreamAudioDspController? audioDspController;
+  final BatterySaverController? batteryController;
+  final StreamAmbientGlowController? ambientGlowController;
+  final int currentBookmarkCount;
   final StreamNerdStats nerdStats;
   final VoidCallback onPlayPause;
   final ValueChanged<bool> onToggleTunnel;
@@ -47,6 +55,10 @@ class VideoPlayerContainer extends StatefulWidget {
   final VoidCallback onToggleLockControls;
   final VoidCallback onToggleMute;
   final VoidCallback? onToggleAudioOnly;
+  final VoidCallback? onOpenAudioDsp;
+  final VoidCallback? onOpenBookmarks;
+  final VoidCallback? onOpenBatterySaver;
+  final VoidCallback? onOpenAmbientGlow;
   final VoidCallback? onStartInstantReplay;
   final VoidCallback? onExitReplay;
   final VoidCallback? onShareClip;
@@ -79,6 +91,10 @@ class VideoPlayerContainer extends StatefulWidget {
     this.networkController,
     this.audioOnlyController,
     this.replayService,
+    this.audioDspController,
+    this.batteryController,
+    this.ambientGlowController,
+    this.currentBookmarkCount = 0,
     this.nerdStats = const StreamNerdStats(),
     required this.onPlayPause,
     required this.onToggleTunnel,
@@ -91,6 +107,10 @@ class VideoPlayerContainer extends StatefulWidget {
     required this.onToggleLockControls,
     required this.onToggleMute,
     this.onToggleAudioOnly,
+    this.onOpenAudioDsp,
+    this.onOpenBookmarks,
+    this.onOpenBatterySaver,
+    this.onOpenAmbientGlow,
     this.onStartInstantReplay,
     this.onExitReplay,
     this.onShareClip,
@@ -127,9 +147,11 @@ class _VideoPlayerContainerState extends State<VideoPlayerContainer> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.black,
-      child: PlayerGestureDetector(
+    return AmbientGlowWrapper(
+      controller: widget.ambientGlowController,
+      child: Container(
+        color: Colors.black,
+        child: PlayerGestureDetector(
         controller: _gestureController,
         onSeekBackward: () {
           // Обработка перемотки назад на 10с
@@ -235,6 +257,7 @@ class _VideoPlayerContainerState extends State<VideoPlayerContainer> {
                 isMuted: widget.isMuted,
                 isAudioOnly: widget.currentQuality == 'audio_only' || (widget.audioOnlyController?.isAudioOnly ?? false),
                 isReplayActive: widget.replayService?.isReplayActive ?? false,
+                currentBookmarkCount: widget.currentBookmarkCount,
                 latencySeconds: widget.latencySeconds,
                 playbackSpeed: widget.replayService?.isReplayActive == true
                     ? widget.replayService!.replayPlaybackSpeed
@@ -242,6 +265,9 @@ class _VideoPlayerContainerState extends State<VideoPlayerContainer> {
                 isCatchingUp: widget.isCatchingUp,
                 bufferSeconds: widget.bufferSeconds,
                 networkController: widget.networkController,
+                audioDspController: widget.audioDspController,
+                batteryController: widget.batteryController,
+                ambientGlowController: widget.ambientGlowController,
                 onPlayPause: widget.onPlayPause,
                 onToggleTunnel: widget.onToggleTunnel,
                 onOpenNodesPicker: widget.onOpenNodesPicker,
@@ -254,6 +280,10 @@ class _VideoPlayerContainerState extends State<VideoPlayerContainer> {
                 onToggleLockControls: widget.onToggleLockControls,
                 onToggleMute: widget.onToggleMute,
                 onToggleAudioOnly: widget.onToggleAudioOnly,
+                onOpenAudioDsp: widget.onOpenAudioDsp,
+                onOpenBookmarks: widget.onOpenBookmarks,
+                onOpenBatterySaver: widget.onOpenBatterySaver,
+                onOpenAmbientGlow: widget.onOpenAmbientGlow,
                 onStartInstantReplay: widget.onStartInstantReplay,
                 onCatchUpLive: widget.onCatchUpLive,
                 onEnterPip: widget.onEnterPip,
@@ -262,6 +292,7 @@ class _VideoPlayerContainerState extends State<VideoPlayerContainer> {
           ],
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 }

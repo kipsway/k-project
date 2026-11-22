@@ -90,7 +90,12 @@ $manifest = [PSCustomObject]@{
     features = @(
         "k-Tunnel 1440p Core (wistfalls.cc pool)",
         "Chatterino+ v2.4.0 (chat.eblo.id by Rish)",
-        "7TV / BTTV / FFZ live emotes",
+        "7TV / BTTV / FFZ live emotes & Multi-Chat Tabs",
+        "Stream Replay 30s DVR & Local Bookmarks",
+        "Speech DSP Vocal Booster & Radio Audio-Only",
+        "Battery Eco Saver (30 FPS & GIF Pause)",
+        "Dynamic Ambilight Ambient Glow Aura",
+        "Chatterino+ Inline Chat Translator",
         "Liquid Glass + M3 Design System",
         "Signed with kipsway.keystore"
     )

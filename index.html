@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>kStore — Каталог модов by kipsway</title>
+  <meta name="description" content="Минималистичный мобильный маркет и загрузчик модов для Android: kTok, kGram, kTube, kWitch со встроенным ядром k-Tunnel.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0a0c;
+      --panel: #0f0f12;
+      --cell-off: #1c1b21;
+      --panel-border: #2c2b32;
+      --ink: #ecebf1;
+      --muted: #8d8a99;
+      --faint: #6f6c7a;
+      --lav: #b8a7f0;
+      --lav-ink: #d9cffd;
+      --acc-bg: #2a2442;
+      --acc-border: #7e6fc4;
+      --green: #3fb950;
+      --radius-squircle: 24px;
+      --radius-pill: 999px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--ink);
+      font-family: 'Montserrat', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 32px 16px 64px;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Фоновые мягкие атмосферные сферы свечения */
+    .glow-orb {
+      position: absolute;
+      width: 420px;
+      height: 420px;
+      background: radial-gradient(circle, rgba(184, 167, 240, 0.08) 0%, rgba(10, 10, 12, 0) 70%);
+      top: -100px;
+      left: 50%;
+      transform: translateX(-50%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 680px;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* Жидкое стекло с линзовым верхним бликом */
+    .glass-card {
+      background: rgba(15, 15, 18, 0.78);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-radius: var(--radius-squircle);
+      border: 1px solid var(--panel-border);
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.45);
+      padding: 24px;
+    }
+
+    /* Верхний оптический блик */
+    .glass-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(255,255,255,0.02) 0%, rgba(255,255,255,0.24) 50%, rgba(255,255,255,0.02) 100%);
+      pointer-events: none;
+    }
+
+    /* Hero Секция */
+    .hero {
+      text-align: center;
+      padding: 36px 24px;
+    }
+
+    .app-icon {
+      width: 88px;
+      height: 88px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+      filter: drop-shadow(0 12px 24px rgba(42, 36, 66, 0.45));
+    }
+
+    .app-icon img {
+      width: 100%;
+      height: 100%;
+      border-radius: 24px;
+    }
+
+    .hero-title {
+      font-size: 34px;
+      font-weight: 800;
+      letter-spacing: -0.6px;
+      line-height: 1.15;
+      margin-bottom: 4px;
+    }
+
+    .hero-author {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--lav);
+      margin-bottom: 14px;
+    }
+
+    .hero-desc {
+      font-size: 15px;
+      color: var(--muted);
+      line-height: 1.45;
+      max-width: 480px;
+      margin: 0 auto 24px;
+      font-weight: 500;
+    }
+
+    /* Главная кнопка скачивания */
+    .download-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background: var(--acc-bg);
+      border: 1.2px solid var(--acc-border);
+      color: var(--lav-ink);
+      font-family: inherit;
+      font-size: 16px;
+      font-weight: 700;
+      padding: 16px 32px;
+      border-radius: var(--radius-pill);
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 8px 24px rgba(126, 111, 196, 0.25);
+    }
+
+    .download-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 28px rgba(126, 111, 196, 0.38);
+      background: #322b4e;
+    }
+
+    .download-btn:active {
+      transform: scale(0.98);
+    }
+
+    .download-meta {
+      font-size: 12px;
+      color: var(--faint);
+      margin-top: 10px;
+      font-weight: 600;
+    }
+
+    /* Карточки модов в витрине */
+    .section-title {
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+      margin-bottom: 14px;
+    }
+
+    .mod-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    .mod-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: rgba(28, 27, 33, 0.6);
+      border: 1px solid var(--panel-border);
+      border-radius: 18px;
+      padding: 14px 16px;
+      transition: background 0.15s ease;
+    }
+
+    .mod-item:hover {
+      background: rgba(28, 27, 33, 0.9);
+    }
+
+    .mod-badge-icon {
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      border-radius: 14px;
+      overflow: hidden;
+      filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.35));
+    }
+
+    .mod-badge-icon img {
+      width: 100%;
+      height: 100%;
+      border-radius: 14px;
+    }
+
+    .mod-info {
+      flex: 1;
+    }
+
+    .mod-header-line {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 3px;
+    }
+
+    .mod-name {
+      font-size: 16px;
+      font-weight: 800;
+    }
+
+    .mod-tag {
+      font-size: 11px;
+      font-weight: 700;
+      background: var(--cell-off);
+      border: 0.8px solid var(--panel-border);
+      padding: 2px 6px;
+      border-radius: 6px;
+      color: var(--ink);
+    }
+
+    .mod-desc {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.35;
+      font-weight: 500;
+    }
+
+    /* Инструкция по установке */
+    .steps {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .step-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .step-number {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: var(--acc-bg);
+      border: 1px solid var(--acc-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--lav);
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .step-text h4 {
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+
+    .step-text p {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.35;
+    }
+
+    /* Футер */
+    footer {
+      text-align: center;
+      margin-top: 12px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--faint);
+    }
+  </style>
+</head>
+<body>
+  <div class="glow-orb"></div>
+
+  <div class="container">
+    <!-- Hero Секция -->
+    <div class="glass-card hero">
+      <div class="app-icon"><img src="assets/kstore_icon.svg" alt="kStore"></div>
+      <h1 class="hero-title">kStore</h1>
+      <div class="hero-author">by kipsway</div>
+      <p class="hero-desc">
+        Минималистичный мобильный каталог и загрузчик модов. Без рекламы, сторонних подписок и замедлений.
+      </p>
+
+      <a href="kStore.apk" class="download-btn" download>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="7 10 12 15 17 10"></polyline>
+          <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+        Скачать kStore для Android
+      </a>
+      <div class="download-meta">APK • Версия 1.0.0 • ~12 МБ • Android 8.0+</div>
+    </div>
+
+    <!-- Витрина модов в сторе -->
+    <div class="glass-card">
+      <div class="section-title">Каталог приложений</div>
+      <div class="mod-grid">
+        <div class="mod-item">
+          <div class="mod-badge-icon"><img src="assets/ktok_icon.svg" alt="kTok"></div>
+          <div class="mod-info">
+            <div class="mod-header-line">
+              <span class="mod-name">kTok</span>
+              <span class="mod-tag">TikTok Mod</span>
+            </div>
+            <div class="mod-desc">Скачивание без водяного знака, смена региона ленты и плагины ReVanced.</div>
+          </div>
+        </div>
+
+        <div class="mod-item">
+          <div class="mod-badge-icon"><img src="assets/kgram_icon.svg" alt="kGram"></div>
+          <div class="mod-info">
+            <div class="mod-header-line">
+              <span class="mod-name">kGram</span>
+              <span class="mod-tag">Telegram</span>
+            </div>
+            <div class="mod-desc">Клиент на базе NimarkoGram, встроенный k-Tunnel и HD-кружочки.</div>
+          </div>
+        </div>
+
+        <div class="mod-item">
+          <div class="mod-badge-icon"><img src="assets/ktube_icon.svg" alt="kTube"></div>
+          <div class="mod-info">
+            <div class="mod-header-line">
+              <span class="mod-name">kTube</span>
+              <span class="mod-tag">YouTube</span>
+            </div>
+            <div class="mod-desc">Без рекламы и замедления (DPI). Стриминг 4K через встроенное ядро k-Tunnel.</div>
+          </div>
+        </div>
+
+        <div class="mod-item">
+          <div class="mod-badge-icon"><img src="assets/kwitch_icon.svg" alt="kWitch"></div>
+          <div class="mod-info">
+            <div class="mod-header-line">
+              <span class="mod-name">kWitch</span>
+              <span class="mod-tag">Twitch</span>
+            </div>
+            <div class="mod-desc">Встроенный чат Chatterino+ от Rish, смайлы 7TV/BTTV/FFZ и 1440p без лагов.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Быстрая установка -->
+    <div class="glass-card">
+      <div class="section-title">Установка в 2 касания</div>
+      <div class="steps">
+        <div class="step-row">
+          <div class="step-number">1</div>
+          <div class="step-text">
+            <h4>Скачайте файл kStore.apk</h4>
+            <p>Нажмите кнопку «Скачать kStore» и подтвердите сохранение в браузере.</p>
+          </div>
+        </div>
+        <div class="step-row">
+          <div class="step-number">2</div>
+          <div class="step-text">
+            <h4>Откройте загрузку и подтвердите</h4>
+            <p>Нажмите на уведомление о загрузке. Если телефон спросит разрешение на установку из браузера — включите тумблер.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Футер -->
+    <footer>
+      kStore by kipsway • Дизайн «Мозаика» & Жидкое стекло
+    </footer>
+  </div>
+</body>
+</html>

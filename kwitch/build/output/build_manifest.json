@@ -7,14 +7,19 @@
     "features":  [
                      "k-Tunnel 1440p Core (wistfalls.cc pool)",
                      "Chatterino+ v2.4.0 (chat.eblo.id by Rish)",
-                     "7TV / BTTV / FFZ live emotes",
+                     "7TV / BTTV / FFZ live emotes \u0026 Multi-Chat Tabs",
+                     "Stream Replay 30s DVR \u0026 Local Bookmarks",
+                     "Speech DSP Vocal Booster \u0026 Radio Audio-Only",
+                     "Battery Eco Saver (30 FPS \u0026 GIF Pause)",
+                     "Dynamic Ambilight Ambient Glow Aura",
+                     "Chatterino+ Inline Chat Translator",
                      "Liquid Glass + M3 Design System",
                      "Signed with kipsway.keystore"
                  ],
     "apkFile":  "kWitch-v1.0.0-kipsway-release.apk",
-    "sha256":  "9294BE09902DD0C5788F4A4552289AD126B5AC3EEEAC54BF6B3093D6730F0F26",
-    "fileSizeBytes":  98227,
+    "sha256":  "A2CB847BE2269878951BBE88D6BA3E75E84D9EE0E5DA73CB5DE002A222B00C05",
+    "fileSizeBytes":  131432,
     "signed":  true,
     "signAlias":  "kipsway",
-    "builtAt":  "2026-11-22T20:49:27+03:00"
+    "builtAt":  "2026-11-22T22:31:33+03:00"
 }

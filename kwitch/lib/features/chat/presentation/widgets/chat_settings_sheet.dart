@@ -6,22 +6,27 @@ import '../../../../core/theme/k_glass.dart';
 import '../../../../core/theme/k_typography.dart';
 import '../../domain/models/chat_display_settings.dart';
 import '../../domain/services/chatterino_highlight_service.dart';
+import '../../domain/services/chatterino_spam_filter_service.dart';
 import 'chatterino_highlight_sheet.dart';
+import 'chatterino_spam_filter_sheet.dart';
 
 class ChatSettingsSheet extends StatelessWidget {
   final ChatDisplaySettings settings;
   final ChatterinoHighlightService? highlightService;
+  final ChatterinoSpamFilterService? spamFilterService;
 
   const ChatSettingsSheet({
     super.key,
     required this.settings,
     this.highlightService,
+    this.spamFilterService,
   });
 
   static void show(
     BuildContext context,
     ChatDisplaySettings settings, {
     ChatterinoHighlightService? highlightService,
+    ChatterinoSpamFilterService? spamFilterService,
   }) {
     HapticFeedback.lightImpact();
     showModalBottomSheet(
@@ -33,6 +38,7 @@ class ChatSettingsSheet extends StatelessWidget {
         builder: (context, _) => ChatSettingsSheet(
           settings: settings,
           highlightService: highlightService,
+          spamFilterService: spamFilterService,
         ),
       ),
     );
@@ -257,6 +263,45 @@ class ChatSettingsSheet extends StatelessWidget {
                     ],
                   ),
                   const Icon(LucideIcons.chevronRight, size: 16, color: KColors.lav),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 8),
+
+          // КНОПКА ФИЛЬТРА СПАМА И БОТОВ
+          GestureDetector(
+            onTap: () {
+              Navigator.pop(context);
+              ChatterinoSpamFilterSheet.show(
+                context,
+                spamFilterService ?? ChatterinoSpamFilterService(),
+              );
+            },
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
+              decoration: BoxDecoration(
+                color: KColors.well,
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(color: KColors.panelBorder, width: 0.8),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      const Icon(LucideIcons.shieldAlert, size: 18, color: KColors.muted),
+                      const SizedBox(width: 10),
+                      Text(
+                        'Фильтр спама и ботов',
+                        style: KTypography.bodyText.copyWith(
+                          color: KColors.ink,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const Icon(LucideIcons.chevronRight, size: 16, color: KColors.muted),
                 ],
               ),
             ),

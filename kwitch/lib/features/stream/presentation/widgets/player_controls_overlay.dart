@@ -6,6 +6,10 @@ import '../../../../core/theme/k_colors.dart';
 import '../../../../core/theme/k_glass.dart';
 import '../../../../core/theme/k_typography.dart';
 import '../../../ktunnel/domain/services/network_adaptive_controller.dart';
+import '../../domain/services/battery_saver_controller.dart';
+import '../../domain/services/stream_ambient_glow_controller.dart';
+import '../../domain/services/stream_audio_dsp_controller.dart';
+import '../../domain/services/stream_zen_mode_controller.dart';
 import 'ktunnel_toggle_chip.dart';
 import 'stream_catchup_badge.dart';
 import 'stream_quality_selector.dart';
@@ -28,11 +32,16 @@ class PlayerControlsOverlay extends StatefulWidget {
   final bool isMuted;
   final bool isAudioOnly;
   final bool isReplayActive;
+  final int currentBookmarkCount;
   final double latencySeconds;
   final double playbackSpeed;
   final bool isCatchingUp;
   final double bufferSeconds;
   final NetworkAdaptiveController? networkController;
+  final StreamAudioDspController? audioDspController;
+  final BatterySaverController? batteryController;
+  final StreamAmbientGlowController? ambientGlowController;
+  final StreamZenModeController? zenModeController;
   final VoidCallback onPlayPause;
   final ValueChanged<bool> onToggleTunnel;
   final VoidCallback? onOpenNodesPicker;
@@ -45,6 +54,9 @@ class PlayerControlsOverlay extends StatefulWidget {
   final VoidCallback onToggleLockControls;
   final VoidCallback onToggleMute;
   final VoidCallback? onToggleAudioOnly;
+  final VoidCallback? onOpenAudioDsp;
+  final VoidCallback? onOpenBookmarks;
+  final VoidCallback? onOpenBatterySaver;
   final VoidCallback? onStartInstantReplay;
   final VoidCallback onCatchUpLive;
   final VoidCallback? onEnterPip;
@@ -68,11 +80,16 @@ class PlayerControlsOverlay extends StatefulWidget {
     this.isMuted = false,
     this.isAudioOnly = false,
     this.isReplayActive = false,
+    this.currentBookmarkCount = 0,
     this.latencySeconds = 1.1,
     this.playbackSpeed = 1.0,
     this.isCatchingUp = false,
     this.bufferSeconds = 4.2,
     this.networkController,
+    this.audioDspController,
+    this.batteryController,
+    this.ambientGlowController,
+    this.zenModeController,
     required this.onPlayPause,
     required this.onToggleTunnel,
     this.onOpenNodesPicker,
@@ -85,6 +102,11 @@ class PlayerControlsOverlay extends StatefulWidget {
     required this.onToggleLockControls,
     required this.onToggleMute,
     this.onToggleAudioOnly,
+    this.onOpenAudioDsp,
+    this.onOpenBookmarks,
+    this.onOpenBatterySaver,
+    this.onOpenAmbientGlow,
+    this.onToggleZenMode,
     this.onStartInstantReplay,
     required this.onCatchUpLive,
     this.onEnterPip,
@@ -129,6 +151,17 @@ class _PlayerControlsOverlayState extends State<PlayerControlsOverlay> {
   @override
   Widget build(BuildContext context) {
     // РЕЖИМ БЛОКИРОВКИ ЭКРАНА (Замок от случайных нажатий)
+    if (widget.zenModeController?.isZenMode == true) {
+      return GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onTap: () {
+          HapticFeedback.lightImpact();
+          widget.onToggleZenMode?.call();
+        },
+        child: const SizedBox.expand(),
+      );
+    }
+
     if (widget.isControlsLocked) {
       return Positioned(
         left: 20,
@@ -283,6 +316,22 @@ class _PlayerControlsOverlayState extends State<PlayerControlsOverlay> {
                         constraints: const BoxConstraints(),
                       ),
 
+                      // Кнопка Аудио DSP (Улучшайзер речи)
+                      IconButton(
+                        onPressed: () {
+                          HapticFeedback.selectionClick();
+                          widget.onOpenAudioDsp?.call();
+                        },
+                        icon: Icon(
+                          LucideIcons.slidersHorizontal,
+                          color: (widget.audioDspController?.isEnabled ?? false) ? KColors.lav : KColors.muted,
+                          size: 18,
+                        ),
+                        tooltip: 'Аудио DSP Улучшайзер речи',
+                        padding: const EdgeInsets.symmetric(horizontal: 4),
+                        constraints: const BoxConstraints(),
+                      ),
+
                       // Кнопка Замка управления
                       IconButton(
                         onPressed: () {
@@ -322,6 +371,52 @@ class _PlayerControlsOverlayState extends State<PlayerControlsOverlay> {
                           size: 18,
                         ),
                         tooltip: 'Статистика для гиков',
+                        padding: const EdgeInsets.symmetric(horizontal: 4),
+                        constraints: const BoxConstraints(),
+                      ),
+
+                      // Кнопка Закладок стрима
+                      IconButton(
+                        onPressed: () {
+                          HapticFeedback.selectionClick();
+                          widget.onOpenBookmarks?.call();
+                        },
+                        icon: Icon(
+                          LucideIcons.bookmark,
+                          color: widget.currentBookmarkCount > 0 ? KColors.lav : KColors.muted,
+                          size: 18,
+                        ),
+                        tooltip: 'Закладки и таймкоды',
+                        padding: const EdgeInsets.symmetric(horizontal: 4),
+                        constraints: const BoxConstraints(),
+                      ),
+
+                      // Кнопка Эмбиент-подсветки Ambilight
+                      IconButton(
+                        onPressed: () {
+                          HapticFeedback.selectionClick();
+                          widget.onOpenAmbientGlow?.call();
+                        },
+                        icon: Icon(
+                          LucideIcons.sparkles,
+                          color: (widget.ambientGlowController?.isEnabled ?? false)
+                              ? (widget.ambientGlowController?.activeGlowColor ?? KColors.lav)
+                              : KColors.muted,
+                          size: 18,
+                        ),
+                        tooltip: 'Фоновая Ambilight подсветка',
+                        padding: const EdgeInsets.symmetric(horizontal: 4),
+                        constraints: const BoxConstraints(),
+                      ),
+
+                      // Кнопка Дзен-режима (Скрыть все)
+                      IconButton(
+                        onPressed: () {
+                          HapticFeedback.mediumImpact();
+                          widget.onToggleZenMode?.call();
+                        },
+                        icon: const Icon(LucideIcons.eyeOff, color: KColors.muted, size: 18),
+                        tooltip: 'Дзен-режим (Без отвлечений)',
                         padding: const EdgeInsets.symmetric(horizontal: 4),
                         constraints: const BoxConstraints(),
                       ),
@@ -387,6 +482,59 @@ class _PlayerControlsOverlayState extends State<PlayerControlsOverlay> {
                             ],
                           ),
                         ),
+
+                      // Чип батареи и энергосбережения
+                      if (widget.batteryController != null) ...[
+                        const SizedBox(width: 6),
+                        GestureDetector(
+                          onTap: () {
+                            HapticFeedback.selectionClick();
+                            widget.onOpenBatterySaver?.call();
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: widget.batteryController!.isSaverActive
+                                  ? KColors.green.withOpacity(0.18)
+                                  : KColors.well,
+                              borderRadius: BorderRadius.circular(999),
+                              border: Border.all(
+                                color: widget.batteryController!.isSaverActive
+                                    ? KColors.green
+                                    : KColors.panelBorder,
+                                width: 0.8,
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  widget.batteryController!.isCharging
+                                      ? LucideIcons.zap
+                                      : (widget.batteryController!.isSaverActive
+                                          ? LucideIcons.leaf
+                                          : LucideIcons.battery),
+                                  size: 11,
+                                  color: widget.batteryController!.isSaverActive
+                                      ? KColors.greenInk
+                                      : KColors.muted,
+                                ),
+                                const SizedBox(width: 4),
+                                Text(
+                                  '${widget.batteryController!.batteryLevel}%',
+                                  style: KTypography.monoStats.copyWith(
+                                    fontSize: 10,
+                                    color: widget.batteryController!.isSaverActive
+                                        ? KColors.greenInk
+                                        : KColors.muted,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
                     ],
                   ),
 
@@ -489,25 +637,4 @@ class _PlayerControlsOverlayState extends State<PlayerControlsOverlay> {
                                   widget.onToggleFullscreen();
                                 },
                                 icon: Icon(
-                                  widget.isFullscreen ? LucideIcons.minimize2 : LucideIcons.maximize2,
-                                  color: KColors.ink,
-                                  size: 20,
-                                ),
-                                padding: const EdgeInsets.all(8),
-                                constraints: const BoxConstraints(),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
+                
