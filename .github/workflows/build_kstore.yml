@@ -53,7 +53,7 @@ jobs:
 
       - name: 🔨 Compile Genuine Android APK
         run: |
-          flutter build apk --release --verbose
+          flutter build apk --release --verbose --android-skip-build-dependency-validation
 
       - name: 📤 Upload Native APK Artifact
         uses: actions/upload-artifact@v4
