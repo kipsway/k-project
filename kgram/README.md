@@ -35,6 +35,8 @@ kgram/
 ├── settings/
 │   ├── KGramConfig.java            # Единое SharedPreferences-хранилище параметров
 │   └── KGramSettingsFragment.java  # Нативный фрагмент «Настройки kGram»
+├── network/
+│   └── KTunnelManager.java         # Управление сетевым ускорением и прокси-туннелем k-Tunnel
 ├── res/
 │   ├── values/strings.xml          # Англоязычные fallback-строки
 │   └── values-ru/strings.xml       # Русская человечная локализация

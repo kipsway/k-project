@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Фон запуска kStore: глубокий оникс #0A0A0C без белых вспышек -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@android:color/black" />
+    <item>
+        <color android:color="#FF0A0A0C" />
+    </item>
+</layer-list>

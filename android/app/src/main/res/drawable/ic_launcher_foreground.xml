@@ -1,0 +1,36 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Нижний парящий слой -->
+    <path
+        android:fillColor="#4D7E6FC4"
+        android:pathData="M32,70 L54,79 L76,70 L70,64 L54,72 L38,64 Z" />
+
+    <!-- Средний парящий слой -->
+    <path
+        android:fillColor="#807E6FC4"
+        android:pathData="M34,58 L54,67 L74,58 L68,53 L54,60 L40,53 Z" />
+
+    <!-- Верхний главный ромб (лаванда) -->
+    <path
+        android:fillColor="#FFB8A7F0"
+        android:pathData="M54,26 L78,38 L54,50 L30,38 Z" />
+
+    <!-- Боковая грань ромба для объема -->
+    <path
+        android:fillColor="#FF7E6FC4"
+        android:pathData="M30,38 L54,50 L54,53 L30,41 Z" />
+    <path
+        android:fillColor="#FF9C89E8"
+        android:pathData="M78,38 L54,50 L54,53 L78,41 Z" />
+
+    <!-- Буква K в центре верхнего ромба -->
+    <path
+        android:strokeColor="#FF0A0A0C"
+        android:strokeWidth="2.5"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M50,33 L50,43 M58,34 L51,38 L59,42" />
+</vector>

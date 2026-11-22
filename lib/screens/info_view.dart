@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../theme/colors.dart';
 import '../theme/text_styles.dart';
 import '../widgets/glass_container.dart';
+import '../widgets/mod_icon.dart';
 
 /// Экран «Инфо» (3-й таб парящего дока kStore).
 /// Отображает статус ядра k-Tunnel, информацию о версии и принципы проекта kipsway.
@@ -39,33 +40,10 @@ class InfoView extends StatelessWidget {
       padding: const EdgeInsets.all(20.0),
       child: Column(
         children: [
-          Container(
-            width: 72,
-            height: 72,
-            decoration: BoxDecoration(
-              color: KColors.cellOff,
-              borderRadius: BorderRadius.circular(22),
-              border: Border.all(color: KColors.panelBorder, width: 1.0),
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  KColors.accBg,
-                  KColors.cellOff,
-                ],
-              ),
-            ),
-            child: const Center(
-              child: Text(
-                'k',
-                style: TextStyle(
-                  fontFamily: KTextStyles.fontFamily,
-                  fontSize: 36,
-                  fontWeight: FontWeight.w800,
-                  color: KColors.lav,
-                ),
-              ),
-            ),
+          const ModIcon(
+            modId: 'kstore',
+            size: 72,
+            radius: 22,
           ),
           const SizedBox(height: 14),
           const Text('kStore', style: KTextStyles.h1),

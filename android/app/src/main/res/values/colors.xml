@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Цвета лаунчера kStore из палитры Chatterino+ -->
+    <color name="ic_launcher_background">#0A0A0C</color>
+    <color name="ic_launcher_accent">#B8A7F0</color>
+</resources>

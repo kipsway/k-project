@@ -1,10 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Палитра «Мозаика» by Rish (Chatterino+) -->
+    <!-- ================================================================= -->
+    <!-- Фирменная палитра «Мозаика» by Rish (Chatterino+, chat.eblo.id)  -->
+    <!-- ================================================================= -->
     <color name="ktok_bg_onyx">#0A0A0C</color>
     <color name="ktok_surface">#0F0F12</color>
+    <color name="ktok_cell_off">#1C1B21</color>
+    <color name="ktok_panel_border">#2C2B32</color>
     <color name="ktok_lavender">#B8A7F0</color>
+    <color name="ktok_lavender_ink">#D9CFFD</color>
     <color name="ktok_border_active">#7E6FC4</color>
-    <color name="ktok_text_primary">#F4F4F6</color>
-    <color name="ktok_text_secondary">#8E8E93</color>
+    <color name="ktok_text_primary">#ECEBF1</color>
+    <color name="ktok_text_secondary">#8D8A99</color>
+    <color name="ktok_text_faint">#6F6C7A</color>
+
+    <!-- ================================================================= -->
+    <!-- Переопределение нативных цветовых идентификаторов TikTok          -->
+    <!-- Замена мутно-серого фона #161823 и неонового красного #FE2C55     -->
+    <!-- на глубокий оникс #0A0A0C и благородную лаванду #B8A7F0           -->
+    <!-- ================================================================= -->
+    <color name="bg_primary">#0A0A0C</color>
+    <color name="bg_secondary">#0F0F12</color>
+    <color name="bg_tertiary">#1C1B21</color>
+    <color name="bg_panel">#0F0F12</color>
+    <color name="bg_overlay">#800A0A0C</color>
+
+    <!-- Акцентные цвета интерфейса (кнопки подписки, лайки, индикаторы) -->
+    <color name="color_primary">#B8A7F0</color>
+    <color name="color_accent">#B8A7F0</color>
+    <color name="brand_primary">#B8A7F0</color>
+    <color name="primary_color">#B8A7F0</color>
+    <color name="accent_color">#B8A7F0</color>
+    <color name="feed_progress_bar">#B8A7F0</color>
+    <color name="seek_bar_color">#B8A7F0</color>
+    <color name="tab_selected_indicator">#B8A7F0</color>
+
+    <!-- Тексты и рамки -->
+    <color name="text_primary">#ECEBF1</color>
+    <color name="text_secondary">#8D8A99</color>
+    <color name="line_divider">#2C2B32</color>
+    <color name="border_primary">#2C2B32</color>
 </resources>

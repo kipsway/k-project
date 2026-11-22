@@ -5,6 +5,7 @@ import 'package:kstore/widgets/floating_dock.dart';
 import 'package:kstore/widgets/floating_progress_bar.dart';
 import 'package:kstore/widgets/glass_container.dart';
 import 'package:kstore/widgets/mod_card.dart';
+import 'package:kstore/widgets/mod_icon.dart';
 
 void main() {
   group('kStore UI & Widgets Tests', () {
@@ -101,6 +102,27 @@ void main() {
       await tester.tap(find.byIcon(Icons.download_rounded));
       await tester.pump();
       expect(selected, 1);
+    });
+
+    testWidgets('ModIcon renders custom vector paint for each modId', (tester) async {
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: Scaffold(
+            body: Column(
+              children: [
+                ModIcon(modId: 'ktok'),
+                ModIcon(modId: 'kgram'),
+                ModIcon(modId: 'ktube'),
+                ModIcon(modId: 'kwitch'),
+                ModIcon(modId: 'kstore'),
+              ],
+            ),
+          ),
+        ),
+      );
+
+      expect(find.byType(ModIcon), findsNWidgets(5));
+      expect(find.byType(CustomPaint), findsWidgets);
     });
   });
 }

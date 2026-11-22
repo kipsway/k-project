@@ -93,9 +93,9 @@ public class KGramSettingsFragment extends BaseFragment {
         addSectionHeader("СЕТЬ И СВЯЗЬ");
         addToggleCell(
             "Ускорение k-Tunnel",
-            "Встроенный авто-туннель для мгновенной загрузки медиа и стабильной связи без блокировок",
+            "Статус: " + org.kipsway.kgram.network.KTunnelManager.getStatusDescription(context) + " • Без внешних VPN",
             KGramConfig.isKTunnelEnabled(context),
-            (btn, isChecked) -> KGramConfig.setKTunnelEnabled(context, isChecked)
+            (btn, isChecked) -> org.kipsway.kgram.network.KTunnelManager.setKTunnelEnabled(context, isChecked)
         );
 
         // 7. Раздел: ПРИВАТНОСТЬ

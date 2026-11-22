@@ -26,6 +26,7 @@ class PlayerControlsOverlay extends StatefulWidget {
   final bool isSleepTimerActive;
   final bool isControlsLocked;
   final bool isMuted;
+  final bool isAudioOnly;
   final double latencySeconds;
   final double playbackSpeed;
   final bool isCatchingUp;
@@ -42,6 +43,7 @@ class PlayerControlsOverlay extends StatefulWidget {
   final VoidCallback onOpenChannelsDrawer;
   final VoidCallback onToggleLockControls;
   final VoidCallback onToggleMute;
+  final VoidCallback? onToggleAudioOnly;
   final VoidCallback onCatchUpLive;
   final VoidCallback? onEnterPip;
 
@@ -62,6 +64,7 @@ class PlayerControlsOverlay extends StatefulWidget {
     this.isSleepTimerActive = false,
     this.isControlsLocked = false,
     this.isMuted = false,
+    this.isAudioOnly = false,
     this.latencySeconds = 1.1,
     this.playbackSpeed = 1.0,
     this.isCatchingUp = false,
@@ -78,6 +81,7 @@ class PlayerControlsOverlay extends StatefulWidget {
     required this.onOpenChannelsDrawer,
     required this.onToggleLockControls,
     required this.onToggleMute,
+    this.onToggleAudioOnly,
     required this.onCatchUpLive,
     this.onEnterPip,
   });
@@ -237,6 +241,24 @@ class _PlayerControlsOverlayState extends State<PlayerControlsOverlay> {
                         },
                         icon: const Icon(LucideIcons.tv, color: KColors.lav, size: 18),
                         tooltip: 'Выбор стрима',
+                        padding: const EdgeInsets.symmetric(horizontal: 4),
+                        constraints: const BoxConstraints(),
+                      ),
+
+                      // Кнопка режима «Только радио» (Audio-Only)
+                      IconButton(
+                        onPressed: () {
+                          HapticFeedback.selectionClick();
+                          widget.onToggleAudioOnly?.call();
+                        },
+                        icon: Icon(
+                          LucideIcons.headphones,
+                          color: widget.isAudioOnly ? KColors.lav : KColors.muted,
+                          size: 18,
+                        ),
+                        tooltip: widget.isAudioOnly
+                            ? 'Вернуть видео'
+                            : 'Режим радио (экономия 98% трафика)',
                         padding: const EdgeInsets.symmetric(horizontal: 4),
                         constraints: const BoxConstraints(),
                       ),

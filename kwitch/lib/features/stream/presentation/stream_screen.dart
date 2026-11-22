@@ -10,6 +10,7 @@ import '../../ktunnel/presentation/widgets/ktunnel_node_picker_sheet.dart';
 import '../domain/models/stream_nerd_stats.dart';
 import '../domain/models/twitch_channel_item.dart';
 import '../domain/services/amoled_mode_controller.dart';
+import '../domain/services/audio_only_mode_controller.dart';
 import '../domain/services/pip_background_service.dart';
 import '../domain/services/player_stability_controller.dart';
 import '../domain/services/sleep_timer_service.dart';
@@ -58,6 +59,9 @@ class _StreamScreenState extends State<StreamScreen> with WidgetsBindingObserver
   late final SleepTimerService _sleepTimerService;
   late final AmoledModeController _amoledController;
 
+  // Контроллер аудио-режима «Только радио»
+  late final AudioOnlyModeController _audioOnlyController;
+
   // Состояния воспроизведения
   bool _isPlaying = true;
   String _currentQuality = '1440p60';
@@ -104,6 +108,9 @@ class _StreamScreenState extends State<StreamScreen> with WidgetsBindingObserver
     _amoledController = AmoledModeController();
     _amoledController.addListener(_onStateChanged);
 
+    _audioOnlyController = AudioOnlyModeController();
+    _audioOnlyController.addListener(_onStateChanged);
+
     _updateNotification();
   }
 
@@ -112,9 +119,10 @@ class _StreamScreenState extends State<StreamScreen> with WidgetsBindingObserver
   }
 
   void _updateNotification() {
+    final titleSuffix = _audioOnlyController.isAudioOnly ? ' [Радио 160k]' : '';
     _pipService.updateNotification(
       streamerName: _streamerName,
-      categoryName: _categoryName,
+      categoryName: '$_categoryName$titleSuffix',
       isLive: true,
       isTunnelEnabled: _tunnelController.isEnabled,
     );
@@ -144,6 +152,8 @@ class _StreamScreenState extends State<StreamScreen> with WidgetsBindingObserver
     _sleepTimerService.dispose();
     _amoledController.removeListener(_onStateChanged);
     _amoledController.dispose();
+    _audioOnlyController.removeListener(_onStateChanged);
+    _audioOnlyController.dispose();
     super.dispose();
   }
 
@@ -234,7 +244,52 @@ class _StreamScreenState extends State<StreamScreen> with WidgetsBindingObserver
   }
 
   void _selectQuality(String quality) {
-    setState(() => _currentQuality = quality);
+    setState(() {
+      _currentQuality = quality;
+      _audioOnlyController.toggleAudioOnly(quality == 'audio_only');
+    });
+    _updateNotification();
+  }
+
+  void _toggleAudioOnly() {
+    setState(() {
+      final willBeAudio = !_audioOnlyController.isAudioOnly;
+      _audioOnlyController.toggleAudioOnly(willBeAudio);
+      _currentQuality = willBeAudio ? 'audio_only' : '1440p60';
+    });
+    _updateNotification();
+    HapticFeedback.lightImpact();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: KColors.panel,
+        duration: const Duration(seconds: 2),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+          side: const BorderSide(color: KColors.accBorder, width: 1),
+        ),
+        content: Row(
+          children: [
+            Icon(
+              _audioOnlyController.isAudioOnly ? LucideIcons.radio : LucideIcons.video,
+              color: KColors.lav,
+              size: 18,
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                _audioOnlyController.isAudioOnly
+                    ? 'Режим радио активен: экономия до 98% трафика'
+                    : 'Видео 1440p60 восстановлено',
+                style: KTypography.caption.copyWith(color: KColors.ink),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   void _toggleFullscreen() {
@@ -263,6 +318,50 @@ class _StreamScreenState extends State<StreamScreen> with WidgetsBindingObserver
     });
   }
 
+  void _openChannelsDrawer() {
+    ChannelSearchDrawer.show(
+      context,
+      onSelectChannel: _switchChannel,
+    );
+  }
+
+  void _switchChannel(TwitchChannelItem channel) {
+    setState(() {
+      _streamerName = channel.id;
+      _categoryName = channel.category;
+      _streamerAvatarUrl = channel.avatarUrl;
+      _viewerCount = channel.viewerCount;
+    });
+    _updateNotification();
+    _catchupService.jumpToLiveEdge();
+    HapticFeedback.mediumImpact();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: KColors.panel,
+        duration: const Duration(seconds: 2),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+          side: const BorderSide(color: KColors.accBorder, width: 1),
+        ),
+        content: Row(
+          children: [
+            const Icon(LucideIcons.tv, color: KColors.lav, size: 18),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                'Переключено на ${channel.displayName} (${channel.category})',
+                style: KTypography.caption.copyWith(color: KColors.ink),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   void _openEmotesSheet() {
     showModalBottomSheet(
       context: context,
@@ -270,7 +369,7 @@ class _StreamScreenState extends State<StreamScreen> with WidgetsBindingObserver
       isScrollControlled: true,
       builder: (context) {
         return ChatterinoEmotesSheet(
-          channel: widget.streamerName,
+          channel: _streamerName,
           onSelectEmote: (emote) {
             // Вставка смайла
           },
@@ -304,9 +403,9 @@ class _StreamScreenState extends State<StreamScreen> with WidgetsBindingObserver
           currentPingMs: _tunnelController.currentPing,
           currentQuality: _currentQuality,
           viewerCount: _viewerCount,
-          streamerName: widget.streamerName,
-          categoryName: widget.categoryName,
-          streamerAvatarUrl: widget.streamerAvatarUrl,
+          streamerName: _streamerName,
+          categoryName: _categoryName,
+          streamerAvatarUrl: _streamerAvatarUrl,
           isLive: true,
           isFullscreen: true,
           isOverlayChatVisible: false,
@@ -328,6 +427,7 @@ class _StreamScreenState extends State<StreamScreen> with WidgetsBindingObserver
           onToggleOverlayChat: _toggleOverlayChat,
           onToggleNerdStats: _toggleNerdStats,
           onOpenSleepTimer: _openSleepTimer,
+          onOpenChannelsDrawer: _openChannelsDrawer,
           onToggleLockControls: _stabilityController.toggleControlsLock,
           onToggleMute: () => _stabilityController.toggleMute(1.0),
           onCatchUpLive: _catchUpLive,
@@ -348,9 +448,9 @@ class _StreamScreenState extends State<StreamScreen> with WidgetsBindingObserver
           currentPingMs: _tunnelController.currentPing,
           currentQuality: _currentQuality,
           viewerCount: _viewerCount,
-          streamerName: widget.streamerName,
-          categoryName: widget.categoryName,
-          streamerAvatarUrl: widget.streamerAvatarUrl,
+          streamerName: _streamerName,
+          categoryName: _categoryName,
+          streamerAvatarUrl: _streamerAvatarUrl,
           isLive: true,
           isFullscreen: true,
           isOverlayChatVisible: _isOverlayChatVisible,
@@ -372,6 +472,7 @@ class _StreamScreenState extends State<StreamScreen> with WidgetsBindingObserver
           onToggleOverlayChat: _toggleOverlayChat,
           onToggleNerdStats: _toggleNerdStats,
           onOpenSleepTimer: _openSleepTimer,
+          onOpenChannelsDrawer: _openChannelsDrawer,
           onToggleLockControls: _stabilityController.toggleControlsLock,
           onToggleMute: () => _stabilityController.toggleMute(1.0),
           onCatchUpLive: _catchUpLive,
@@ -396,9 +497,9 @@ class _StreamScreenState extends State<StreamScreen> with WidgetsBindingObserver
                 currentPingMs: _tunnelController.currentPing,
                 currentQuality: _currentQuality,
                 viewerCount: _viewerCount,
-                streamerName: widget.streamerName,
-                categoryName: widget.categoryName,
-                streamerAvatarUrl: widget.streamerAvatarUrl,
+                streamerName: _streamerName,
+                categoryName: _categoryName,
+                streamerAvatarUrl: _streamerAvatarUrl,
                 isLive: true,
                 isFullscreen: false,
                 isOverlayChatVisible: _isOverlayChatVisible,
@@ -420,6 +521,7 @@ class _StreamScreenState extends State<StreamScreen> with WidgetsBindingObserver
                 onToggleOverlayChat: _toggleOverlayChat,
                 onToggleNerdStats: _toggleNerdStats,
                 onOpenSleepTimer: _openSleepTimer,
+                onOpenChannelsDrawer: _openChannelsDrawer,
                 onToggleLockControls: _stabilityController.toggleControlsLock,
                 onToggleMute: () => _stabilityController.toggleMute(1.0),
                 onCatchUpLive: _catchUpLive,
@@ -435,7 +537,7 @@ class _StreamScreenState extends State<StreamScreen> with WidgetsBindingObserver
             // Контейнер чата Chatterino+
             Expanded(
               child: ChatPanelContainer(
-                channelName: widget.streamerName,
+                channelName: _streamerName,
                 onOpenEmotes: _openEmotesSheet,
                 onSendMessage: (msg) {
                   // Отправка в сокет чата

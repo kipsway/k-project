@@ -53,7 +53,8 @@ class StreamQualitySelector extends StatelessWidget {
     ),
     QualityOption(
       id: 'audio_only',
-      label: 'Только аудио',
+      label: 'Только аудио (160 kbps)',
+      badge: 'Экономия 98%',
     ),
   ];
 

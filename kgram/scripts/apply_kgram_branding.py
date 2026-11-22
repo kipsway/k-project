@@ -177,6 +177,15 @@ def apply_branding(repo_root):
                 shutil.copy2(os.path.join(settings_src_dir, f), os.path.join(settings_dst_dir, f))
         print("[OK] Installed kGram settings components into source tree")
 
+    network_src_dir = os.path.join(kgram_dir, "network")
+    network_dst_dir = os.path.join(repo_root, "TMessagesProj", "src", "main", "java", "org", "kipsway", "kgram", "network")
+    os.makedirs(network_dst_dir, exist_ok=True)
+    if os.path.exists(network_src_dir):
+        for f in os.listdir(network_src_dir):
+            if f.endswith(".java"):
+                shutil.copy2(os.path.join(network_src_dir, f), os.path.join(network_dst_dir, f))
+        print("[OK] Installed k-Tunnel network components into source tree")
+
     # Hook into AudioPlayerAlert.java
     audio_alert_path = os.path.join(repo_root, "TMessagesProj", "src", "main", "java", "org", "telegram", "ui", "Components", "AudioPlayerAlert.java")
     if os.path.exists(audio_alert_path):
