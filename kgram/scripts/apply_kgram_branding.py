@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-kGram Branding & Package Isolator (by kipsway)
-Applies package ID change, isolation, strings, and icon assets to NimarkoGram codebase.
+kGram Branding, Package Isolator & Theme Installer (by kipsway)
+Applies package ID change, isolation, strings, icon assets, and Mozaik default theme.
 """
 
 import os
@@ -31,7 +31,9 @@ def patch_file(file_path, replacements):
         return False
 
 def apply_branding(repo_root):
-    print(f"=== Applying kGram Branding to: {repo_root} ===")
+    print(f"=== Applying kGram Branding & Mozaik Theme to: {repo_root} ===")
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    kgram_dir = os.path.abspath(os.path.join(script_dir, ".."))
 
     # 1. TMessagesProj_AppStandalone/build.gradle
     app_standalone_gradle = os.path.join(repo_root, "TMessagesProj_AppStandalone", "build.gradle")
@@ -116,8 +118,7 @@ def apply_branding(repo_root):
             print("[OK] Injected kGram tokens into strings.xml (RU)")
 
     # 5. Copy Icons from kgram/assets to target res/mipmap-*
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    assets_dir = os.path.abspath(os.path.join(script_dir, "..", "assets"))
+    assets_dir = os.path.join(kgram_dir, "assets")
     densities = ["mipmap-mdpi", "mipmap-hdpi", "mipmap-xhdpi", "mipmap-xxhdpi", "mipmap-xxxhdpi"]
 
     res_dir = os.path.join(repo_root, "TMessagesProj", "src", "main", "res")
@@ -133,8 +134,32 @@ def apply_branding(repo_root):
                         shutil.copy2(src_f, dst_f)
                 print(f"[OK] Replaced icons in {density}")
 
-    # 6. Configure signing in private.properties
-    signing_keystore = os.path.abspath(os.path.join(script_dir, "..", "signing", "kipsway.keystore"))
+    # 6. Deploy Mozaik Theme Asset & Code Hook
+    mozaik_src = os.path.join(kgram_dir, "theme", "mozaik.attheme")
+    assets_themes_dir = os.path.join(repo_root, "TMessagesProj", "src", "main", "assets", "themes")
+    os.makedirs(assets_themes_dir, exist_ok=True)
+    if os.path.exists(mozaik_src):
+        shutil.copy2(mozaik_src, os.path.join(assets_themes_dir, "mozaik.attheme"))
+        print("[OK] Bundled mozaik.attheme into assets/themes/")
+
+    # Deploy MozaikThemeManager.java
+    theme_java_src = os.path.join(kgram_dir, "theme", "MozaikThemeManager.java")
+    theme_java_dst_dir = os.path.join(repo_root, "TMessagesProj", "src", "main", "java", "org", "kipsway", "kgram", "theme")
+    os.makedirs(theme_java_dst_dir, exist_ok=True)
+    if os.path.exists(theme_java_src):
+        shutil.copy2(theme_java_src, os.path.join(theme_java_dst_dir, "MozaikThemeManager.java"))
+        print("[OK] Installed MozaikThemeManager.java into source tree")
+
+    # Hook into LaunchActivity.java onCreate
+    launch_activity_path = os.path.join(repo_root, "TMessagesProj", "src", "main", "java", "org", "telegram", "ui", "LaunchActivity.java")
+    if os.path.exists(launch_activity_path):
+        patch_file(launch_activity_path, [
+            (r"(Theme\.createDialogsResources\(this\);)(?!\s*org\.kipsway\.kgram)",
+             r"\1\n        org.kipsway.kgram.theme.MozaikThemeManager.checkAndApplyDefaultTheme(this);")
+        ])
+
+    # 7. Configure signing in private.properties
+    signing_keystore = os.path.join(kgram_dir, "signing", "kipsway.keystore")
     private_props_path = os.path.join(repo_root, "private.properties")
     signing_config_text = f"""
 # kGram Release Signing Config (by kipsway)
@@ -147,7 +172,7 @@ RELEASE_KEY_PASSWORD=kgram2026
         f.write(signing_config_text)
     print(f"[OK] Configured private.properties with kipsway.keystore")
 
-    print("=== kGram Branding Applied Successfully! ===")
+    print("=== kGram Branding & Mozaik Theme Applied Successfully! ===")
 
 if __name__ == "__main__":
     target_repo = sys.argv[1] if len(sys.argv) > 1 else "."

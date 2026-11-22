@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../core/theme/k_colors.dart';
+import '../../../../core/theme/k_glass.dart';
 import '../../../../core/theme/k_typography.dart';
 import 'ktunnel_toggle_chip.dart';
 import 'stream_catchup_badge.dart';
@@ -22,8 +23,12 @@ class PlayerControlsOverlay extends StatefulWidget {
   final bool isOverlayChatVisible;
   final bool isNerdStatsVisible;
   final bool isSleepTimerActive;
+  final bool isControlsLocked;
+  final bool isMuted;
   final double latencySeconds;
   final double playbackSpeed;
+  final bool isCatchingUp;
+  final double bufferSeconds;
   final VoidCallback onPlayPause;
   final ValueChanged<bool> onToggleTunnel;
   final VoidCallback? onOpenNodesPicker;
@@ -32,6 +37,8 @@ class PlayerControlsOverlay extends StatefulWidget {
   final VoidCallback onToggleOverlayChat;
   final VoidCallback onToggleNerdStats;
   final VoidCallback onOpenSleepTimer;
+  final VoidCallback onToggleLockControls;
+  final VoidCallback onToggleMute;
   final VoidCallback onCatchUpLive;
   final VoidCallback? onEnterPip;
 
@@ -50,8 +57,12 @@ class PlayerControlsOverlay extends StatefulWidget {
     this.isOverlayChatVisible = false,
     this.isNerdStatsVisible = false,
     this.isSleepTimerActive = false,
+    this.isControlsLocked = false,
+    this.isMuted = false,
     this.latencySeconds = 1.1,
     this.playbackSpeed = 1.0,
+    this.isCatchingUp = false,
+    this.bufferSeconds = 4.2,
     required this.onPlayPause,
     required this.onToggleTunnel,
     this.onOpenNodesPicker,
@@ -60,6 +71,8 @@ class PlayerControlsOverlay extends StatefulWidget {
     required this.onToggleOverlayChat,
     required this.onToggleNerdStats,
     required this.onOpenSleepTimer,
+    required this.onToggleLockControls,
+    required this.onToggleMute,
     required this.onCatchUpLive,
     this.onEnterPip,
   });
@@ -102,6 +115,38 @@ class _PlayerControlsOverlayState extends State<PlayerControlsOverlay> {
 
   @override
   Widget build(BuildContext context) {
+    // РЕЖИМ БЛОКИРОВКИ ЭКРАНА (Замок от случайных нажатий)
+    if (widget.isControlsLocked) {
+      return Positioned(
+        left: 20,
+        top: 20,
+        child: SafeArea(
+          child: GestureDetector(
+            onTap: () {
+              HapticFeedback.heavyImpact();
+              widget.onToggleLockControls();
+            },
+            child: KGlassContainer.capsule(
+              blurSigma: 24,
+              backgroundColor: const Color(0xCC0F0F12),
+              customBorder: Border.all(color: KColors.accBorder, width: 1.2),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(LucideIcons.lock, size: 16, color: KColors.lav),
+                  const SizedBox(width: 8),
+                  Text(
+                    'Экран заблокирован (Нажмите для снятия)',
+                    style: KTypography.caption.copyWith(color: KColors.lavInk),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: _toggleVisibility,
@@ -129,7 +174,7 @@ class _PlayerControlsOverlayState extends State<PlayerControlsOverlay> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  // ВЕРХНИЙ БАР: инфо о стримере, онлайн, таймер, PiP и Статистика
+                  // ВЕРХНИЙ БАР: инфо о стримере, звук, замок, таймер, PiP, онлайн
                   Row(
                     children: [
                       // Кнопка Назад
@@ -139,7 +184,7 @@ class _PlayerControlsOverlayState extends State<PlayerControlsOverlay> {
                         padding: EdgeInsets.zero,
                         constraints: const BoxConstraints(),
                       ),
-                      const SizedBox(width: 12),
+                      const SizedBox(width: 10),
                       // Аватар стримера
                       Container(
                         width: 38,
@@ -177,7 +222,34 @@ class _PlayerControlsOverlayState extends State<PlayerControlsOverlay> {
                           ],
                         ),
                       ),
-                      const SizedBox(width: 8),
+                      const SizedBox(width: 6),
+
+                      // Кнопка Mute / Unmute
+                      IconButton(
+                        onPressed: () {
+                          widget.onToggleMute();
+                          _startHideTimer();
+                        },
+                        icon: Icon(
+                          widget.isMuted ? LucideIcons.volumeX : LucideIcons.volume2,
+                          color: widget.isMuted ? KColors.redInk : KColors.ink,
+                          size: 18,
+                        ),
+                        tooltip: widget.isMuted ? 'Включить звук' : 'Выключить звук',
+                        padding: const EdgeInsets.symmetric(horizontal: 4),
+                        constraints: const BoxConstraints(),
+                      ),
+
+                      // Кнопка Замка управления
+                      IconButton(
+                        onPressed: () {
+                          widget.onToggleLockControls();
+                        },
+                        icon: const Icon(LucideIcons.unlock, color: KColors.muted, size: 18),
+                        tooltip: 'Заблокировать экран',
+                        padding: const EdgeInsets.symmetric(horizontal: 4),
+                        constraints: const BoxConstraints(),
+                      ),
 
                       // Кнопка Спящего таймера
                       IconButton(
@@ -194,7 +266,6 @@ class _PlayerControlsOverlayState extends State<PlayerControlsOverlay> {
                         padding: const EdgeInsets.symmetric(horizontal: 4),
                         constraints: const BoxConstraints(),
                       ),
-                      const SizedBox(width: 4),
 
                       // Кнопка Статистики для гиков
                       IconButton(
@@ -211,9 +282,8 @@ class _PlayerControlsOverlayState extends State<PlayerControlsOverlay> {
                         padding: const EdgeInsets.symmetric(horizontal: 4),
                         constraints: const BoxConstraints(),
                       ),
-                      const SizedBox(width: 4),
 
-                      // Кнопка режима «Картинка в картинке» (PiP)
+                      // Кнопка PiP
                       if (widget.onEnterPip != null)
                         IconButton(
                           onPressed: () {
@@ -225,12 +295,12 @@ class _PlayerControlsOverlayState extends State<PlayerControlsOverlay> {
                           padding: const EdgeInsets.symmetric(horizontal: 4),
                           constraints: const BoxConstraints(),
                         ),
-                      const SizedBox(width: 6),
+                      const SizedBox(width: 4),
 
                       // Живой индикатор онлайна
                       if (widget.isLive)
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                           decoration: BoxDecoration(
                             color: KColors.red.withOpacity(0.18),
                             borderRadius: BorderRadius.circular(999),
@@ -240,19 +310,19 @@ class _PlayerControlsOverlayState extends State<PlayerControlsOverlay> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Container(
-                                width: 7,
-                                height: 7,
+                                width: 6,
+                                height: 6,
                                 decoration: const BoxDecoration(
                                   color: KColors.red,
                                   shape: BoxShape.circle,
                                 ),
                               ),
-                              const SizedBox(width: 6),
+                              const SizedBox(width: 5),
                               Text(
                                 '${widget.viewerCount}',
                                 style: KTypography.monoStats.copyWith(
                                   color: KColors.ink,
-                                  fontSize: 11,
+                                  fontSize: 10,
                                 ),
                               ),
                             ],
@@ -261,13 +331,14 @@ class _PlayerControlsOverlayState extends State<PlayerControlsOverlay> {
                     ],
                   ),
 
-                  // ЦЕНТРАЛЬНАЯ КНОПКА PLAY/PAUSE И БЕЙДЖ ДОГОНА ЭФИРА
+                  // ЦЕНТРАЛЬНАЯ КНОПКА PLAY/PAUSE И БЕЙДЖ ДОГОНА 1.5x
                   Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       StreamCatchupBadge(
                         latencySeconds: widget.latencySeconds,
                         playbackSpeed: widget.playbackSpeed,
+                        isCatchingUp: widget.isCatchingUp,
                         onCatchUp: widget.onCatchUpLive,
                       ),
                       const SizedBox(height: 8),
@@ -286,61 +357,86 @@ class _PlayerControlsOverlayState extends State<PlayerControlsOverlay> {
                     ],
                   ),
 
-                  // НИЖНИЙ БАР КОНТРОЛЛЕРОВ
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  // НИЖНИЙ БАР КОНТРОЛЛЕРОВ И ПОЛОСА БУФЕРА
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      // Переключатель k-Tunnel
-                      KTunnelToggleChip(
-                        isEnabled: widget.isTunnelEnabled,
-                        pingMs: widget.currentPingMs,
-                        onToggle: (val) {
-                          widget.onToggleTunnel(val);
-                          _startHideTimer();
-                        },
-                        onOpenNodesPicker: widget.onOpenNodesPicker,
+                      // Тонкая линия здоровья буфера
+                      Container(
+                        height: 2,
+                        margin: const EdgeInsets.only(bottom: 8),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(1),
+                          color: KColors.panelBorder,
+                        ),
+                        child: FractionallySizedBox(
+                          alignment: Alignment.centerLeft,
+                          widthFactor: (widget.bufferSeconds / 10.0).clamp(0.0, 1.0),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: KColors.lav.withOpacity(0.8),
+                              borderRadius: BorderRadius.circular(1),
+                            ),
+                          ),
+                        ),
                       ),
 
-                      // Правый стек: оверлей чата, выбор качества и полноэкранный режим
                       Row(
-                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          IconButton(
-                            onPressed: () {
-                              HapticFeedback.lightImpact();
-                              widget.onToggleOverlayChat();
-                            },
-                            icon: Icon(
-                              LucideIcons.messageSquare,
-                              color: widget.isOverlayChatVisible ? KColors.lav : KColors.muted,
-                              size: 20,
-                            ),
-                            tooltip: 'Чат-оверлей',
-                            padding: const EdgeInsets.all(8),
-                            constraints: const BoxConstraints(),
-                          ),
-                          const SizedBox(width: 6),
-                          StreamQualitySelector(
-                            currentQuality: widget.currentQuality,
-                            isTunnelEnabled: widget.isTunnelEnabled,
-                            onQualitySelected: (q) {
-                              widget.onSelectQuality(q);
+                          // Переключатель k-Tunnel
+                          KTunnelToggleChip(
+                            isEnabled: widget.isTunnelEnabled,
+                            pingMs: widget.currentPingMs,
+                            onToggle: (val) {
+                              widget.onToggleTunnel(val);
                               _startHideTimer();
                             },
+                            onOpenNodesPicker: widget.onOpenNodesPicker,
                           ),
-                          const SizedBox(width: 8),
-                          IconButton(
-                            onPressed: () {
-                              HapticFeedback.lightImpact();
-                              widget.onToggleFullscreen();
-                            },
-                            icon: Icon(
-                              widget.isFullscreen ? LucideIcons.minimize2 : LucideIcons.maximize2,
-                              color: KColors.ink,
-                              size: 20,
-                            ),
-                            padding: const EdgeInsets.all(8),
-                            constraints: const BoxConstraints(),
+
+                          // Правый стек: оверлей чата, выбор качества и полноэкранный режим
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                onPressed: () {
+                                  HapticFeedback.lightImpact();
+                                  widget.onToggleOverlayChat();
+                                },
+                                icon: Icon(
+                                  LucideIcons.messageSquare,
+                                  color: widget.isOverlayChatVisible ? KColors.lav : KColors.muted,
+                                  size: 20,
+                                ),
+                                tooltip: 'Чат-оверлей',
+                                padding: const EdgeInsets.all(8),
+                                constraints: const BoxConstraints(),
+                              ),
+                              const SizedBox(width: 6),
+                              StreamQualitySelector(
+                                currentQuality: widget.currentQuality,
+                                isTunnelEnabled: widget.isTunnelEnabled,
+                                onQualitySelected: (q) {
+                                  widget.onSelectQuality(q);
+                                  _startHideTimer();
+                                },
+                              ),
+                              const SizedBox(width: 8),
+                              IconButton(
+                                onPressed: () {
+                                  HapticFeedback.lightImpact();
+                                  widget.onToggleFullscreen();
+                                },
+                                icon: Icon(
+                                  widget.isFullscreen ? LucideIcons.minimize2 : LucideIcons.maximize2,
+                                  color: KColors.ink,
+                                  size: 20,
+                                ),
+                                padding: const EdgeInsets.all(8),
+                                constraints: const BoxConstraints(),
+                              ),
+                            ],
                           ),
                         ],
                       ),

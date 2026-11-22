@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'mod_detail_sheet.dart';
+import 'search_modal.dart';
 import 'info_view.dart';
 import '../models/mod_item.dart';
 import '../theme/colors.dart';

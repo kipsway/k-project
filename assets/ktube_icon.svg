@@ -1,41 +1,50 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
   <defs>
+    <!-- Глубокий ониксовый градиент фона -->
     <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#0F0F12"/>
-      <stop offset="100%" stop-color="#0A0A0C"/>
+      <stop offset="0%" stop-color="#141318"/>
+      <stop offset="50%" stop-color="#0E0D12"/>
+      <stop offset="100%" stop-color="#08070A"/>
     </linearGradient>
 
-    <linearGradient id="lavenderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#D4C9FA"/>
+    <!-- Фирменный лавандовый градиент экрана YouTube -->
+    <linearGradient id="screenGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ECEBF1"/>
+      <stop offset="40%" stop-color="#D4C9FA"/>
       <stop offset="100%" stop-color="#B8A7F0"/>
     </linearGradient>
 
-    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
-      <feGaussianBlur stdDeviation="12" result="blur" />
-      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    <!-- Стеклянный блик рамки -->
+    <linearGradient id="rimGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.22"/>
+      <stop offset="40%" stop-color="#B8A7F0" stop-opacity="0.10"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.0"/>
+    </linearGradient>
+
+    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="16" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
     </filter>
   </defs>
 
-  <!-- Сквиркл-фон 512x512 со скруглением 128px -->
-  <rect x="16" y="16" width="480" height="480" rx="128" fill="url(#bgGrad)" stroke="#7E6FC4" stroke-width="4" />
+  <!-- Сквиркл-фон 512x512 -->
+  <rect x="16" y="16" width="480" height="480" rx="132" fill="url(#bgGrad)"/>
+  <rect x="16" y="16" width="480" height="480" rx="132" fill="none" stroke="url(#rimGrad)" stroke-width="3"/>
+  <rect x="18" y="18" width="476" height="476" rx="130" fill="none" stroke="#2C2B32" stroke-width="1.5" stroke-opacity="0.6"/>
 
-  <!-- Внутренний оптический блик по верхнему краю (Liquid Glass) -->
-  <path d="M 144 20 L 368 20 Q 400 20 420 40 Q 300 65 144 20 Z" fill="#B8A7F0" opacity="0.12" />
+  <!-- Фоновое свечение в центре -->
+  <circle cx="256" cy="256" r="140" fill="#B8A7F0" opacity="0.08" filter="url(#glow)"/>
 
-  <!-- Теневой акцентный контур (#7E6FC4) со смещением -->
-  <g transform="translate(10, 10)" opacity="0.6" filter="url(#glow)">
-    <rect x="96" y="130" width="320" height="232" rx="64" fill="#7E6FC4" />
-    <polygon points="220,195 330,246 220,297" fill="#0A0A0C" />
-  </g>
-
-  <!-- Основной экран YouTube в стиле kTube (Лаванда #B8A7F0) -->
+  <!-- Каноничный экран YouTube: плавный горизонтальный сквиркл со скруглением 72px -->
   <g>
-    <!-- Прямоугольник экрана со скруглением 64px -->
-    <rect x="96" y="130" width="320" height="232" rx="64" fill="url(#lavenderGrad)" />
-    <!-- Символ воспроизведения Play (Глубокий оникс #0A0A0C) -->
-    <polygon points="220,195 330,246 220,297" fill="#0A0A0C" />
-    <!-- Индикатор туннеля k-Tunnel (быстрый поток) -->
-    <path d="M 290 326 L 380 326" stroke="#7E6FC4" stroke-width="6" stroke-linecap="round" />
-    <path d="M 330 338 L 380 338" stroke="#7E6FC4" stroke-width="4" stroke-linecap="round" />
+    <!-- Неоновая тень экрана -->
+    <rect x="86" y="136" width="340" height="240" rx="72" fill="#7E6FC4" opacity="0.35" filter="url(#glow)"/>
+
+    <!-- Основной лавандовый корпус экрана YouTube -->
+    <rect x="86" y="136" width="340" height="240" rx="72" fill="url(#screenGrad)"/>
+
+    <!-- Треугольник воспроизведения Play (Глубокий оникс #0A0A0C, идеальная центровка) -->
+    <path d="M 224 196 C 224 188 233 183 240 187 L 316 247 C 322 251 322 261 316 265 L 240 325 C 233 329 224 324 224 316 Z" 
+          fill="#0A0A0C"/>
   </g>
 </svg>

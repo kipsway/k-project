@@ -8,6 +8,7 @@ import '../../ktunnel/presentation/widgets/ktunnel_node_picker_sheet.dart';
 import '../domain/models/stream_nerd_stats.dart';
 import '../domain/services/amoled_mode_controller.dart';
 import '../domain/services/pip_background_service.dart';
+import '../domain/services/player_stability_controller.dart';
 import '../domain/services/sleep_timer_service.dart';
 import '../domain/services/stream_catchup_service.dart';
 import 'widgets/chat_panel_container.dart';
@@ -40,8 +41,11 @@ class _StreamScreenState extends State<StreamScreen> with WidgetsBindingObserver
   // Сервис картинки-в-картинке и фонового аудио
   late final PipBackgroundService _pipService;
 
-  // Сервис догона прямого эфира
+  // Сервис умного догона прямого эфира 1.5x
   late final StreamCatchupService _catchupService;
+
+  // Контроллер стабильности плеера, замка и буфера
+  late final PlayerStabilityController _stabilityController;
 
   // Спящий таймер и AMOLED-режим
   late final SleepTimerService _sleepTimerService;
@@ -74,6 +78,9 @@ class _StreamScreenState extends State<StreamScreen> with WidgetsBindingObserver
 
     _catchupService = StreamCatchupService();
     _catchupService.addListener(_onStateChanged);
+
+    _stabilityController = PlayerStabilityController();
+    _stabilityController.addListener(_onStateChanged);
 
     _sleepTimerService = SleepTimerService();
     _sleepTimerService.addListener(_onStateChanged);
@@ -113,6 +120,8 @@ class _StreamScreenState extends State<StreamScreen> with WidgetsBindingObserver
     _pipService.dispose();
     _catchupService.removeListener(_onStateChanged);
     _catchupService.dispose();
+    _stabilityController.removeListener(_onStateChanged);
+    _stabilityController.dispose();
     _sleepTimerService.removeListener(_onStateChanged);
     _sleepTimerService.dispose();
     _amoledController.removeListener(_onStateChanged);
@@ -152,7 +161,7 @@ class _StreamScreenState extends State<StreamScreen> with WidgetsBindingObserver
   }
 
   void _catchUpLive() {
-    HapticFeedback.mediumImpact();
+    HapticFeedback.heavyImpact();
     _catchupService.jumpToLiveEdge();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -262,11 +271,12 @@ class _StreamScreenState extends State<StreamScreen> with WidgetsBindingObserver
       nodePingMs: _tunnelController.currentPing,
       activeNodeName: activeNode?.name ?? 'Frankfurt Ultra-Edge',
       latencyToLiveSeconds: _catchupService.latencySeconds,
+      bufferHealthSeconds: _stabilityController.bufferSeconds,
     );
 
     final currentBg = _amoledController.currentBgColor;
 
-    // В режиме "Картинка в картинке" показываем только плеер без системных баров и чата
+    // Режим "Картинка в картинке" (PiP)
     if (_pipService.isPipActive) {
       return Scaffold(
         backgroundColor: Colors.black,
@@ -284,8 +294,12 @@ class _StreamScreenState extends State<StreamScreen> with WidgetsBindingObserver
           isOverlayChatVisible: false,
           isNerdStatsVisible: false,
           isSleepTimerActive: _sleepTimerService.isActive,
+          isControlsLocked: _stabilityController.isControlsLocked,
+          isMuted: _stabilityController.isMuted,
           latencySeconds: _catchupService.latencySeconds,
           playbackSpeed: _catchupService.playbackSpeed,
+          isCatchingUp: _catchupService.isCatchingUp,
+          bufferSeconds: _stabilityController.bufferSeconds,
           nerdStats: nerdStats,
           onPlayPause: _togglePlayPause,
           onToggleTunnel: _toggleTunnel,
@@ -295,6 +309,8 @@ class _StreamScreenState extends State<StreamScreen> with WidgetsBindingObserver
           onToggleOverlayChat: _toggleOverlayChat,
           onToggleNerdStats: _toggleNerdStats,
           onOpenSleepTimer: _openSleepTimer,
+          onToggleLockControls: _stabilityController.toggleControlsLock,
+          onToggleMute: () => _stabilityController.toggleMute(1.0),
           onCatchUpLive: _catchUpLive,
           onEnterPip: _enterPipMode,
         ),
@@ -321,8 +337,12 @@ class _StreamScreenState extends State<StreamScreen> with WidgetsBindingObserver
           isOverlayChatVisible: _isOverlayChatVisible,
           isNerdStatsVisible: _isNerdStatsVisible,
           isSleepTimerActive: _sleepTimerService.isActive,
+          isControlsLocked: _stabilityController.isControlsLocked,
+          isMuted: _stabilityController.isMuted,
           latencySeconds: _catchupService.latencySeconds,
           playbackSpeed: _catchupService.playbackSpeed,
+          isCatchingUp: _catchupService.isCatchingUp,
+          bufferSeconds: _stabilityController.bufferSeconds,
           nerdStats: nerdStats,
           onPlayPause: _togglePlayPause,
           onToggleTunnel: _toggleTunnel,
@@ -332,6 +352,8 @@ class _StreamScreenState extends State<StreamScreen> with WidgetsBindingObserver
           onToggleOverlayChat: _toggleOverlayChat,
           onToggleNerdStats: _toggleNerdStats,
           onOpenSleepTimer: _openSleepTimer,
+          onToggleLockControls: _stabilityController.toggleControlsLock,
+          onToggleMute: () => _stabilityController.toggleMute(1.0),
           onCatchUpLive: _catchUpLive,
           onEnterPip: _enterPipMode,
         ),
@@ -362,8 +384,12 @@ class _StreamScreenState extends State<StreamScreen> with WidgetsBindingObserver
                 isOverlayChatVisible: _isOverlayChatVisible,
                 isNerdStatsVisible: _isNerdStatsVisible,
                 isSleepTimerActive: _sleepTimerService.isActive,
+                isControlsLocked: _stabilityController.isControlsLocked,
+                isMuted: _stabilityController.isMuted,
                 latencySeconds: _catchupService.latencySeconds,
                 playbackSpeed: _catchupService.playbackSpeed,
+                isCatchingUp: _catchupService.isCatchingUp,
+                bufferSeconds: _stabilityController.bufferSeconds,
                 nerdStats: nerdStats,
                 onPlayPause: _togglePlayPause,
                 onToggleTunnel: _toggleTunnel,
@@ -373,6 +399,8 @@ class _StreamScreenState extends State<StreamScreen> with WidgetsBindingObserver
                 onToggleOverlayChat: _toggleOverlayChat,
                 onToggleNerdStats: _toggleNerdStats,
                 onOpenSleepTimer: _openSleepTimer,
+                onToggleLockControls: _stabilityController.toggleControlsLock,
+                onToggleMute: () => _stabilityController.toggleMute(1.0),
                 onCatchUpLive: _catchUpLive,
                 onEnterPip: _enterPipMode,
               ),

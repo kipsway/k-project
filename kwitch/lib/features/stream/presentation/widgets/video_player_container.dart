@@ -21,8 +21,12 @@ class VideoPlayerContainer extends StatefulWidget {
   final bool isOverlayChatVisible;
   final bool isNerdStatsVisible;
   final bool isSleepTimerActive;
+  final bool isControlsLocked;
+  final bool isMuted;
   final double latencySeconds;
   final double playbackSpeed;
+  final bool isCatchingUp;
+  final double bufferSeconds;
   final StreamNerdStats nerdStats;
   final VoidCallback onPlayPause;
   final ValueChanged<bool> onToggleTunnel;
@@ -32,6 +36,8 @@ class VideoPlayerContainer extends StatefulWidget {
   final VoidCallback onToggleOverlayChat;
   final VoidCallback onToggleNerdStats;
   final VoidCallback onOpenSleepTimer;
+  final VoidCallback onToggleLockControls;
+  final VoidCallback onToggleMute;
   final VoidCallback onCatchUpLive;
   final VoidCallback? onEnterPip;
   final ValueChanged<String>? onSendOverlayMessage;
@@ -51,8 +57,12 @@ class VideoPlayerContainer extends StatefulWidget {
     this.isOverlayChatVisible = false,
     this.isNerdStatsVisible = false,
     this.isSleepTimerActive = false,
+    this.isControlsLocked = false,
+    this.isMuted = false,
     this.latencySeconds = 1.1,
     this.playbackSpeed = 1.0,
+    this.isCatchingUp = false,
+    this.bufferSeconds = 4.2,
     this.nerdStats = const StreamNerdStats(),
     required this.onPlayPause,
     required this.onToggleTunnel,
@@ -62,6 +72,8 @@ class VideoPlayerContainer extends StatefulWidget {
     required this.onToggleOverlayChat,
     required this.onToggleNerdStats,
     required this.onOpenSleepTimer,
+    required this.onToggleLockControls,
+    required this.onToggleMute,
     required this.onCatchUpLive,
     this.onEnterPip,
     this.onSendOverlayMessage,
@@ -146,7 +158,7 @@ class _VideoPlayerContainerState extends State<VideoPlayerContainer> {
             ),
 
             // Плавающий стеклянный оверлей чата поверх видео
-            if (widget.isOverlayChatVisible)
+            if (widget.isOverlayChatVisible && !widget.isControlsLocked)
               GlassChatOverlay(
                 channel: widget.streamerName,
                 isVisible: widget.isOverlayChatVisible,
@@ -155,7 +167,7 @@ class _VideoPlayerContainerState extends State<VideoPlayerContainer> {
               ),
 
             // Оверлей «Статистика для гиков» (Nerd Stats)
-            if (widget.isNerdStatsVisible)
+            if (widget.isNerdStatsVisible && !widget.isControlsLocked)
               NerdStatsOverlay(
                 stats: widget.nerdStats,
                 onClose: widget.onToggleNerdStats,
@@ -177,8 +189,12 @@ class _VideoPlayerContainerState extends State<VideoPlayerContainer> {
                 isOverlayChatVisible: widget.isOverlayChatVisible,
                 isNerdStatsVisible: widget.isNerdStatsVisible,
                 isSleepTimerActive: widget.isSleepTimerActive,
+                isControlsLocked: widget.isControlsLocked,
+                isMuted: widget.isMuted,
                 latencySeconds: widget.latencySeconds,
                 playbackSpeed: widget.playbackSpeed,
+                isCatchingUp: widget.isCatchingUp,
+                bufferSeconds: widget.bufferSeconds,
                 onPlayPause: widget.onPlayPause,
                 onToggleTunnel: widget.onToggleTunnel,
                 onOpenNodesPicker: widget.onOpenNodesPicker,
@@ -187,6 +203,8 @@ class _VideoPlayerContainerState extends State<VideoPlayerContainer> {
                 onToggleOverlayChat: widget.onToggleOverlayChat,
                 onToggleNerdStats: widget.onToggleNerdStats,
                 onOpenSleepTimer: widget.onOpenSleepTimer,
+                onToggleLockControls: widget.onToggleLockControls,
+                onToggleMute: widget.onToggleMute,
                 onCatchUpLive: widget.onCatchUpLive,
                 onEnterPip: widget.onEnterPip,
               ),

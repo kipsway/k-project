@@ -1,0 +1,20 @@
+From: kipsway <kipsway0@gmail.com>
+Subject: [PATCH] kGram: Integrate Mozaik default theme from Chatterino+ (#0A0A0C, #B8A7F0)
+
+---
+ .../src/main/java/org/telegram/ui/LaunchActivity.java   | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/TMessagesProj/src/main/java/org/telegram/ui/LaunchActivity.java b/TMessagesProj/src/main/java/org/telegram/ui/LaunchActivity.java
+index 1024abc..5678def 100644
+--- a/TMessagesProj/src/main/java/org/telegram/ui/LaunchActivity.java
++++ b/TMessagesProj/src/main/java/org/telegram/ui/LaunchActivity.java
+@@ -519,6 +519,8 @@ public class LaunchActivity extends Activity implements ActionBarLayout.ActionBa
+         Theme.createCommonChatResources();
+         Theme.createDialogsResources(this);
++        org.kipsway.kgram.theme.MozaikThemeManager.checkAndApplyDefaultTheme(this);
++
+         if (SharedConfig.passcodeHash.length() != 0 && SharedConfig.appLocked) {
+             SharedConfig.lastPauseTime = (int) (SystemClock.elapsedRealtime() / 1000);
+         }
+-- 
