@@ -61,6 +61,9 @@ class _StreamScreenState extends State<StreamScreen> with WidgetsBindingObserver
   // Состояния воспроизведения
   bool _isPlaying = true;
   String _currentQuality = '1440p60';
+  late String _streamerName;
+  late String _categoryName;
+  late String? _streamerAvatarUrl;
   late int _viewerCount;
   bool _isFullscreen = false;
   bool _isOverlayChatVisible = false;
@@ -75,6 +78,9 @@ class _StreamScreenState extends State<StreamScreen> with WidgetsBindingObserver
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    _streamerName = widget.streamerName;
+    _categoryName = widget.categoryName;
+    _streamerAvatarUrl = widget.streamerAvatarUrl;
     _viewerCount = widget.initialViewers;
 
     _tunnelController = KTunnelController();
@@ -107,8 +113,8 @@ class _StreamScreenState extends State<StreamScreen> with WidgetsBindingObserver
 
   void _updateNotification() {
     _pipService.updateNotification(
-      streamerName: widget.streamerName,
-      categoryName: widget.categoryName,
+      streamerName: _streamerName,
+      categoryName: _categoryName,
       isLive: true,
       isTunnelEnabled: _tunnelController.isEnabled,
     );
