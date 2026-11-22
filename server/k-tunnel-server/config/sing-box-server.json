@@ -1,0 +1,60 @@
+{
+  "log": {
+    "level": "info",
+    "timestamp": true
+  },
+  "inbounds": [
+    {
+      "type": "vless",
+      "tag": "vless-reality-in",
+      "listen": "::",
+      "listen_port": 443,
+      "users": [
+        {
+          "uuid": "7a5a8f4c-12d4-4e9b-b530-9b8e9f2a0011",
+          "flow": "xtls-rprx-vision"
+        }
+      ],
+      "tls": {
+        "enabled": true,
+        "server_name": "gateway.icloud.com",
+        "reality": {
+          "enabled": true,
+          "handshake": {
+            "server": "gateway.icloud.com",
+            "server_port": 443
+          },
+          "private_key": "YOUR_PRIVATE_KEY_GENERATED_BY_SCRIPT",
+          "short_id": ["6a", "7b2e"]
+        }
+      }
+    },
+    {
+      "type": "shadowsocks",
+      "tag": "ss-2022-in",
+      "listen": "::",
+      "listen_port": 8388,
+      "network": "tcp",
+      "method": "2022-blake3-aes-128-gcm",
+      "password": "kipsway-ktube-secret-key-32b-base64=="
+    }
+  ],
+  "outbounds": [
+    {
+      "type": "direct",
+      "tag": "direct"
+    },
+    {
+      "type": "block",
+      "tag": "block"
+    }
+  ],
+  "route": {
+    "rules": [
+      {
+        "geosite": "category-ads-all",
+        "outbound": "block"
+      }
+    ]
+  }
+}

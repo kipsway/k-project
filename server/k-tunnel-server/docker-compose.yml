@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  sing-box:
+    image: ghcr.io/sagernet/sing-box:latest
+    container_name: ktunnel-singbox
+    restart: always
+    network_mode: host
+    volumes:
+      - ./config/sing-box-server.json:/etc/sing-box/config.json:ro
+    cap_add:
+      - NET_ADMIN
+
+  subscription-api:
+    build: .
+    container_name: ktunnel-sub-api
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      - SERVER_IP=${SERVER_IP:-127.0.0.1}
+      - API_PORT=8080
