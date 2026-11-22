@@ -5,9 +5,11 @@ import '../../../../core/theme/k_colors.dart';
 import '../../../../core/theme/k_typography.dart';
 import '../../../chat/domain/models/chat_display_settings.dart';
 import '../../../chat/domain/models/chat_user_profile.dart';
+import '../../../chat/domain/services/chatterino_multi_chat_service.dart';
 import '../../../chat/domain/services/emote_cache_manager.dart';
 import '../../../chat/presentation/controllers/chatterino_controller.dart';
 import '../../../chat/presentation/widgets/chat_settings_sheet.dart';
+import '../../../chat/presentation/widgets/chatterino_channel_tabs_bar.dart';
 import '../../../chat/presentation/widgets/chatterino_emotes_sheet.dart';
 import '../../../chat/presentation/widgets/chatterino_webview.dart';
 import '../../../chat/presentation/widgets/user_card_sheet.dart';
@@ -33,6 +35,7 @@ class _ChatPanelContainerState extends State<ChatPanelContainer> {
   late final ChatterinoController _chatterinoController;
   late final EmoteCacheManager _cacheManager;
   late final ChatDisplaySettings _displaySettings;
+  late final ChatterinoMultiChatService _multiChatService;
   bool _useWebViewEngine = true;
 
   @override
@@ -41,6 +44,26 @@ class _ChatPanelContainerState extends State<ChatPanelContainer> {
     _chatterinoController = ChatterinoController(channel: widget.channelName);
     _cacheManager = EmoteCacheManager()..preloadDefaultEmotes();
     _displaySettings = ChatDisplaySettings()..addListener(_onDisplaySettingsChanged);
+    _multiChatService = ChatterinoMultiChatService(initialChannel: widget.channelName)
+      ..addListener(_onMultiChatChanged);
+  }
+
+  @override
+  void didUpdateWidget(ChatPanelContainer oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.channelName != widget.channelName) {
+      _multiChatService.setPrimaryChannel(widget.channelName);
+      _chatterinoController.setChannel(widget.channelName);
+    }
+  }
+
+  void _onMultiChatChanged() {
+    if (mounted) {
+      if (_chatterinoController.channel != _multiChatService.activeChannelId) {
+        _chatterinoController.setChannel(_multiChatService.activeChannelId);
+      }
+      setState(() {});
+    }
   }
 
   void _onDisplaySettingsChanged() {
@@ -67,6 +90,8 @@ class _ChatPanelContainerState extends State<ChatPanelContainer> {
     _cacheManager.dispose();
     _displaySettings.removeListener(_onDisplaySettingsChanged);
     _displaySettings.dispose();
+    _multiChatService.removeListener(_onMultiChatChanged);
+    _multiChatService.dispose();
     super.dispose();
   }
 
@@ -77,7 +102,7 @@ class _ChatPanelContainerState extends State<ChatPanelContainer> {
       isScrollControlled: true,
       builder: (context) {
         return ChatterinoEmotesSheet(
-          channel: widget.channelName,
+          channel: _multiChatService.activeChannelId,
           cacheManager: _cacheManager,
           onSelectEmote: (emote) {
             _chatterinoController.insertEmote(emote);
@@ -264,6 +289,9 @@ class _ChatPanelContainerState extends State<ChatPanelContainer> {
               ],
             ),
           ),
+
+          // ВКЛАДКИ МУЛЬТИ-ЧАТА КАНАЛОВ (Multi-Chat Split Tabs)
+          ChatterinoChannelTabsBar(multiChatService: _multiChatService),
 
           // ИНДИКАТОР ПАУЗЫ ЧАТА
           if (_chatterinoController.isPaused)

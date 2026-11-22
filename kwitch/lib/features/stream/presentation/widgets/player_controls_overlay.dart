@@ -27,6 +27,7 @@ class PlayerControlsOverlay extends StatefulWidget {
   final bool isControlsLocked;
   final bool isMuted;
   final bool isAudioOnly;
+  final bool isReplayActive;
   final double latencySeconds;
   final double playbackSpeed;
   final bool isCatchingUp;
@@ -44,6 +45,7 @@ class PlayerControlsOverlay extends StatefulWidget {
   final VoidCallback onToggleLockControls;
   final VoidCallback onToggleMute;
   final VoidCallback? onToggleAudioOnly;
+  final VoidCallback? onStartInstantReplay;
   final VoidCallback onCatchUpLive;
   final VoidCallback? onEnterPip;
 
@@ -65,6 +67,7 @@ class PlayerControlsOverlay extends StatefulWidget {
     this.isControlsLocked = false,
     this.isMuted = false,
     this.isAudioOnly = false,
+    this.isReplayActive = false,
     this.latencySeconds = 1.1,
     this.playbackSpeed = 1.0,
     this.isCatchingUp = false,
@@ -82,6 +85,7 @@ class PlayerControlsOverlay extends StatefulWidget {
     required this.onToggleLockControls,
     required this.onToggleMute,
     this.onToggleAudioOnly,
+    this.onStartInstantReplay,
     required this.onCatchUpLive,
     this.onEnterPip,
   });
@@ -318,6 +322,22 @@ class _PlayerControlsOverlayState extends State<PlayerControlsOverlay> {
                           size: 18,
                         ),
                         tooltip: 'Статистика для гиков',
+                        padding: const EdgeInsets.symmetric(horizontal: 4),
+                        constraints: const BoxConstraints(),
+                      ),
+
+                      // Кнопка Мгновенного повтора (Replay 30s)
+                      IconButton(
+                        onPressed: () {
+                          HapticFeedback.mediumImpact();
+                          widget.onStartInstantReplay?.call();
+                        },
+                        icon: Icon(
+                          LucideIcons.rotateCcw,
+                          color: widget.isReplayActive ? const Color(0xFFF59E0B) : KColors.muted,
+                          size: 18,
+                        ),
+                        tooltip: widget.isReplayActive ? 'Повтор активен' : 'Мгновенный повтор -30с',
                         padding: const EdgeInsets.symmetric(horizontal: 4),
                         constraints: const BoxConstraints(),
                       ),

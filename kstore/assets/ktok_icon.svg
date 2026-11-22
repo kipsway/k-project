@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <!-- Глубокий ониксовый градиент фона -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#141318"/>
+      <stop offset="50%" stop-color="#0E0D12"/>
+      <stop offset="100%" stop-color="#08070A"/>
+    </linearGradient>
+
+    <!-- Фирменный лавандовый градиент ноты -->
+    <linearGradient id="noteGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="30%" stop-color="#E4DCFD"/>
+      <stop offset="100%" stop-color="#B8A7F0"/>
+    </linearGradient>
+
+    <!-- Стеклянный блик рамки -->
+    <linearGradient id="rimGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.22"/>
+      <stop offset="40%" stop-color="#B8A7F0" stop-opacity="0.10"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.0"/>
+    </linearGradient>
+
+    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="14" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+
+  <!-- Сквиркл-фон 512x512 -->
+  <rect x="16" y="16" width="480" height="480" rx="132" fill="url(#bgGrad)"/>
+  <rect x="16" y="16" width="480" height="480" rx="132" fill="none" stroke="url(#rimGrad)" stroke-width="3"/>
+  <rect x="18" y="18" width="476" height="476" rx="130" fill="none" stroke="#2C2B32" stroke-width="1.5" stroke-opacity="0.6"/>
+
+  <!-- Фоновое неоновое свечение в центре -->
+  <circle cx="256" cy="256" r="140" fill="#B8A7F0" opacity="0.07" filter="url(#glow)"/>
+
+  <!-- Легендарный силуэт ноты TikTok со стильным сдвигом "Мозаика" (Глитч/Смещение) -->
+  <g transform="translate(18, 0)">
+    <!-- Циановый/синий подслой со смещением влево-вверх -->
+    <path d="M 285 110 C 295 145 315 175 350 188 C 362 192 374 195 385 195 L 385 242 C 358 241 332 232 312 218 C 312 265 312 308 312 332 C 312 378 274 415 228 415 C 182 415 145 378 145 332 C 145 288 180 252 224 249 C 232 248 240 249 248 251 L 248 110 L 285 110 Z"
+          fill="#38EF7D" opacity="0.4" transform="translate(-10, -8)" filter="url(#glow)"/>
+
+    <!-- Фиолетово-малиновый подслой со смещением вправо-вниз -->
+    <path d="M 285 110 C 295 145 315 175 350 188 C 362 192 374 195 385 195 L 385 242 C 358 241 332 232 312 218 C 312 265 312 308 312 332 C 312 378 274 415 228 415 C 182 415 145 378 145 332 C 145 288 180 252 224 249 C 232 248 240 249 248 251 L 248 110 L 285 110 Z"
+          fill="#F24D5C" opacity="0.45" transform="translate(10, 8)" filter="url(#glow)"/>
+
+    <!-- Основная монолитная нота TikTok (Лавандово-белая, 100% узнаваемость) -->
+    <path d="M 285 110 C 295 145 315 175 350 188 C 362 192 374 195 385 195 L 385 242 C 358 241 332 232 312 218 C 312 265 312 308 312 332 C 312 378 274 415 228 415 C 182 415 145 378 145 332 C 145 288 180 252 224 249 C 232 248 240 249 248 251 L 248 110 L 285 110 Z"
+          fill="url(#noteGrad)"/>
+  </g>
+</svg>

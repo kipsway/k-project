@@ -15,6 +15,7 @@ import '../domain/services/pip_background_service.dart';
 import '../domain/services/player_stability_controller.dart';
 import '../domain/services/sleep_timer_service.dart';
 import '../domain/services/stream_catchup_service.dart';
+import '../domain/services/stream_replay_buffer_service.dart';
 import 'widgets/channel_search_drawer.dart';
 import 'widgets/chat_panel_container.dart';
 import 'widgets/sleep_timer_sheet.dart';
@@ -61,6 +62,9 @@ class _StreamScreenState extends State<StreamScreen> with WidgetsBindingObserver
 
   // Контроллер аудио-режима «Только радио»
   late final AudioOnlyModeController _audioOnlyController;
+
+  // Сервис мгновенного повтора (Instant 30s DVR Replay)
+  late final StreamReplayBufferService _replayService;
 
   // Состояния воспроизведения
   bool _isPlaying = true;
@@ -111,6 +115,9 @@ class _StreamScreenState extends State<StreamScreen> with WidgetsBindingObserver
     _audioOnlyController = AudioOnlyModeController();
     _audioOnlyController.addListener(_onStateChanged);
 
+    _replayService = StreamReplayBufferService();
+    _replayService.addListener(_onStateChanged);
+
     _updateNotification();
   }
 
@@ -154,6 +161,8 @@ class _StreamScreenState extends State<StreamScreen> with WidgetsBindingObserver
     _amoledController.dispose();
     _audioOnlyController.removeListener(_onStateChanged);
     _audioOnlyController.dispose();
+    _replayService.removeListener(_onStateChanged);
+    _replayService.dispose();
     super.dispose();
   }
 
@@ -292,6 +301,80 @@ class _StreamScreenState extends State<StreamScreen> with WidgetsBindingObserver
     );
   }
 
+  void _startInstantReplay() {
+    HapticFeedback.mediumImpact();
+    _replayService.startInstantReplay(30.0);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: KColors.panel,
+        duration: const Duration(seconds: 2),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+          side: const BorderSide(color: Color(0xFFF59E0B), width: 1),
+        ),
+        content: Row(
+          children: [
+            const Icon(LucideIcons.rotateCcw, color: Color(0xFFF59E0B), size: 18),
+            const SizedBox(width: 8),
+            Text(
+              'Мгновенный повтор: -30с прямого эфира',
+              style: KTypography.caption.copyWith(color: KColors.ink),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _exitReplayAndJumpToLive() {
+    HapticFeedback.heavyImpact();
+    _replayService.exitReplayAndJumpToLive();
+    _catchupService.jumpToLiveEdge();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: KColors.panel,
+        duration: const Duration(seconds: 1),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+          side: const BorderSide(color: KColors.accBorder, width: 1),
+        ),
+        content: Text(
+          'Возврат к прямому эфиру',
+          style: KTypography.caption.copyWith(color: KColors.ink),
+        ),
+      ),
+    );
+  }
+
+  void _shareClip() {
+    final markers = _replayService.generateClipMarkers();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: KColors.panel,
+        duration: const Duration(seconds: 3),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+          side: const BorderSide(color: KColors.accBorder, width: 1),
+        ),
+        content: Row(
+          children: [
+            const Icon(LucideIcons.scissors, color: KColors.lav, size: 18),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                'Клип сохранен: ${_replayService.formattedOffset} (${markers['clipTitle']})',
+                style: KTypography.caption.copyWith(color: KColors.ink),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   void _toggleFullscreen() {
     setState(() {
       _isFullscreen = !_isFullscreen;
@@ -419,6 +502,7 @@ class _StreamScreenState extends State<StreamScreen> with WidgetsBindingObserver
           bufferSeconds: _stabilityController.bufferSeconds,
           networkController: _networkController,
           audioOnlyController: _audioOnlyController,
+          replayService: _replayService,
           nerdStats: nerdStats,
           onPlayPause: _togglePlayPause,
           onToggleTunnel: _toggleTunnel,
@@ -432,6 +516,9 @@ class _StreamScreenState extends State<StreamScreen> with WidgetsBindingObserver
           onToggleLockControls: _stabilityController.toggleControlsLock,
           onToggleMute: () => _stabilityController.toggleMute(1.0),
           onToggleAudioOnly: _toggleAudioOnly,
+          onStartInstantReplay: _startInstantReplay,
+          onExitReplay: _exitReplayAndJumpToLive,
+          onShareClip: _shareClip,
           onCatchUpLive: _catchUpLive,
           onEnterPip: _enterPipMode,
         ),
@@ -466,6 +553,7 @@ class _StreamScreenState extends State<StreamScreen> with WidgetsBindingObserver
           bufferSeconds: _stabilityController.bufferSeconds,
           networkController: _networkController,
           audioOnlyController: _audioOnlyController,
+          replayService: _replayService,
           nerdStats: nerdStats,
           onPlayPause: _togglePlayPause,
           onToggleTunnel: _toggleTunnel,
@@ -479,6 +567,9 @@ class _StreamScreenState extends State<StreamScreen> with WidgetsBindingObserver
           onToggleLockControls: _stabilityController.toggleControlsLock,
           onToggleMute: () => _stabilityController.toggleMute(1.0),
           onToggleAudioOnly: _toggleAudioOnly,
+          onStartInstantReplay: _startInstantReplay,
+          onExitReplay: _exitReplayAndJumpToLive,
+          onShareClip: _shareClip,
           onCatchUpLive: _catchUpLive,
           onEnterPip: _enterPipMode,
         ),
@@ -517,6 +608,7 @@ class _StreamScreenState extends State<StreamScreen> with WidgetsBindingObserver
                 bufferSeconds: _stabilityController.bufferSeconds,
                 networkController: _networkController,
                 audioOnlyController: _audioOnlyController,
+                replayService: _replayService,
                 nerdStats: nerdStats,
                 onPlayPause: _togglePlayPause,
                 onToggleTunnel: _toggleTunnel,
@@ -530,6 +622,9 @@ class _StreamScreenState extends State<StreamScreen> with WidgetsBindingObserver
                 onToggleLockControls: _stabilityController.toggleControlsLock,
                 onToggleMute: () => _stabilityController.toggleMute(1.0),
                 onToggleAudioOnly: _toggleAudioOnly,
+                onStartInstantReplay: _startInstantReplay,
+                onExitReplay: _exitReplayAndJumpToLive,
+                onShareClip: _shareClip,
                 onCatchUpLive: _catchUpLive,
                 onEnterPip: _enterPipMode,
               ),

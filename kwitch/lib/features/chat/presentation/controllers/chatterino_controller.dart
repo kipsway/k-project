@@ -3,18 +3,25 @@ import 'package:webview_flutter/webview_flutter.dart';
 import '../data/chatterino_script_injector.dart';
 
 class ChatterinoController extends ChangeNotifier {
-  final String channel;
+  String _channel;
   WebViewController? _webViewController;
   bool _isLoading = true;
   bool _isPaused = false;
   String? _errorMessage;
 
-  ChatterinoController({required this.channel});
+  ChatterinoController({required String channel}) : _channel = channel;
 
+  String get channel => _channel;
   bool get isLoading => _isLoading;
   bool get isPaused => _isPaused;
   String? get errorMessage => _errorMessage;
   WebViewController? get webViewController => _webViewController;
+
+  void setChannel(String newChannel) {
+    if (_channel == newChannel || newChannel.trim().isEmpty) return;
+    _channel = newChannel.trim();
+    reload();
+  }
 
   void attachWebViewController(WebViewController controller) {
     _webViewController = controller;

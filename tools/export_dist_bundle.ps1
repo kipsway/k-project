@@ -17,8 +17,8 @@ Write-Host "  📦 Экспорт дистрибутивного пакета k-
 Write-Host "==========================================================" -ForegroundColor Magenta
 
 # 1. Создание структуры dist/
-if (Test-Path $DistDir) {
-    Remove-Item -Recurse -Force $DistDir
+if (-not (Test-Path $DistDir)) {
+    New-Item -ItemType Directory -Force -Path $DistDir | Out-Null
 }
 New-Item -ItemType Directory -Force -Path (Join-Path $DistDir "apps") | Out-Null
 New-Item -ItemType Directory -Force -Path (Join-Path $DistDir "icons") | Out-Null
@@ -29,8 +29,12 @@ Copy-Item (Join-Path $RootDir "ECOSYSTEM_MANIFEST.json") $DistDir
 Copy-Item (Join-Path $RootDir "ktube\build\kipsway.keystore") (Join-Path $DistDir "signing_key.keystore")
 
 # 3. Копирование иконок
-$icons = Get-ChildItem (Join-Path $RootDir "kstore\assets\*.png")
-foreach ($icon in $icons) {
+$svgIcons = Get-ChildItem (Join-Path $RootDir "assets\*.svg") -ErrorAction SilentlyContinue
+foreach ($icon in $svgIcons) {
+    Copy-Item $icon.FullName (Join-Path $DistDir "icons")
+}
+$pngIcons = Get-ChildItem (Join-Path $RootDir "kstore\assets\*.png") -ErrorAction SilentlyContinue
+foreach ($icon in $pngIcons) {
     Copy-Item $icon.FullName (Join-Path $DistDir "icons")
 }
 
@@ -39,6 +43,7 @@ Copy-Item (Join-Path $RootDir "landing\index.html") (Join-Path $DistDir "landing
 
 # 5. Копирование манифестов приложений
 Copy-Item (Join-Path $RootDir "ktube\build\output\build_manifest.json") (Join-Path $DistDir "apps\ktube_manifest.json") -ErrorAction SilentlyContinue
+Copy-Item (Join-Path $RootDir "kgram\kstore_manifest.json") (Join-Path $DistDir "apps\kgram_manifest.json") -ErrorAction SilentlyContinue
 
 # 6. Создание человеческой инструкции по установке INSTALL_GUIDE.md
 $guideContent = @"
@@ -78,6 +83,27 @@ $guideContent = @"
 - При первом открытии стрима чат автоматически подгрузит движок **Chatterino+ от Rish**.
 - В чате сразу доступны анимированные смайлы 7TV, бейджи и цветные ники (Name Paints).
 - Стриминг автоматически ускоряется ядром k-Tunnel, позволяя смотреть 1080p60 и 1440p без дропов кадров.
+
+---
+
+## 💬 Особенности kGram (Telegram Fork)
+
+- Устанавливается рядом с официальным Telegram (`org.kipsway.kgram`).
+- Дефолтная палитра «Мозаика» из Chatterino+: глубокий оникс `#0A0A0C` и лаванда `#B8A7F0`.
+- Полноэкранный аудиоплеер RX Playa со сквирклом 28dp и жестовым управлением.
+- Встроенное сетевое ядро k-Tunnel для гарантированной связи без блокировок.
+- Раздел «Настройки kGram» (by kipsway) с призрачным режимом и HD-видеосообщениями.
+
+---
+
+## 🎵 Особенности kTok (TikTok Mod)
+
+- Устанавливается рядом с официальным клиентом TikTok (`com.kipsway.ktok`).
+- Скачивание без водяного знака: видеопоток сохраняется в исходном качестве в `Movies/kTok`, аудио — в `Music/kTok` (.mp3).
+- Меню «Сменить регион» для обхода ограничений без извлечения SIM-карты (США, Германия, Нидерланды, Япония и др.).
+- Чистая лента: полное вырезание рекламы, спонсорских вставок и промо-роликов.
+- Оформление «Мозаика»: глубокий черный фон `#0A0A0C` без засветов и лавандовые акценты `#B8A7F0`.
+- Быстрое контекстное меню действий при долгом тапе на видео («Скачать без знака», «Скачать аудио», «Сменить регион»).
 
 ---
 

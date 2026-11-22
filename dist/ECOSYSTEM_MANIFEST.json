@@ -1,7 +1,7 @@
 ﻿{
     "EcosystemName":  "k-Ecosystem",
     "Author":  "kipsway",
-    "ReleaseDate":  "2026-11-22 20:01:51",
+    "ReleaseDate":  "2026-11-22 20:35:45",
     "DesignSystem":  "Liquid Glass + Material You 3 + Chatterino+ (Mosaic by Rish)",
     "NetworkCore":  "k-Tunnel Embedded (Selective Loopback Proxy)",
     "SigningCertificate":  {
@@ -40,8 +40,8 @@
                              "Name":  "kGram",
                              "Role":  "Форк Telegram на базе NimarkoGram с туннелем k-Tunnel и RX Playa",
                              "Path":  "C:\\Users\\ДДД\\Desktop\\s\\kgram",
-                             "Package":  "com.kipsway.kgram",
-                             "Version":  "13.2.2"
+                             "Package":  "org.kipsway.kgram",
+                             "Version":  "10.9.1"
                          },
                          {
                              "Id":  "ktok",

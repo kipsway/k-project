@@ -12,9 +12,9 @@
                      "Signed with kipsway.keystore"
                  ],
     "apkFile":  "kWitch-v1.0.0-kipsway-release.apk",
-    "sha256":  "0024CC562E2E37FC07A64C7D210F463D62342BF278DC7C952F8C882241471FAC",
-    "fileSizeBytes":  88919,
+    "sha256":  "9294BE09902DD0C5788F4A4552289AD126B5AC3EEEAC54BF6B3093D6730F0F26",
+    "fileSizeBytes":  98227,
     "signed":  true,
     "signAlias":  "kipsway",
-    "builtAt":  "2026-11-22T20:37:32+03:00"
+    "builtAt":  "2026-11-22T20:49:27+03:00"
 }

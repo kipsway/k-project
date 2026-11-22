@@ -1,0 +1,20 @@
+{
+  "id": "org.kipsway.kgram",
+  "name": "kGram",
+  "author": "by kipsway",
+  "version": "10.9.1",
+  "versionCode": 75559,
+  "rating": 4.9,
+  "description": "Форк Telegram с темой Мозаика (#0A0A0C, #B8A7F0), плеером RX Playa и ускорением k-Tunnel.",
+  "iconUrl": "kgram/assets/kgram_icon_512.png",
+  "apkUrl": "https://github.com/kipsway/kgram/releases/latest/download/kGram-release-arm.apk",
+  "sha256": "auto-generated-by-ci",
+  "features": [
+    "Цвета Мозаика: глубокий оникс #0A0A0C и лаванда #B8A7F0",
+    "Плеер RX Playa: полноэкранная обложка 28dp со сквирклом и свайпами",
+    "Сетевое ядро k-Tunnel: стабильная связь без блокировок",
+    "Призрачный режим: скрытие статуса прочтения и набора текста",
+    "HD-видеокружочки CameraX без потери битрейта"
+  ],
+  "changelog": "Релиз kGram 10.9.1: палитра Мозаика из Chatterino+, аудиоплеер RX Playa и сетевое ускорение k-Tunnel."
+}

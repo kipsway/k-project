@@ -29,6 +29,7 @@ function Show-Menu {
     Write-Host "  [6] 🌐 Открыть веб-лендинг экосистемы в браузере" -ForegroundColor Blue
     Write-Host "  [7] 🔍 Проверить статус Git репозитория" -ForegroundColor White
     Write-Host "  [8] 🚀 Запустить локальный диагностический демон k-Tunnel" -ForegroundColor Magenta
+    Write-Host "  [9] 🎵 Собрать клиент kTok (TikTok без водяного знака, смена региона)" -ForegroundColor Cyan
     Write-Host "  [0] 🚪 Выход" -ForegroundColor DarkGray
     Write-Host ""
 }
@@ -85,6 +86,12 @@ do {
         "8" {
             Show-Header
             python (Join-Path $RootDir "ktube\k-tunnel\run_ktunnel_local.py")
+            Write-Host "`nНажмите Enter для возврата в меню..." -ForegroundColor DarkGray
+            [void][Console]::ReadLine()
+        }
+        "9" {
+            Show-Header
+            & powershell.exe -ExecutionPolicy Bypass -File (Join-Path $RootDir "ktok\scripts\build_ktok.ps1")
             Write-Host "`nНажмите Enter для возврата в меню..." -ForegroundColor DarkGray
             [void][Console]::ReadLine()
         }

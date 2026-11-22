@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <!-- Глубокий ониксовый градиент фона -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#141318"/>
+      <stop offset="50%" stop-color="#0E0D12"/>
+      <stop offset="100%" stop-color="#08070A"/>
+    </linearGradient>
+
+    <!-- Фирменный лавандовый градиент -->
+    <linearGradient id="lavenderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E4DCFD"/>
+      <stop offset="50%" stop-color="#C5B5F8"/>
+      <stop offset="100%" stop-color="#A591EB"/>
+    </linearGradient>
+
+    <!-- Тонкий оптический блик стекла -->
+    <linearGradient id="rimGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.22"/>
+      <stop offset="40%" stop-color="#B8A7F0" stop-opacity="0.10"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.0"/>
+    </linearGradient>
+
+    <!-- Мягкое неоновое свечение -->
+    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="14" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+
+  <!-- Сквиркл-фон 512x512 (радиус 132px для идеального M3 скругления) -->
+  <rect x="16" y="16" width="480" height="480" rx="132" fill="url(#bgGrad)"/>
+  
+  <!-- Оптический стеклянный ободок (Liquid Glass Rim) -->
+  <rect x="16" y="16" width="480" height="480" rx="132" fill="none" stroke="url(#rimGrad)" stroke-width="3"/>
+  <rect x="18" y="18" width="476" height="476" rx="130" fill="none" stroke="#2C2B32" stroke-width="1.5" stroke-opacity="0.6"/>
+
+  <!-- Мягкий рассеянный свет в центре -->
+  <circle cx="256" cy="256" r="140" fill="#B8A7F0" opacity="0.06" filter="url(#glow)"/>
+
+  <!-- Фирменный аэродинамичный самолетик Telegram (четкий, каноничный, выверенный) -->
+  <g transform="translate(256, 256) rotate(-2) translate(-256, -256)">
+    <!-- Теневое свечение -->
+    <path d="M 108 252 L 392 142 C 404 137 414 148 408 159 L 344 382 C 339 399 318 405 304 393 L 226 324 L 172 368 C 164 374 153 370 152 360 L 145 298 L 108 252 Z" 
+          fill="#7E6FC4" opacity="0.4" filter="url(#glow)"/>
+
+    <!-- Основной нос и крыло (яркая лаванда) -->
+    <path d="M 108 252 L 392 142 C 404 137 414 148 408 159 L 344 382 C 339 399 318 405 304 393 L 226 324 L 324 204 L 145 298 L 108 252 Z" 
+          fill="url(#lavenderGrad)"/>
+
+    <!-- Подвернутый киль (глубокий контрастный лавандовый) -->
+    <path d="M 226 324 L 172 368 C 164 374 153 370 152 360 L 162 284 L 226 324 Z" 
+          fill="#7E6FC4"/>
+
+    <!-- Внутренний сгиб крыла (средний тон для объема) -->
+    <path d="M 226 324 L 324 204 L 188 274 L 226 324 Z" 
+          fill="#9C89E8"/>
+  </g>
+</svg>

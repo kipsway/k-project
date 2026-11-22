@@ -4,11 +4,13 @@ import '../../../ktunnel/domain/services/network_adaptive_controller.dart';
 import '../../domain/models/stream_nerd_stats.dart';
 import '../../domain/services/audio_only_mode_controller.dart';
 import '../../domain/services/player_gesture_controller.dart';
+import '../../domain/services/stream_replay_buffer_service.dart';
 import 'audio_only_visualizer.dart';
 import 'glass_chat_overlay.dart';
 import 'nerd_stats_overlay.dart';
 import 'player_controls_overlay.dart';
 import 'player_gesture_detector.dart';
+import 'stream_replay_banner.dart';
 
 class VideoPlayerContainer extends StatefulWidget {
   final bool isPlaying;
@@ -32,6 +34,7 @@ class VideoPlayerContainer extends StatefulWidget {
   final double bufferSeconds;
   final NetworkAdaptiveController? networkController;
   final AudioOnlyModeController? audioOnlyController;
+  final StreamReplayBufferService? replayService;
   final StreamNerdStats nerdStats;
   final VoidCallback onPlayPause;
   final ValueChanged<bool> onToggleTunnel;
@@ -44,6 +47,9 @@ class VideoPlayerContainer extends StatefulWidget {
   final VoidCallback onToggleLockControls;
   final VoidCallback onToggleMute;
   final VoidCallback? onToggleAudioOnly;
+  final VoidCallback? onStartInstantReplay;
+  final VoidCallback? onExitReplay;
+  final VoidCallback? onShareClip;
   final VoidCallback onCatchUpLive;
   final VoidCallback? onEnterPip;
   final VoidCallback? onOpenChannelsDrawer;
@@ -72,6 +78,7 @@ class VideoPlayerContainer extends StatefulWidget {
     this.bufferSeconds = 4.2,
     this.networkController,
     this.audioOnlyController,
+    this.replayService,
     this.nerdStats = const StreamNerdStats(),
     required this.onPlayPause,
     required this.onToggleTunnel,
@@ -84,6 +91,9 @@ class VideoPlayerContainer extends StatefulWidget {
     required this.onToggleLockControls,
     required this.onToggleMute,
     this.onToggleAudioOnly,
+    this.onStartInstantReplay,
+    this.onExitReplay,
+    this.onShareClip,
     required this.onCatchUpLive,
     this.onEnterPip,
     this.onOpenChannelsDrawer,
@@ -197,6 +207,14 @@ class _VideoPlayerContainerState extends State<VideoPlayerContainer> {
                 onClose: widget.onToggleNerdStats,
               ),
 
+            // Баннер мгновенного повтора (Replay 30s)
+            if (widget.replayService != null && widget.replayService!.isReplayActive && !widget.isControlsLocked)
+              StreamReplayBanner(
+                replayService: widget.replayService!,
+                onExitReplay: widget.onExitReplay ?? () {},
+                onShareClip: widget.onShareClip ?? () {},
+              ),
+
             // Наложение контроллеров плеера
             Positioned.fill(
               child: PlayerControlsOverlay(
@@ -216,8 +234,11 @@ class _VideoPlayerContainerState extends State<VideoPlayerContainer> {
                 isControlsLocked: widget.isControlsLocked,
                 isMuted: widget.isMuted,
                 isAudioOnly: widget.currentQuality == 'audio_only' || (widget.audioOnlyController?.isAudioOnly ?? false),
+                isReplayActive: widget.replayService?.isReplayActive ?? false,
                 latencySeconds: widget.latencySeconds,
-                playbackSpeed: widget.playbackSpeed,
+                playbackSpeed: widget.replayService?.isReplayActive == true
+                    ? widget.replayService!.replayPlaybackSpeed
+                    : widget.playbackSpeed,
                 isCatchingUp: widget.isCatchingUp,
                 bufferSeconds: widget.bufferSeconds,
                 networkController: widget.networkController,
@@ -233,6 +254,7 @@ class _VideoPlayerContainerState extends State<VideoPlayerContainer> {
                 onToggleLockControls: widget.onToggleLockControls,
                 onToggleMute: widget.onToggleMute,
                 onToggleAudioOnly: widget.onToggleAudioOnly,
+                onStartInstantReplay: widget.onStartInstantReplay,
                 onCatchUpLive: widget.onCatchUpLive,
                 onEnterPip: widget.onEnterPip,
               ),
