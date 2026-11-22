@@ -7,10 +7,10 @@
       <stop offset="100%" stop-color="#08070A"/>
     </linearGradient>
 
-    <!-- Фирменный лавандовый градиент -->
+    <!-- Фирменный лавандовый однотонный градиент самолетика -->
     <linearGradient id="lavenderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#FFFFFF"/>
-      <stop offset="35%" stop-color="#D4C9FA"/>
+      <stop offset="35%" stop-color="#E2D9FC"/>
       <stop offset="100%" stop-color="#B8A7F0"/>
     </linearGradient>
 
@@ -23,7 +23,7 @@
 
     <!-- Мягкое неоновое свечение -->
     <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
-      <feGaussianBlur stdDeviation="15" result="blur"/>
+      <feGaussianBlur stdDeviation="16" result="blur"/>
       <feComposite in="SourceGraphic" in2="blur" operator="over"/>
     </filter>
   </defs>
@@ -33,19 +33,33 @@
   <rect x="16" y="16" width="480" height="480" rx="132" fill="none" stroke="url(#rimGrad)" stroke-width="3"/>
   <rect x="18" y="18" width="476" height="476" rx="130" fill="none" stroke="#2C2B32" stroke-width="1.5" stroke-opacity="0.6"/>
 
-  <!-- Каноничный самолетик Telegram с математически ровной линией сгиба и идеальным схождением -->
+  <!-- Самолетик kGram: точная форма NimarkoGram, без ножки, со скругленными нижними углами, однотонный -->
   <g>
-    <!-- Неоновая тень самолетика -->
-    <path d="M 104 256 L 416 128 L 356 400 L 236 344 L 186 394 L 176 304 Z" 
-          fill="#7E6FC4" opacity="0.4" filter="url(#glow)"/>
+    <!-- Неоновая тень силуэта -->
+    <path d="M 146 209 
+             L 369 125 
+             Q 388 118, 382 137 
+             L 309 367 
+             Q 301 394, 281 374 
+             L 141 234 
+             Q 124 217, 146 209 Z" 
+          fill="#7E6FC4" opacity="0.38" filter="url(#glow)"/>
 
-    <!-- Правое нижнее крыло (средний лавандовый тон) -->
-    <polygon points="416,128 356,400 236,344" fill="#9C89E8"/>
+    <!-- Однотонный лавандовый корпус самолетика NimarkoGram со скругленными углами -->
+    <path d="M 146 209 
+             L 369 125 
+             Q 388 118, 382 137 
+             L 309 367 
+             Q 301 394, 281 374 
+             L 141 234 
+             Q 124 217, 146 209 Z" 
+          fill="url(#lavenderGrad)"/>
 
-    <!-- Нижний киль (примыкает строго к вершине сгиба 236,344) -->
-    <polygon points="236,344 186,394 176,304" fill="#7E6FC4"/>
-
-    <!-- Главное верхнее крыло (яркая чистая лаванда) -->
-    <polygon points="104,256 416,128 236,344" fill="url(#lavenderGrad)"/>
+    <!-- Чистая линия сгиба от носика самолетика -->
+    <line x1="382" y1="137" x2="230" y2="323" 
+          stroke="#7E6FC4" 
+          stroke-width="3" 
+          stroke-linecap="round"
+          stroke-opacity="0.8"/>
   </g>
 </svg>

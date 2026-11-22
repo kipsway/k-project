@@ -3,7 +3,9 @@ import 'package:flutter/services.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../core/theme/k_colors.dart';
 import '../../../../core/theme/k_typography.dart';
+import '../../../chat/domain/services/chat_command_service.dart';
 import '../../../chat/domain/services/emote_index_service.dart';
+import '../../../chat/presentation/widgets/chat_command_sheet.dart';
 import '../../../chat/presentation/widgets/emote_autocomplete_overlay.dart';
 
 class ChatInputBar extends StatefulWidget {
@@ -23,6 +25,7 @@ class ChatInputBar extends StatefulWidget {
 class _ChatInputBarState extends State<ChatInputBar> {
   final TextEditingController _controller = TextEditingController();
   final EmoteIndexService _emoteIndex = EmoteIndexService();
+  final ChatCommandService _commandService = ChatCommandService();
 
   bool _hasText = false;
   List<IndexedEmote> _autocompleteSuggestions = [];
@@ -98,11 +101,27 @@ class _ChatInputBarState extends State<ChatInputBar> {
     final text = _controller.text.trim();
     if (text.isEmpty) return;
     HapticFeedback.lightImpact();
-    widget.onSendMessage(text);
+    final processed = _commandService.processInput(text);
+    widget.onSendMessage(processed);
     _controller.clear();
     setState(() {
       _autocompleteSuggestions = [];
     });
+  }
+
+  void _openCommandsModal() {
+    ChatCommandSheet.show(
+      context,
+      onSelectCommand: (commandOutput) {
+        final current = _controller.text.trim();
+        if (current.isEmpty) {
+          _controller.text = '$commandOutput ';
+        } else {
+          _controller.text = '$current $commandOutput ';
+        }
+        _controller.selection = TextSelection.collapsed(offset: _controller.text.length);
+      },
+    );
   }
 
   @override
@@ -167,6 +186,22 @@ class _ChatInputBarState extends State<ChatInputBar> {
                             ),
                           ),
                         ),
+                        // Кнопка команд / каомодзи (Chatterino+ Slash Commands)
+                        GestureDetector(
+                          onTap: () {
+                            HapticFeedback.selectionClick();
+                            _openCommandsModal();
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.all(4),
+                            child: const Icon(
+                              LucideIcons.terminal,
+                              size: 18,
+                              color: KColors.lav,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 4),
                         // Кнопка смайлов (7TV / BTTV / FFZ)
                         GestureDetector(
                           onTap: () {

@@ -32,7 +32,7 @@
   <rect x="16" y="16" width="480" height="480" rx="132" fill="none" stroke="url(#rimGrad)" stroke-width="3"/>
   <rect x="18" y="18" width="476" height="476" rx="130" fill="none" stroke="#2C2B32" stroke-width="1.5" stroke-opacity="0.6"/>
 
-  <!-- Фирменный пакет kStore с четкой читаемой буквой 'k' -->
+  <!-- Фирменный пакет kStore со скругленной буквой 'k' -->
   <g>
     <!-- Неоновая тень пакета -->
     <rect x="136" y="196" width="240" height="216" rx="38" fill="#7E6FC4" opacity="0.38" filter="url(#glow)"/>
@@ -44,12 +44,20 @@
     <!-- Корпус пакета -->
     <rect x="136" y="196" width="240" height="216" rx="38" fill="url(#lavenderGrad)"/>
 
-    <!-- Чистая, идеально читаемая геометрическая буква 'k' (Оникс #0A0A0C) -->
-    <!-- Вертикальная стойка -->
-    <rect x="208" y="244" width="18" height="120" rx="9" fill="#0A0A0C"/>
-    <!-- Верхняя диагональная ветвь -->
-    <path d="M 292 254 L 222 312" stroke="#0A0A0C" stroke-width="18" stroke-linecap="round"/>
-    <!-- Нижняя диагональная ветвь -->
-    <path d="M 252 290 L 296 354" stroke="#0A0A0C" stroke-width="18" stroke-linecap="round"/>
+    <!-- Пропорциональная скругленная буква 'k': точно по центру, равные лучи, скругленные концы -->
+    <!-- Вертикальная стойка со скругленными краями -->
+    <path d="M 218 244 L 218 364" 
+          fill="none"
+          stroke="#0A0A0C" 
+          stroke-width="24" 
+          stroke-linecap="round"/>
+
+    <!-- Два симметричных луча одинаковой длины, исходящие из одной точки на стойке -->
+    <path d="M 302 244 L 224 304 L 302 364" 
+          fill="none"
+          stroke="#0A0A0C" 
+          stroke-width="24" 
+          stroke-linecap="round" 
+          stroke-linejoin="round"/>
   </g>
 </svg>

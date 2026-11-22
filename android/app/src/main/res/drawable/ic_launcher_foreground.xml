@@ -27,25 +27,17 @@
         android:fillColor="#FFB8A7F0"
         android:pathData="M32,43 L76,43 A7,7 0 0 1 83,50 L83,79 A8,8 0 0 1 75,87 L33,87 A8,8 0 0 1 25,79 L25,50 A7,7 0 0 1 32,43 Z" />
 
-    <!-- Четкая геометрическая буква K без пятен и размытия (Оникс #0A0A0C) -->
-    <!-- Вертикальная стойка K -->
+    <!-- Скругленная пропорциональная буква 'k': идеально отцентрована, равные лучи -->
     <path
         android:strokeColor="#FF0A0A0C"
-        android:strokeWidth="3.2"
+        android:strokeWidth="4.5"
         android:strokeLineCap="round"
-        android:pathData="M46,54 L46,76" />
+        android:pathData="M46,52 L46,78" />
 
-    <!-- Верхняя ветвь K -->
     <path
         android:strokeColor="#FF0A0A0C"
-        android:strokeWidth="3.2"
+        android:strokeWidth="4.5"
         android:strokeLineCap="round"
-        android:pathData="M60,56 L47,66" />
-
-    <!-- Нижняя ветвь K -->
-    <path
-        android:strokeColor="#FF0A0A0C"
-        android:strokeWidth="3.2"
-        android:strokeLineCap="round"
-        android:pathData="M52,63 L61,75" />
+        android:strokeLineJoin="round"
+        android:pathData="M62,52 L47.5,65 L62,78" />
 </vector>

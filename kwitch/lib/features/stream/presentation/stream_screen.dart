@@ -8,11 +8,13 @@ import '../../ktunnel/domain/services/network_adaptive_controller.dart';
 import '../../ktunnel/presentation/controllers/ktunnel_controller.dart';
 import '../../ktunnel/presentation/widgets/ktunnel_node_picker_sheet.dart';
 import '../domain/models/stream_nerd_stats.dart';
+import '../domain/models/recorded_clip_item.dart';
 import '../domain/models/twitch_channel_item.dart';
 import '../domain/models/vod_clip_item.dart';
 import '../domain/services/amoled_mode_controller.dart';
 import '../domain/services/audio_only_mode_controller.dart';
 import '../domain/services/battery_saver_controller.dart';
+import '../domain/services/media_buttons_service.dart';
 import '../domain/services/pip_background_service.dart';
 import '../domain/services/player_stability_controller.dart';
 import '../domain/services/sleep_timer_service.dart';
@@ -20,17 +22,20 @@ import '../domain/services/stream_ambient_glow_controller.dart';
 import '../domain/services/stream_audio_dsp_controller.dart';
 import '../domain/services/stream_bookmarks_service.dart';
 import '../domain/services/stream_catchup_service.dart';
+import '../domain/services/stream_recorder_service.dart';
 import '../domain/services/stream_replay_buffer_service.dart';
 import '../domain/services/stream_zen_mode_controller.dart';
 import '../domain/services/vod_clips_service.dart';
 import 'widgets/battery_saver_sheet.dart';
 import 'widgets/channel_search_drawer.dart';
 import 'widgets/chat_panel_container.dart';
+import 'widgets/media_buttons_settings_sheet.dart';
 import 'widgets/sleep_timer_sheet.dart';
 import 'widgets/split_divider_handle.dart';
 import 'widgets/stream_ambient_glow_sheet.dart';
 import 'widgets/stream_audio_dsp_sheet.dart';
 import 'widgets/stream_bookmarks_sheet.dart';
+import 'widgets/stream_recorder_sheet.dart';
 import 'widgets/video_player_container.dart';
 import 'widgets/vod_clips_browser_sheet.dart';
 
@@ -95,6 +100,12 @@ class _StreamScreenState extends State<StreamScreen> with WidgetsBindingObserver
 
   // Сервис браузера VOD-записей и клипов канала
   late final VodClipsService _vodClipsService;
+
+  // Сервис локальной записи видеотрансляции (Stream DVR Recorder)
+  late final StreamRecorderService _recorderService;
+
+  // Сервис аппаратных медиа-кнопок гарнитур и Bluetooth
+  late final MediaButtonsService _mediaButtonsService;
 
   // Состояния воспроизведения
   bool _isPlaying = true;
@@ -167,6 +178,17 @@ class _StreamScreenState extends State<StreamScreen> with WidgetsBindingObserver
     _vodClipsService = VodClipsService();
     _vodClipsService.addListener(_onStateChanged);
 
+    _recorderService = StreamRecorderService();
+    _recorderService.addListener(_onStateChanged);
+
+    _mediaButtonsService = MediaButtonsService()
+      ..onPlayPause = _togglePlayPause
+      ..onJumpToLive = _catchUpLive
+      ..onInstantReplay = _startInstantReplay
+      ..onToggleAudioOnly = _toggleAudioOnly
+      ..onToggleMute = () => _stabilityController.toggleMute(1.0)
+      ..addListener(_onStateChanged);
+
     _updateNotification();
   }
 
@@ -224,6 +246,10 @@ class _StreamScreenState extends State<StreamScreen> with WidgetsBindingObserver
     _zenModeController.dispose();
     _vodClipsService.removeListener(_onStateChanged);
     _vodClipsService.dispose();
+    _recorderService.removeListener(_onStateChanged);
+    _recorderService.dispose();
+    _mediaButtonsService.removeListener(_onStateChanged);
+    _mediaButtonsService.dispose();
     super.dispose();
   }
 
@@ -458,6 +484,136 @@ class _StreamScreenState extends State<StreamScreen> with WidgetsBindingObserver
     StreamAmbientGlowSheet.show(context, _ambientGlowController);
   }
 
+  void _openVodClips() {
+    VodClipsBrowserSheet.show(
+      context,
+      service: _vodClipsService,
+      streamerName: _streamerName,
+      onSelectVodClip: (item) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: KColors.panel,
+            duration: const Duration(seconds: 2),
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+              side: const BorderSide(color: KColors.accBorder, width: 1),
+            ),
+            content: Row(
+              children: [
+                const Icon(LucideIcons.playCircle, color: KColors.lav, size: 18),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    'Воспроизведение ${item.type == VodClipType.vod ? "записи" : "клипа"}: ${item.title}',
+                    style: KTypography.caption.copyWith(color: KColors.ink),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void _startRecording() {
+    HapticFeedback.heavyImpact();
+    _recorderService.startRecording(
+      streamerName: _streamerName,
+      categoryName: _categoryName,
+      resolution: _currentQuality,
+    );
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: KColors.panel,
+        duration: const Duration(seconds: 2),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+          side: const BorderSide(color: KColors.red, width: 1.2),
+        ),
+        content: Row(
+          children: [
+            const Icon(LucideIcons.circleDot, color: KColors.red, size: 18),
+            const SizedBox(width: 8),
+            Text(
+              'Запись начата • Нажмите REC для сохранения',
+              style: KTypography.caption.copyWith(color: KColors.ink),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _stopRecording() {
+    HapticFeedback.heavyImpact();
+    final clip = _recorderService.stopRecording();
+    if (clip != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: KColors.panel,
+          duration: const Duration(seconds: 3),
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+            side: const BorderSide(color: KColors.accBorder, width: 1),
+          ),
+          action: SnackBarAction(
+            label: 'Клипы',
+            textColor: KColors.lav,
+            onPressed: _openRecordedClips,
+          ),
+          content: Row(
+            children: [
+              const Icon(LucideIcons.checkCircle2, color: KColors.green, size: 18),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  'Клип сохранен: ${clip.formattedDuration} (${clip.formattedFileSize})',
+                  style: KTypography.caption.copyWith(color: KColors.ink),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+  }
+
+  void _openRecordedClips() {
+    StreamRecorderSheet.show(
+      context,
+      recorderService: _recorderService,
+      onShareClip: (clip) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: KColors.panel,
+            duration: const Duration(seconds: 2),
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+              side: const BorderSide(color: KColors.accBorder, width: 1),
+            ),
+            content: Text(
+              'Экспорт файла: ${clip.filePath}',
+              style: KTypography.caption.copyWith(color: KColors.ink),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void _openMediaButtons() {
+    MediaButtonsSettingsSheet.show(context, _mediaButtonsService);
+  }
+
   void _toggleZenMode() {
     HapticFeedback.mediumImpact();
     _zenModeController.toggleZenMode();
@@ -601,6 +757,7 @@ class _StreamScreenState extends State<StreamScreen> with WidgetsBindingObserver
           batteryController: _batteryController,
           ambientGlowController: _ambientGlowController,
           zenModeController: _zenModeController,
+          recorderService: _recorderService,
           currentBookmarkCount: _bookmarksService.getBookmarksForStreamer(_streamerName).length,
           nerdStats: nerdStats,
           onPlayPause: _togglePlayPause,
@@ -620,6 +777,11 @@ class _StreamScreenState extends State<StreamScreen> with WidgetsBindingObserver
           onOpenBatterySaver: _openBatterySaver,
           onOpenAmbientGlow: _openAmbientGlow,
           onToggleZenMode: _toggleZenMode,
+          onOpenVodClips: _openVodClips,
+          onStartRecording: _startRecording,
+          onStopRecording: _stopRecording,
+          onOpenRecordedClips: _openRecordedClips,
+          onOpenMediaButtons: _openMediaButtons,
           onStartInstantReplay: _startInstantReplay,
           onExitReplay: _exitReplayAndJumpToLive,
           onShareClip: _shareClip,
@@ -662,6 +824,7 @@ class _StreamScreenState extends State<StreamScreen> with WidgetsBindingObserver
           batteryController: _batteryController,
           ambientGlowController: _ambientGlowController,
           zenModeController: _zenModeController,
+          recorderService: _recorderService,
           currentBookmarkCount: _bookmarksService.getBookmarksForStreamer(_streamerName).length,
           nerdStats: nerdStats,
           onPlayPause: _togglePlayPause,
@@ -681,6 +844,11 @@ class _StreamScreenState extends State<StreamScreen> with WidgetsBindingObserver
           onOpenBatterySaver: _openBatterySaver,
           onOpenAmbientGlow: _openAmbientGlow,
           onToggleZenMode: _toggleZenMode,
+          onOpenVodClips: _openVodClips,
+          onStartRecording: _startRecording,
+          onStopRecording: _stopRecording,
+          onOpenRecordedClips: _openRecordedClips,
+          onOpenMediaButtons: _openMediaButtons,
           onStartInstantReplay: _startInstantReplay,
           onExitReplay: _exitReplayAndJumpToLive,
           onShareClip: _shareClip,
@@ -725,6 +893,7 @@ class _StreamScreenState extends State<StreamScreen> with WidgetsBindingObserver
                   batteryController: _batteryController,
                   ambientGlowController: _ambientGlowController,
                   zenModeController: _zenModeController,
+          recorderService: _recorderService,
                   currentBookmarkCount: _bookmarksService.getBookmarksForStreamer(_streamerName).length,
                   nerdStats: nerdStats,
                   onPlayPause: _togglePlayPause,
@@ -744,6 +913,11 @@ class _StreamScreenState extends State<StreamScreen> with WidgetsBindingObserver
                   onOpenBatterySaver: _openBatterySaver,
                   onOpenAmbientGlow: _openAmbientGlow,
                   onToggleZenMode: _toggleZenMode,
+          onOpenVodClips: _openVodClips,
+          onStartRecording: _startRecording,
+          onStopRecording: _stopRecording,
+          onOpenRecordedClips: _openRecordedClips,
+          onOpenMediaButtons: _openMediaButtons,
                   onStartInstantReplay: _startInstantReplay,
                   onExitReplay: _exitReplayAndJumpToLive,
                   onShareClip: _shareClip,
@@ -783,6 +957,7 @@ class _StreamScreenState extends State<StreamScreen> with WidgetsBindingObserver
                   batteryController: _batteryController,
                   ambientGlowController: _ambientGlowController,
                   zenModeController: _zenModeController,
+          recorderService: _recorderService,
                   currentBookmarkCount: _bookmarksService.getBookmarksForStreamer(_streamerName).length,
                   nerdStats: nerdStats,
                   onPlayPause: _togglePlayPause,
@@ -802,6 +977,11 @@ class _StreamScreenState extends State<StreamScreen> with WidgetsBindingObserver
                   onOpenBatterySaver: _openBatterySaver,
                   onOpenAmbientGlow: _openAmbientGlow,
                   onToggleZenMode: _toggleZenMode,
+          onOpenVodClips: _openVodClips,
+          onStartRecording: _startRecording,
+          onStopRecording: _stopRecording,
+          onOpenRecordedClips: _openRecordedClips,
+          onOpenMediaButtons: _openMediaButtons,
                   onStartInstantReplay: _startInstantReplay,
                   onExitReplay: _exitReplayAndJumpToLive,
                   onShareClip: _shareClip,

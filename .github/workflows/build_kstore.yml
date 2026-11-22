@@ -44,18 +44,29 @@ jobs:
       - name: 🔑 Prepare Keystore
         run: |
           mkdir -p android
-          keytool -genkey -v -keystore android/kipsway.keystore \
-            -alias kipsway -keyalg RSA -keysize 2048 -validity 10000 \
-            -storepass "kipsway2026" -keypass "kipsway2026" \
-            -dname "CN=kipsway, OU=kStore, O=kipsway, C=RU"
+          if [ ! -f android/kipsway.keystore ]; then
+            keytool -genkey -v -keystore android/kipsway.keystore \
+              -alias kipsway -keyalg RSA -keysize 2048 -validity 10000 \
+              -storepass "kipsway2026" -keypass "kipsway2026" \
+              -dname "CN=kipsway, OU=kStore, O=kipsway, C=RU"
+          fi
 
       - name: 🔨 Compile Genuine Android APK
         run: |
           flutter build apk --release --verbose
 
+      - name: 📤 Upload Native APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: kStore-Native-Release-APK
+          path: build/app/outputs/flutter-apk/*.apk
+
       - name: 📦 Deploy compiled APK to GitHub Pages
         run: |
-          COMPILED_APK=$(find build/ -name "*release*.apk" | head -n 1)
+          COMPILED_APK=$(find build/app/outputs/flutter-apk/ -name "*release*.apk" | head -n 1)
+          if [ -z "$COMPILED_APK" ]; then
+            COMPILED_APK=$(find build/ -name "*release*.apk" | head -n 1)
+          fi
           if [ -n "$COMPILED_APK" ] && [ -f "$COMPILED_APK" ]; then
             echo "SUCCESS: Found compiled APK $COMPILED_APK of size $(ls -lh $COMPILED_APK)"
             cp "$COMPILED_APK" kStore.apk
@@ -64,7 +75,7 @@ jobs:
             git config user.name "github-actions[bot]"
             git config user.email "github-actions[bot]@users.noreply.github.com"
             git add kStore.apk site/kStore.apk
-            git commit -m "chore(release): deploy real compiled native kStore.apk [skip ci]" || echo "No changes"
+            git commit -m "chore(release): deploy real compiled native kStore.apk" || echo "No changes"
             git push origin main
           else
             echo "ERROR: APK was not built"

@@ -132,54 +132,44 @@ class _ModIconPainter extends CustomPainter {
     canvas.drawPath(path, paint);
   }
 
-  /// Векторный самолетик Telegram (kGram) — идеальная каноничная геометрия с ровным сгибом
+  /// Векторный самолетик Telegram (kGram) в стиле NimarkoGram: точная форма, без ножки, скругленные углы
   void _drawTelegramPlane(Canvas canvas, Size size) {
     final w = size.width;
     final h = size.height;
 
-    final nose = Offset(w * 0.8125, h * 0.25);
-    final leftTip = Offset(w * 0.203, h * 0.50);
-    final creaseVertex = Offset(w * 0.461, h * 0.672);
-    final rightTip = Offset(w * 0.695, h * 0.781);
-    final finBottom = Offset(w * 0.363, h * 0.770);
-    final finAttach = Offset(w * 0.344, h * 0.594);
-
-    // Правое нижнее крыло (средний лавандовый тон)
-    final rightWingPaint = Paint()
-      ..color = const Color(0xFF9C89E8)
-      ..style = PaintingStyle.fill;
-    final rightWingPath = Path()
-      ..moveTo(nose.dx, nose.dy)
-      ..lineTo(rightTip.dx, rightTip.dy)
-      ..lineTo(creaseVertex.dx, creaseVertex.dy)
-      ..close();
-    canvas.drawPath(rightWingPath, rightWingPaint);
-
-    // Нижний киль (строго примыкает к вершине центрального сгиба)
-    final finPaint = Paint()
-      ..color = KColors.accBorder
-      ..style = PaintingStyle.fill;
-    final finPath = Path()
-      ..moveTo(creaseVertex.dx, creaseVertex.dy)
-      ..lineTo(finBottom.dx, finBottom.dy)
-      ..lineTo(finAttach.dx, finAttach.dy)
-      ..close();
-    canvas.drawPath(finPath, finPaint);
-
-    // Главное верхнее крыло (яркая чистая лаванда)
-    final mainWingPaint = Paint()
+    // Однотонный лавандовый корпус со скругленными углами
+    final bodyPaint = Paint()
       ..shader = const LinearGradient(
         begin: Alignment.topRight,
         end: Alignment.bottomLeft,
         colors: [Colors.white, KColors.lavInk, KColors.lav],
       ).createShader(Offset.zero & size)
       ..style = PaintingStyle.fill;
-    final mainWingPath = Path()
-      ..moveTo(leftTip.dx, leftTip.dy)
-      ..lineTo(nose.dx, nose.dy)
-      ..lineTo(creaseVertex.dx, creaseVertex.dy)
+
+    final bodyPath = Path()
+      ..moveTo(w * 0.285, h * 0.408)
+      ..lineTo(w * 0.721, h * 0.244)
+      ..quadraticBezierTo(w * 0.758, h * 0.230, w * 0.746, h * 0.268)
+      ..lineTo(w * 0.604, h * 0.717)
+      ..quadraticBezierTo(w * 0.588, h * 0.770, w * 0.549, h * 0.730)
+      ..lineTo(w * 0.275, h * 0.457)
+      ..quadraticBezierTo(w * 0.242, h * 0.424, w * 0.285, h * 0.408)
       ..close();
-    canvas.drawPath(mainWingPath, mainWingPaint);
+
+    canvas.drawPath(bodyPath, bodyPaint);
+
+    // Чистая линия сгиба от носика самолетика
+    final creasePaint = Paint()
+      ..color = KColors.accBorder
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.0
+      ..strokeCap = StrokeCap.round;
+
+    canvas.drawLine(
+      Offset(w * 0.746, h * 0.268),
+      Offset(w * 0.449, h * 0.631),
+      creasePaint,
+    );
   }
 
   /// Векторная кнопка воспроизведения YouTube (kTube)
@@ -296,23 +286,28 @@ class _ModIconPainter extends CustomPainter {
     );
     canvas.drawRRect(bagRect, bagPaint);
 
-    // Чистая, идеально читаемая буква K в центре пакета (Оникс #0A0A0C)
+    // Скругленная буква 'k': идеально отцентрована, равные лучи
     final kPaint = Paint()
       ..color = const Color(0xFF0A0A0C)
       ..style = PaintingStyle.stroke
-      ..strokeWidth = w * 0.035
+      ..strokeWidth = w * 0.047
       ..strokeCap = StrokeCap.round
       ..strokeJoin = StrokeJoin.round;
 
-    final kPath = Path()
-      ..moveTo(w * 0.43, h * 0.48)
-      ..lineTo(w * 0.43, h * 0.72)
-      ..moveTo(w * 0.58, h * 0.49)
-      ..lineTo(w * 0.44, h * 0.60)
-      ..moveTo(w * 0.495, h * 0.56)
-      ..lineTo(w * 0.59, h * 0.71);
+    // Вертикальная стойка
+    canvas.drawLine(
+      Offset(w * 0.426, h * 0.477),
+      Offset(w * 0.426, h * 0.711),
+      kPaint,
+    );
 
-    canvas.drawPath(kPath, kPaint);
+    // Два симметричных луча одинаковой длины
+    final kRaysPath = Path()
+      ..moveTo(w * 0.590, h * 0.477)
+      ..lineTo(w * 0.438, h * 0.594)
+      ..lineTo(w * 0.590, h * 0.711);
+
+    canvas.drawPath(kRaysPath, kPaint);
   }
 
   @override

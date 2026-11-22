@@ -48,9 +48,23 @@ android {
         versionName flutterVersionName
     }
 
+    signingConfigs {
+        release {
+            storeFile rootProject.file('kipsway.keystore')
+            storePassword "kipsway2026"
+            keyAlias "kipsway"
+            keyPassword "kipsway2026"
+        }
+    }
+
     buildTypes {
         release {
-            signingConfig signingConfigs.debug
+            def keystoreFile = rootProject.file('kipsway.keystore')
+            if (keystoreFile.exists()) {
+                signingConfig signingConfigs.release
+            } else {
+                signingConfig signingConfigs.debug
+            }
             minifyEnabled false
             shrinkResources false
         }

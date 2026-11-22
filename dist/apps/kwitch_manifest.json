@@ -1,0 +1,29 @@
+{
+  "id": "com.kipsway.kwitch",
+  "name": "kWitch",
+  "author": "by kipsway",
+  "version": "1.0.0",
+  "versionCode": 1,
+  "rating": 4.95,
+  "description": "Twitch со встроенным чатом Chatterino+ от Rish и сетевым ядром k-Tunnel для 1440p60 без лагов.",
+  "iconUrl": "assets/icons/kwitch_icon.png",
+  "apkUrl": "https://s.wistfalls.cc/releases/kWitch-v1.0.0-kipsway-release.apk",
+  "sha256": "4f5924753dea3d3bf36cf26a2f3f341021e16e23bc557c966af7c33b350c55e4",
+  "tunnelFeature": "k-Tunnel 1440p",
+  "features": [
+    "Сетевое ядро k-Tunnel для обхода дропов кадров и разблокировки 1440p",
+    "Движок чата Chatterino+ v2.4.0 by Rish (chat.eblo.id)",
+    "Вкладки Мульти-Чата (Multi-Chat Split) с переключением каналов",
+    "Умный догон прямого эфира x1.5 при отставании",
+    "Мгновенный 30с повтор DVR Replay и локальный рекордер отрезков MP4",
+    "Интерактивные ставки и опросы (Twitch Predictions & Polls Overlay)",
+    "Быстрые команды и макросы чата (Chatterino+ Slash Commands & Kaomoji)",
+    "Опциональная авторизация Twitch (OAuth 2.0 / Read-Only Токен)",
+    "Аудио DSP Улучшайзер речи и режим «Только радио»",
+    "Адаптивный режим энергосбережения батареи (30 FPS & GIF Pause)",
+    "Динамическая Ambilight эмбиент-подсветка",
+    "Дзен-режим фокуса (Streamer Zen Mode)",
+    "Аппаратные кнопки гарнитур и Bluetooth (MediaButtons Receiver)"
+  ],
+  "changelog": "Релиз kWitch v1.0.0: интеграция Chatterino+ v2.4.0, сетевое ускорение k-Tunnel 1440p, Twitch OAuth 2.0, Stream DVR Replay и дизайн Жидкое стекло."
+}

@@ -13,14 +13,20 @@
                      "Battery Eco Saver (30 FPS \u0026 GIF Pause)",
                      "Dynamic Ambilight Ambient Glow Aura",
                      "Streamer Zen Mode (Distraction-Free)",
+                     "VOD \u0026 Highlights Quick Browser",
+                     "Stream DVR MP4 Clip Recorder",
+                     "Headset \u0026 Bluetooth MediaButtons Receiver",
+                     "Twitch OAuth 2.0 \u0026 Custom Nicks in Chatterino+",
+                     "Twitch Predictions \u0026 Channel Points Polls Overlay",
+                     "Chatterino+ Slash Commands \u0026 Kaomoji Macros",
                      "Chatterino+ Inline Chat Translator",
                      "Liquid Glass + M3 Design System",
                      "Signed with kipsway.keystore"
                  ],
     "apkFile":  "kWitch-v1.0.0-kipsway-release.apk",
-    "sha256":  "0263597DF7A304FA1E69772E0D1DBBEE00E1F2276E8938E28F266015BD6C042A",
-    "fileSizeBytes":  134497,
+    "sha256":  "4F5924753DEA3D3BF36CF26A2F3F341021E16E23BC557C966AF7C33B350C55E4",
+    "fileSizeBytes":  176626,
     "signed":  true,
     "signAlias":  "kipsway",
-    "builtAt":  "2026-11-22T22:43:32+03:00"
+    "builtAt":  "2026-11-22T23:34:20+03:00"
 }

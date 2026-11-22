@@ -9,6 +9,7 @@ import '../../../ktunnel/domain/services/network_adaptive_controller.dart';
 import '../../domain/services/battery_saver_controller.dart';
 import '../../domain/services/stream_ambient_glow_controller.dart';
 import '../../domain/services/stream_audio_dsp_controller.dart';
+import '../../domain/services/stream_recorder_service.dart';
 import '../../domain/services/stream_zen_mode_controller.dart';
 import 'ktunnel_toggle_chip.dart';
 import 'stream_catchup_badge.dart';
@@ -42,6 +43,7 @@ class PlayerControlsOverlay extends StatefulWidget {
   final BatterySaverController? batteryController;
   final StreamAmbientGlowController? ambientGlowController;
   final StreamZenModeController? zenModeController;
+  final StreamRecorderService? recorderService;
   final VoidCallback onPlayPause;
   final ValueChanged<bool> onToggleTunnel;
   final VoidCallback? onOpenNodesPicker;
@@ -58,6 +60,10 @@ class PlayerControlsOverlay extends StatefulWidget {
   final VoidCallback? onOpenBookmarks;
   final VoidCallback? onOpenBatterySaver;
   final VoidCallback? onOpenVodClips;
+  final VoidCallback? onStartRecording;
+  final VoidCallback? onStopRecording;
+  final VoidCallback? onOpenRecordedClips;
+  final VoidCallback? onOpenMediaButtons;
   final VoidCallback? onStartInstantReplay;
   final VoidCallback onCatchUpLive;
   final VoidCallback? onEnterPip;
@@ -91,6 +97,7 @@ class PlayerControlsOverlay extends StatefulWidget {
     this.batteryController,
     this.ambientGlowController,
     this.zenModeController,
+    this.recorderService,
     required this.onPlayPause,
     required this.onToggleTunnel,
     this.onOpenNodesPicker,
@@ -108,6 +115,10 @@ class PlayerControlsOverlay extends StatefulWidget {
     this.onOpenBatterySaver,
     this.onOpenAmbientGlow,
     this.onOpenVodClips,
+    this.onStartRecording,
+    this.onStopRecording,
+    this.onOpenRecordedClips,
+    this.onOpenMediaButtons,
     this.onToggleZenMode,
     this.onStartInstantReplay,
     required this.onCatchUpLive,
@@ -447,6 +458,44 @@ class _PlayerControlsOverlayState extends State<PlayerControlsOverlay> {
                           size: 18,
                         ),
                         tooltip: widget.isReplayActive ? 'Повтор активен' : 'Мгновенный повтор -30с',
+                        padding: const EdgeInsets.symmetric(horizontal: 4),
+                        constraints: const BoxConstraints(),
+                      ),
+
+                      // Кнопка записи стрима (REC DVR)
+                      IconButton(
+                        onPressed: () {
+                          HapticFeedback.heavyImpact();
+                          if (widget.recorderService?.isRecording == true) {
+                            widget.onStopRecording?.call();
+                          } else {
+                            widget.onStartRecording?.call();
+                          }
+                        },
+                        icon: Icon(
+                          widget.recorderService?.isRecording == true
+                              ? LucideIcons.circleDot
+                              : LucideIcons.video,
+                          color: widget.recorderService?.isRecording == true
+                              ? KColors.red
+                              : KColors.muted,
+                          size: 18,
+                        ),
+                        tooltip: widget.recorderService?.isRecording == true
+                            ? 'Остановить запись REC'
+                            : 'Записать клип (REC)',
+                        padding: const EdgeInsets.symmetric(horizontal: 4),
+                        constraints: const BoxConstraints(),
+                      ),
+
+                      // Кнопка настроек кнопок гарнитуры и Bluetooth
+                      IconButton(
+                        onPressed: () {
+                          HapticFeedback.selectionClick();
+                          widget.onOpenMediaButtons?.call();
+                        },
+                        icon: const Icon(LucideIcons.headphones, color: KColors.muted, size: 18),
+                        tooltip: 'Кнопки гарнитуры и Bluetooth',
                         padding: const EdgeInsets.symmetric(horizontal: 4),
                         constraints: const BoxConstraints(),
                       ),

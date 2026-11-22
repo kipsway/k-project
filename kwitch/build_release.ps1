@@ -96,6 +96,12 @@ $manifest = [PSCustomObject]@{
         "Battery Eco Saver (30 FPS & GIF Pause)",
         "Dynamic Ambilight Ambient Glow Aura",
         "Streamer Zen Mode (Distraction-Free)",
+        "VOD & Highlights Quick Browser",
+        "Stream DVR MP4 Clip Recorder",
+        "Headset & Bluetooth MediaButtons Receiver",
+        "Twitch OAuth 2.0 & Custom Nicks in Chatterino+",
+        "Twitch Predictions & Channel Points Polls Overlay",
+        "Chatterino+ Slash Commands & Kaomoji Macros",
         "Chatterino+ Inline Chat Translator",
         "Liquid Glass + M3 Design System",
         "Signed with kipsway.keystore"

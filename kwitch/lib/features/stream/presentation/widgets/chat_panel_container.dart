@@ -8,12 +8,16 @@ import '../../../chat/domain/models/chat_user_profile.dart';
 import '../../../chat/domain/services/chat_translate_service.dart';
 import '../../../chat/domain/services/chatterino_multi_chat_service.dart';
 import '../../../chat/domain/services/emote_cache_manager.dart';
+import '../../../chat/domain/services/twitch_auth_service.dart';
+import '../../../chat/domain/services/twitch_prediction_service.dart';
 import '../../../chat/presentation/controllers/chatterino_controller.dart';
 import '../../../chat/presentation/widgets/chat_settings_sheet.dart';
 import '../../../chat/presentation/widgets/chat_translate_sheet.dart';
 import '../../../chat/presentation/widgets/chatterino_channel_tabs_bar.dart';
 import '../../../chat/presentation/widgets/chatterino_emotes_sheet.dart';
 import '../../../chat/presentation/widgets/chatterino_webview.dart';
+import '../../../chat/presentation/widgets/prediction_poll_banner.dart';
+import '../../../chat/presentation/widgets/twitch_auth_sheet.dart';
 import '../../../chat/presentation/widgets/user_card_sheet.dart';
 import 'chat_input_bar.dart';
 
@@ -39,6 +43,8 @@ class _ChatPanelContainerState extends State<ChatPanelContainer> {
   late final ChatDisplaySettings _displaySettings;
   late final ChatterinoMultiChatService _multiChatService;
   late final ChatTranslateService _translateService;
+  late final TwitchAuthService _authService;
+  late final TwitchPredictionService _predictionService;
   bool _useWebViewEngine = true;
 
   @override
@@ -50,6 +56,8 @@ class _ChatPanelContainerState extends State<ChatPanelContainer> {
     _multiChatService = ChatterinoMultiChatService(initialChannel: widget.channelName)
       ..addListener(_onMultiChatChanged);
     _translateService = ChatTranslateService()..addListener(_onTranslateSettingsChanged);
+    _authService = TwitchAuthService()..addListener(_onAuthStateChanged);
+    _predictionService = TwitchPredictionService();
   }
 
   @override
@@ -97,6 +105,19 @@ class _ChatPanelContainerState extends State<ChatPanelContainer> {
     }
   }
 
+  void _onAuthStateChanged() {
+    if (mounted) {
+      setState(() {});
+      _chatterinoController.webViewController?.runJavaScript(
+        _authService.generateChatterinoAuthScript(),
+      );
+    }
+  }
+
+  void _openTwitchAuth() {
+    TwitchAuthSheet.show(context, _authService);
+  }
+
   @override
   void dispose() {
     _chatterinoController.dispose();
@@ -107,6 +128,9 @@ class _ChatPanelContainerState extends State<ChatPanelContainer> {
     _multiChatService.dispose();
     _translateService.removeListener(_onTranslateSettingsChanged);
     _translateService.dispose();
+    _authService.removeListener(_onAuthStateChanged);
+    _authService.dispose();
+    _predictionService.dispose();
     super.dispose();
   }
 
@@ -242,6 +266,21 @@ class _ChatPanelContainerState extends State<ChatPanelContainer> {
                 ),
                 Row(
                   children: [
+                    // Кнопка авторизации Twitch / Профиль
+                    IconButton(
+                      onPressed: _openTwitchAuth,
+                      icon: Icon(
+                        _authService.isAuthenticated ? LucideIcons.userCheck : LucideIcons.user,
+                        size: 17,
+                        color: _authService.isAuthenticated ? KColors.lav : KColors.muted,
+                      ),
+                      tooltip: _authService.isAuthenticated
+                          ? '@${_authService.currentUsername}'
+                          : 'Вход в аккаунт Twitch',
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(),
+                    ),
+                    const SizedBox(width: 12),
                     // Кнопка инлайн-переводчика чата
                     IconButton(
                       onPressed: _openChatTranslate,
@@ -324,6 +363,9 @@ class _ChatPanelContainerState extends State<ChatPanelContainer> {
 
           // ВКЛАДКИ МУЛЬТИ-ЧАТА КАНАЛОВ (Multi-Chat Split Tabs)
           ChatterinoChannelTabsBar(multiChatService: _multiChatService),
+
+          // БАННЕР СТАВОК И ОПРОСОВ TWITCH PREDICTIONS & POLLS
+          PredictionPollBanner(service: _predictionService),
 
           // ИНДИКАТОР ПАУЗЫ ЧАТА
           if (_chatterinoController.isPaused)

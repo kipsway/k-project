@@ -7,6 +7,7 @@ import '../../domain/services/battery_saver_controller.dart';
 import '../../domain/services/player_gesture_controller.dart';
 import '../../domain/services/stream_ambient_glow_controller.dart';
 import '../../domain/services/stream_audio_dsp_controller.dart';
+import '../../domain/services/stream_recorder_service.dart';
 import '../../domain/services/stream_replay_buffer_service.dart';
 import '../../domain/services/stream_zen_mode_controller.dart';
 import 'ambient_glow_wrapper.dart';
@@ -15,6 +16,7 @@ import 'glass_chat_overlay.dart';
 import 'nerd_stats_overlay.dart';
 import 'player_controls_overlay.dart';
 import 'player_gesture_detector.dart';
+import 'recording_indicator_badge.dart';
 import 'stream_replay_banner.dart';
 import 'zen_mode_indicator_pill.dart';
 
@@ -45,6 +47,7 @@ class VideoPlayerContainer extends StatefulWidget {
   final BatterySaverController? batteryController;
   final StreamAmbientGlowController? ambientGlowController;
   final StreamZenModeController? zenModeController;
+  final StreamRecorderService? recorderService;
   final int currentBookmarkCount;
   final StreamNerdStats nerdStats;
   final VoidCallback onPlayPause;
@@ -63,6 +66,10 @@ class VideoPlayerContainer extends StatefulWidget {
   final VoidCallback? onOpenBatterySaver;
   final VoidCallback? onOpenAmbientGlow;
   final VoidCallback? onOpenVodClips;
+  final VoidCallback? onStartRecording;
+  final VoidCallback? onStopRecording;
+  final VoidCallback? onOpenRecordedClips;
+  final VoidCallback? onOpenMediaButtons;
   final VoidCallback? onStartInstantReplay;
   final VoidCallback? onExitReplay;
   final VoidCallback? onShareClip;
@@ -99,6 +106,7 @@ class VideoPlayerContainer extends StatefulWidget {
     this.batteryController,
     this.ambientGlowController,
     this.zenModeController,
+    this.recorderService,
     this.currentBookmarkCount = 0,
     this.nerdStats = const StreamNerdStats(),
     required this.onPlayPause,
@@ -118,6 +126,10 @@ class VideoPlayerContainer extends StatefulWidget {
     this.onOpenAmbientGlow,
     this.onToggleZenMode,
     this.onOpenVodClips,
+    this.onStartRecording,
+    this.onStopRecording,
+    this.onOpenRecordedClips,
+    this.onOpenMediaButtons,
     this.onStartInstantReplay,
     this.onExitReplay,
     this.onShareClip,
@@ -276,6 +288,7 @@ class _VideoPlayerContainerState extends State<VideoPlayerContainer> {
                 batteryController: widget.batteryController,
                 ambientGlowController: widget.ambientGlowController,
                 zenModeController: widget.zenModeController,
+                recorderService: widget.recorderService,
                 onPlayPause: widget.onPlayPause,
                 onToggleTunnel: widget.onToggleTunnel,
                 onOpenNodesPicker: widget.onOpenNodesPicker,
@@ -294,6 +307,10 @@ class _VideoPlayerContainerState extends State<VideoPlayerContainer> {
                 onOpenAmbientGlow: widget.onOpenAmbientGlow,
                 onToggleZenMode: widget.onToggleZenMode,
                 onOpenVodClips: widget.onOpenVodClips,
+                onStartRecording: widget.onStartRecording,
+                onStopRecording: widget.onStopRecording,
+                onOpenRecordedClips: widget.onOpenRecordedClips,
+                onOpenMediaButtons: widget.onOpenMediaButtons,
                 onStartInstantReplay: widget.onStartInstantReplay,
                 onCatchUpLive: widget.onCatchUpLive,
                 onEnterPip: widget.onEnterPip,
@@ -303,6 +320,20 @@ class _VideoPlayerContainerState extends State<VideoPlayerContainer> {
             // Всплывающий индикатор Дзен-режима
             if (widget.zenModeController != null)
               ZenModeIndicatorPill(zenController: widget.zenModeController!),
+
+            // Живой пульсирующий индикатор записи REC
+            if (widget.recorderService != null && widget.recorderService!.isRecording)
+              Positioned(
+                top: 18,
+                left: 0,
+                right: 0,
+                child: Center(
+                  child: RecordingIndicatorBadge(
+                    recorderService: widget.recorderService!,
+                    onStopRecording: widget.onStopRecording ?? () {},
+                  ),
+                ),
+              ),
           ],
         ),
       ),
